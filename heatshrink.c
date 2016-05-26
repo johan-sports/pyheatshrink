@@ -19,8 +19,10 @@ typedef struct {
 static void
 PyHS_Encoder_dealloc(PyHS_Encoder *self)
 {
-		if(self->__hse != NULL)
+		if(self->__hse != NULL) {
 				heatshrink_encoder_free(self->__hse);
+				self->__hse = NULL;
+		}
 		self->ob_type->tp_free((PyObject *) self);
 }
 
