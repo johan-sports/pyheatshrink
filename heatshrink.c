@@ -54,7 +54,7 @@ PyHS_Encoder_init(PyHS_Encoder *self, PyObject *args, PyObject *kwargs)
 }
 
 static PyMemberDef PyHS_Encoder_members[] = {
-		{NULL, 0, 0, 0, 0} /* Sentinel */
+		{NULL, 0, 0, 0, NULL} /* Sentinel */
 };
 
 static PyMethodDef PyHS_Encoder_methods[] = {
