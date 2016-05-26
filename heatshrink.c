@@ -5,8 +5,8 @@
 #include "heatshrink/heatshrink_encoder.h"
 #include "heatshrink/heatshrink_decoder.h"
 
-const uint8_t DEFAULT_HEATSHRINK_WINDOW_SZ2 = 8;
-const uint8_t DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2 = 7;
+#define DEFAULT_HEATSHRINK_WINDOW_SZ2 8
+#define DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2 7
 
 /************************************************************
  * Encoding
@@ -19,8 +19,8 @@ typedef struct {
 static void
 PyHS_Encoder_dealloc(PyHS_Encoder *self)
 {
-		heatshrink_encoder_free(self->__hse);
-		printf("Encoder de-allocated..\n");
+		if(self->__hse != NULL)
+				heatshrink_encoder_free(self->__hse);
 		self->ob_type->tp_free((PyObject *) self);
 }
 
@@ -36,7 +36,7 @@ PyHS_Encoder_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 
 				if(hse == NULL) {
 						Py_DECREF(self);
-						PyErr_SetString(PyExc_MemoryError, "failed to allocate internal encoder.");
+						PyErr_SetString(PyExc_MemoryError, "failed to allocate internal encoder");
 						return NULL;
 				}
 
@@ -56,7 +56,68 @@ static PyMemberDef PyHS_Encoder_members[] = {
 		{NULL, 0, 0, 0, NULL} /* Sentinel */
 };
 
+static PyObject *
+PyHS_Encoder_sink(PyHS_Encoder *self, PyObject *args)
+{
+		char *in_buf = NULL;
+		int in_buf_size;
+
+		/* TODO: Ensure that we're using the correct data type for this. */
+		if(!PyArg_ParseTuple(args, "t#", &in_buf, &in_buf_size))
+				return NULL;
+
+		if(in_buf == NULL) {
+				PyErr_SetString(PyExc_TypeError, "Buffer can not be empty");
+				return NULL;
+		}
+
+		int total_sunk_size = 0;
+
+		while(total_sunk_size < in_buf_size) {
+				size_t input_size;
+				/*
+				 * TODO: Handle return value. No need to worry about _ERROR_NULL.
+				 *
+				 * FIXME: convert in_buf to uint8_t safely.
+				 */
+				HSE_sink_res sink_res = heatshrink_encoder_sink(self->__hse,
+																												in_buf + total_sunk_size,
+																												in_buf_size - total_sunk_size,
+																												&input_size);
+				if(sink_res < 0) {
+						PyErr_SetString(PyExc_RuntimeError,
+														"Internal encoder sink failed.");
+						return NULL;
+				}
+
+				total_sunk_size += input_size;
+		}
+
+		return PyInt_FromSize_t(total_sunk_size);
+}
+
+static PyObject *
+PyHS_Encoder_poll(PyHS_Encoder *self, PyObject *args)
+{
+		PyErr_SetString(PyExc_NotImplementedError, "not implemented");
+		return NULL;
+}
+
+static PyObject *
+PyHS_Encoder_reset(PyHS_Encoder *self)
+{
+		heatshrink_encoder_reset(self->__hse);
+		Py_INCREF(Py_None);
+		return Py_None;
+}
+
 static PyMethodDef PyHS_Encoder_methods[] = {
+		{"sink", (PyCFunction) PyHS_Encoder_sink, METH_VARARGS,
+		 "Sink byte object into the encoder."},
+		{"poll", (PyCFunction) PyHS_Encoder_poll, METH_VARARGS,
+		 "Poll for output from the encoder"},
+		{"reset", (PyCFunction) PyHS_Encoder_reset, METH_NOARGS,
+		 "Reset encoder state."},
 		{NULL, NULL, 0, NULL} /* Sentinel */
 };
 
@@ -102,6 +163,10 @@ static PyTypeObject PyHS_EncoderType = {
 		0,                           /* tp_alloc */
 		PyHS_Encoder_new,            /* tp_new */
 };
+
+/************************************************************
+ * TODO: Decoder
+ ************************************************************/
 
 /************************************************************
  * Module definition
