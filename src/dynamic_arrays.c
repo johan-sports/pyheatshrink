@@ -3,18 +3,18 @@
 #include <string.h>
 
 #define CHECK_ARRAY_SIZE(arr, type)																			\
-		if(arr->used == arr->size) {																				\
-				arr->size *= 2;																									\
-				arr->items = (type *) realloc(arr->items, arr->size * sizeof(type)); \
+		if(arr->end == arr->capacity) {																			\
+				arr->capacity *= 2;																							\
+				arr->data = (type *) realloc(arr->data, arr->capacity * sizeof(type)); \
 		}
 
 UInt8Array *
-uint8_array_alloc(size_t initial_size)
+uint8_array_create(size_t initial_size)
 {
 		UInt8Array *arr = NEW(UInt8Array);
-		arr->items = (uint8_t *) calloc(initial_size, sizeof(uint8_t));
-		arr->size = 0;
-		arr->used = 0;
+		arr->data = (uint8_t *) calloc(initial_size, sizeof(uint8_t));
+		arr->capacity = initial_size;
+		arr->end = 0;
 		return arr;
 }
 
@@ -22,9 +22,9 @@ void
 uint8_array_free(UInt8Array *arr)
 {
 		if(arr != NULL) {
-				if(arr->items != NULL) {
-						free(arr->items);
-						arr->items = NULL;
+				if(arr->data != NULL) {
+						free(arr->data);
+						arr->data = NULL;
 				}
 				free(arr);
 		}
@@ -33,30 +33,30 @@ uint8_array_free(UInt8Array *arr)
 void
 uint8_array_init(UInt8Array *arr, size_t size)
 {
-		arr->items = (uint8_t *) calloc(size, sizeof(uint8_t));
-		arr->size = size;
-		arr->used = 0;
+		arr->data = (uint8_t *) calloc(size, sizeof(uint8_t));
+		arr->capacity = size;
+		arr->end = 0;
 }
 
 void
 uint8_array_clear(UInt8Array *arr)
 {
-		arr->used = 0;
+		arr->end = 0;
 }
 
 uint8_t
 uint8_array_push(UInt8Array *arr, uint8_t val)
 {
 		CHECK_ARRAY_SIZE(arr, uint8_t);
-		arr->items[arr->used++] = val;
+		arr->data[arr->end++] = val;
 		return val;
 }
 
 uint8_t
 uint8_array_pop(UInt8Array *arr)
 {
-		if(arr->used > 0) {
-				return arr->items[arr->used--];
+		if(arr->end > 0) {
+				return arr->data[arr->end--];
 		}
 		return 0;
 }
@@ -65,27 +65,21 @@ void
 uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
 {
 		/* Can we fit the new values without resizing? */
-		if(vals_size + arr->used <= arr->size) {
-				memcpy(arr->items + arr->used, vals, vals_size);
-				arr->used += vals_size;
+		if(vals_size + arr->end <= arr->capacity) {
+				memcpy(arr->data + arr->end, vals, vals_size);
+				arr->end += vals_size;
 		} else {
-				/* The size includes unused items in the original arr, so that
+				/* The size includes unend data in the original arr, so that
 				   we can avoid resizing. */
-				size_t new_size = arr->size + vals_size;
+				size_t new_size = arr->capacity + vals_size;
 				uint8_t *new_array = (uint8_t *) malloc(new_size);
-				memcpy(new_array, arr->items, arr->used); /* Copy current items */
-				memcpy(new_array + arr->used, vals, vals_size); /* Copy new items */
-				free(arr->items);
-				arr->items = new_array;
-				arr->size = new_size;
-				arr->used += vals_size;
+				memcpy(new_array, arr->data, arr->end); /* Copy current data */
+				memcpy(new_array + arr->end, vals, vals_size); /* Copy new data */
+				free(arr->data);
+				arr->data = new_array;
+				arr->capacity = new_size;
+				arr->end += vals_size;
 		}
 		/* Ensure array is sized correctly anyway */
 		CHECK_ARRAY_SIZE(arr, uint8_t);
-}
-
-void
-uint8_array_insert_dyn(UInt8Array *arr, const uint8_t *vals)
-{
-		return uint8_array_insert(arr, vals, ARRAY_SIZE(vals));
 }

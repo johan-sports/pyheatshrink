@@ -11,9 +11,9 @@
  * uint8 type array
  ************************************************************/
 typedef struct {
-		uint8_t *items;
-		size_t size;
-		size_t used;
+		size_t capacity;
+		size_t end;
+		uint8_t *data;
 } UInt8Array;
 
 
@@ -24,7 +24,7 @@ typedef struct {
  * @returns {UInt8Array *}        The new array.
  */
 UInt8Array *
-uint8_array_alloc(size_t initial_size);
+uint8_array_create(size_t initial_capacity);
 
 /**
  * De-allocate memory used for array. Handles NULL cases.
@@ -71,11 +71,24 @@ uint8_array_pop(UInt8Array *arr);
 void
 uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size);
 
-/**
- * Dynamic variant of uint8_array_insert where the size of the
- * vals array is inferred.
- */
-void
-uint8_array_insert_dyn(UInt8Array *arr, const uint8_t *vals);
+#define uint8_array_last(A) ((A)->data[(A)->end - 1])
+#define uint8_array_first(A) ((A)->data[0])
+#define uint8_array_end (A) ((A)->end)
+#define uint8_array_count(A) uint8_array_end(A)
+#define uint8_array_capacity(A) ((A)->capacity)
+
+static inline uint8_t
+uint8_array_get(UInt8Array *arr, int i)
+{
+		assert(i < arr->capacity);
+		return arr->data[i];
+}
+
+static inline void
+uint8_array_set(UInt8Array *arr, int i, uint8_t val)
+{
+		assert(i < arr->capacity);
+		arr->data[i] = val;
+}
 
 #endif /* _PY_HS_DYNAMIC_ARRAYS__ */

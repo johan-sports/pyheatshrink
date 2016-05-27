@@ -8,7 +8,8 @@
 void test_uint8_array_alloc(void)
 {
 		UInt8Array *arr = uint8_array_alloc(10);
-		// TEST_ASSERT_NOT_EQUAL(arr->items, NULL);
+		assert_not_null(arr);
+		assert_not_null(arr->items);
 		assert_int_equal(arr->size, 10);
 		assert_int_equal(arr->used, 0);
 
@@ -17,7 +18,8 @@ void test_uint8_array_alloc(void)
 
 void test_uint8_array_free()
 {
-		/* UInt8Array *arr = uint8_array_alloc(); */
+		UInt8Array *arr = uint8_array_alloc(10);
+		uint8_array_free(arr);
 }
 
 
@@ -58,8 +60,9 @@ void test_uint8_array_push_resizing(void)
 
 		uint8_array_push(arr, 2);
 		assert_int_equal(arr->used, 2);
-		assert_int_equal(arr->size, 4);
+		assert_int_equal(arr->size, 2);
 
+		/* Resized here */
 		uint8_array_push(arr, 3);
 		assert_int_equal(arr->used, 3);
 		assert_int_equal(arr->size, 4);
@@ -68,7 +71,28 @@ void test_uint8_array_push_resizing(void)
 }
 
 void test_uint8_array_insert(void)
-{}
+{
+		UInt8Array *arr = uint8_array_alloc(5);
+		assert_int_equal(arr->size, 5);
+
+		/* Enough size currently to fit new items */
+		uint8_t new_items[] = {1, 2, 3, 4};
+		uint8_array_insert(arr, new_items, 4);
+		assert_int_equal(arr->size, 5);
+		assert_int_equal(arr->used, 4);
+
+		uint8_array_insert(arr, new_items, 4);
+		assert_int_equal(arr->size, 9); /* Resize current size + new */
+		assert_int_equal(arr->used, 8);
+
+		/* Insert just enough to hit the size limit */
+		uint8_array_insert(arr, new_items, 1);
+		assert_int_equal(arr->size, 9);
+		assert_int_equal(arr->used, 9);
+
+		uint8_array_free(arr);
+}
+
 
 int main(void)
 {
@@ -78,7 +102,7 @@ int main(void)
 				cmocka_unit_test(test_uint8_array_clear),
 				cmocka_unit_test(test_uint8_array_push),
 				cmocka_unit_test(test_uint8_array_push_resizing),
-				//cmocka_unit_test(test_uint8_array_insert),
+				cmocka_unit_test(test_uint8_array_insert),
 		};
 
 		return cmocka_run_group_tests(tests, NULL, NULL);
