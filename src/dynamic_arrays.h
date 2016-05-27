@@ -2,20 +2,16 @@
 #define _PY_HS_DYNAMIC_ARRAYS__
 
 #include <stdlib.h>
-
-#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
-
-#define NEW(type) ((type *) malloc(sizeof(type)))
+#include <assert.h>
 
 /************************************************************
  * uint8 type array
  ************************************************************/
-typedef struct {
+typedef struct UInt8Array {
 		size_t capacity;
 		size_t end;
 		uint8_t *data;
 } UInt8Array;
-
 
 /**
  * Allocate memory for an array of size `initial_size`.
@@ -73,7 +69,7 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size);
 
 #define uint8_array_last(A) ((A)->data[(A)->end - 1])
 #define uint8_array_first(A) ((A)->data[0])
-#define uint8_array_end (A) ((A)->end)
+#define uint8_array_end(A) ((A)->end)
 #define uint8_array_count(A) uint8_array_end(A)
 #define uint8_array_capacity(A) ((A)->capacity)
 

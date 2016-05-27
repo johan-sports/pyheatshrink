@@ -11,7 +11,6 @@
 #define DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2 7
 
 
-
 /************************************************************
  * Encoding
  ************************************************************/
@@ -25,15 +24,15 @@ typedef enum {
 static PyHS_encode_res
 _encode_to_out(heatshrink_encoder *hse,
 							 uint8_t *in_buf, size_t in_size,
-							 uint8_t *out_buf, size_t out_size,
-							 size_t *total_sunk)
+							 UInt8Array *out_arr)
 {
-		*total_sunk = -1;
-
 		HSE_sink_res sink_res;
 		HSE_poll_res poll_res;
 		HSE_finish_res finish_res;
 		size_t total_sunk_size = 0;
+
+		size_t out_size = 4096;
+		uint8_t out_buf[out_size];
 		do {
 				size_t sunk_size;
 				size_t poll_size;
@@ -56,6 +55,7 @@ _encode_to_out(heatshrink_encoder *hse,
 						if(poll_res < 0) {
 								return PYHS_FAILED_POLL;
 						}
+						uint8_array_insert(out_arr, out_buf, poll_size);
 				} while(poll_res == HSER_POLL_MORE);
 
 				if(poll_size == 0 && in_size == 0) {
@@ -67,8 +67,6 @@ _encode_to_out(heatshrink_encoder *hse,
 								break;
 				}
 		} while(total_sunk_size < in_size);
-
-		*total_sunk = total_sunk_size;
 
 		return PYHS_OK;
 }
@@ -90,16 +88,13 @@ PyHS_encode(PyObject *self, PyObject *args)
 		}
 
 		/* Initialize output buffer */
-		size_t out_size = 4096;
-		uint8_t out_buf[out_size];
-		memset(out_buf, 0, out_size);
+		UInt8Array *out_arr = uint8_array_create(1024);
+		PyHS_encode_res eres = _encode_to_out(hse, in_buf, in_size, out_arr);
 
-		size_t total_sunk_size;
-		PyHS_encode_res eres = _encode_to_out(hse, in_buf, in_size,
-																					out_buf, out_size,
-																					&total_sunk_size);
+		printf("Wrote %zd bytes in to out_arr\n", uint8_array_count(out_arr));
 
 		heatshrink_encoder_free(hse);
+		uint8_array_free(out_arr);
 
 		switch(eres) {
 		case PYHS_FAILED_SINK:
@@ -112,7 +107,8 @@ PyHS_encode(PyObject *self, PyObject *args)
 				PyErr_SetString(PyExc_RuntimeError, "encoder finish failed");
 				return NULL;
 		default:
-				return PyInt_FromSize_t(total_sunk_size);
+				Py_INCREF(Py_None);
+				return Py_None;
 		}
 }
 

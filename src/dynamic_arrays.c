@@ -2,16 +2,20 @@
 
 #include <string.h>
 
-#define CHECK_ARRAY_SIZE(arr, type)																			\
-		if(arr->end == arr->capacity) {																			\
-				arr->capacity *= 2;																							\
-				arr->data = (type *) realloc(arr->data, arr->capacity * sizeof(type)); \
+void
+_check_array_size(UInt8Array *arr)
+{
+		if(arr->end == arr->capacity) {
+				arr->capacity *= 2;
+				arr->data = (uint8_t *) realloc(arr->data,
+																				arr->capacity * sizeof(uint8_t));
 		}
+}
 
 UInt8Array *
 uint8_array_create(size_t initial_size)
 {
-		UInt8Array *arr = NEW(UInt8Array);
+		UInt8Array *arr = malloc(sizeof(UInt8Array));
 		arr->data = (uint8_t *) calloc(initial_size, sizeof(uint8_t));
 		arr->capacity = initial_size;
 		arr->end = 0;
@@ -47,7 +51,7 @@ uint8_array_clear(UInt8Array *arr)
 uint8_t
 uint8_array_push(UInt8Array *arr, uint8_t val)
 {
-		CHECK_ARRAY_SIZE(arr, uint8_t);
+		_check_array_size(arr);
 		arr->data[arr->end++] = val;
 		return val;
 }
@@ -81,5 +85,5 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
 				arr->end += vals_size;
 		}
 		/* Ensure array is sized correctly anyway */
-		CHECK_ARRAY_SIZE(arr, uint8_t);
+		_check_array_size(arr);
 }

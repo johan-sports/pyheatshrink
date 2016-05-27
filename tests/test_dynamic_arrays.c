@@ -5,90 +5,92 @@
 
 #include <dynamic_arrays.h>
 
-void test_uint8_array_alloc(void)
+void test_uint8_array_create(void)
 {
-		UInt8Array *arr = uint8_array_alloc(10);
-		assert_not_null(arr);
-		assert_not_null(arr->items);
-		assert_int_equal(arr->size, 10);
-		assert_int_equal(arr->used, 0);
+		UInt8Array *arr = uint8_array_create(10);
+		assert_non_null(arr);
+		assert_non_null(arr->data);
+		assert_int_equal(arr->capacity, 10);
+		assert_int_equal(arr->end, 0);
 
 		uint8_array_free(arr);
 }
 
 void test_uint8_array_free()
 {
-		UInt8Array *arr = uint8_array_alloc(10);
+		UInt8Array *arr = uint8_array_create(10);
 		uint8_array_free(arr);
 }
 
 
 void test_uint8_array_clear(void)
 {
-		UInt8Array *arr = uint8_array_alloc(10);
+		UInt8Array *arr = uint8_array_create(10);
 		uint8_array_push(arr, 1);
 		uint8_array_push(arr, 2);
 		uint8_array_clear(arr);
-		//assert_int_equal(arr->items, NULL);
-		assert_int_equal(arr->size, 10);
-		assert_int_equal(arr->used, 0);
+		assert_int_equal(arr->capacity, 10);
+		assert_int_equal(arr->end, 0);
 
 		uint8_array_free(arr);
 }
 
 void test_uint8_array_push(void)
 {
-		UInt8Array *arr = uint8_array_alloc(3);
+		UInt8Array *arr = uint8_array_create(3);
 		uint8_array_push(arr, 1);
 		uint8_array_push(arr, 2);
 
-		uint8_t expected_arr[] = {1, 2, 0};
-		// assert_int_equal(*arr->items, expected_arr); /* May need to use different assert */
-		assert_int_equal(arr->size, 3);
-		assert_int_equal(arr->used, 2);
+		uint8_t expected_arr[] = {1, 2};
+		assert_memory_equal(arr->data, expected_arr, 2);
+		assert_int_equal(arr->capacity, 3);
+		assert_int_equal(arr->end, 2);
 
 		uint8_array_free(arr);
 }
 
 void test_uint8_array_push_resizing(void)
 {
-		UInt8Array *arr = uint8_array_alloc(2);
+		UInt8Array *arr = uint8_array_create(2);
 
 		uint8_array_push(arr, 1);
-		assert_int_equal(arr->used, 1);
-		assert_int_equal(arr->size, 2);
+		assert_int_equal(arr->end, 1);
+		assert_int_equal(arr->capacity, 2);
 
 		uint8_array_push(arr, 2);
-		assert_int_equal(arr->used, 2);
-		assert_int_equal(arr->size, 2);
+		assert_int_equal(arr->end, 2);
+		assert_int_equal(arr->capacity, 2);
 
-		/* Resized here */
+		/* Recapacityd here */
 		uint8_array_push(arr, 3);
-		assert_int_equal(arr->used, 3);
-		assert_int_equal(arr->size, 4);
+		assert_int_equal(arr->end, 3);
+		assert_int_equal(arr->capacity, 4);
 
 		uint8_array_free(arr);
 }
 
 void test_uint8_array_insert(void)
 {
-		UInt8Array *arr = uint8_array_alloc(5);
-		assert_int_equal(arr->size, 5);
+		UInt8Array *arr = uint8_array_create(5);
+		assert_int_equal(arr->capacity, 5);
 
-		/* Enough size currently to fit new items */
+		/* Enough capacity currently to fit new items */
 		uint8_t new_items[] = {1, 2, 3, 4};
 		uint8_array_insert(arr, new_items, 4);
-		assert_int_equal(arr->size, 5);
-		assert_int_equal(arr->used, 4);
+		assert_int_equal(arr->capacity, 5);
+		assert_int_equal(arr->end, 4);
 
 		uint8_array_insert(arr, new_items, 4);
-		assert_int_equal(arr->size, 9); /* Resize current size + new */
-		assert_int_equal(arr->used, 8);
+		assert_int_equal(arr->capacity, 9); /* Recapacity current capacity + new */
+		assert_int_equal(arr->end, 8);
 
-		/* Insert just enough to hit the size limit */
+		/* Insert just enough to hit the capacity limit */
 		uint8_array_insert(arr, new_items, 1);
-		assert_int_equal(arr->size, 9);
-		assert_int_equal(arr->used, 9);
+		assert_int_equal(arr->capacity, 9);
+		assert_int_equal(arr->end, 9);
+
+		uint8_t expected_arr[] = {1, 2, 3, 4, 1, 2, 3, 4, 1};
+		assert_memory_equal(arr->data, expected_arr, 9);
 
 		uint8_array_free(arr);
 }
@@ -97,7 +99,7 @@ void test_uint8_array_insert(void)
 int main(void)
 {
 		const struct CMUnitTest tests[] = {
-				cmocka_unit_test(test_uint8_array_alloc),
+				cmocka_unit_test(test_uint8_array_create),
 				cmocka_unit_test(test_uint8_array_free),
 				cmocka_unit_test(test_uint8_array_clear),
 				cmocka_unit_test(test_uint8_array_push),
