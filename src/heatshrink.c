@@ -50,8 +50,8 @@ _encode_to_out(heatshrink_encoder *hse,
 				}
 
 				/* Poll input result */
-				do 
-{
+				do
+				{
 						poll_res = heatshrink_encoder_poll(hse, out_buf, out_size, &poll_size);
 						if(poll_res < 0) {
 								return PYHS_FAILED_POLL;

@@ -52,6 +52,15 @@ uint8_array_push(UInt8Array *arr, uint8_t val)
 		return val;
 }
 
+uint8_t
+uint8_array_pop(UInt8Array *arr)
+{
+		if(arr->used > 0) {
+				return arr->items[arr->used--];
+		}
+		return 0;
+}
+
 void
 uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
 {
@@ -59,17 +68,20 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
 		if(vals_size + arr->used <= arr->size) {
 				memcpy(arr->items + arr->used, vals, vals_size);
 				arr->used += vals_size;
-				CHECK_ARRAY_SIZE(arr, uint8_t);
 		} else {
+				/* The size includes unused items in the original arr, so that
+				   we can avoid resizing. */
 				size_t new_size = arr->size + vals_size;
 				uint8_t *new_array = (uint8_t *) malloc(new_size);
-				memcpy(new_array, arr->items, arr->used);
-				memcpy(new_array + arr->used, vals, vals_size);
+				memcpy(new_array, arr->items, arr->used); /* Copy current items */
+				memcpy(new_array + arr->used, vals, vals_size); /* Copy new items */
 				free(arr->items);
 				arr->items = new_array;
 				arr->size = new_size;
 				arr->used += vals_size;
 		}
+		/* Ensure array is sized correctly anyway */
+		CHECK_ARRAY_SIZE(arr, uint8_t);
 }
 
 void

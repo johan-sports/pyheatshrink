@@ -45,12 +45,21 @@ uint8_array_clear(UInt8Array *arr);
 /**
  * Appends an item to the front of the array.
  *
- * @param {UInt8Array*} arr  The array to append to
+ * @param {UInt8Array *} arr
  * @param {uint8_t} val      The value to append to the array
  * @returns {uint8_t}        The appended element
  */
 uint8_t
 uint8_array_push(UInt8Array *arr, uint8_t val);
+
+/**
+ * Removes and returns the last item in the array.
+ *
+ * @param{UInt8Array *} arr
+ * @returns {uint8_t}       The removed element
+ */
+uint8_t
+uint8_array_pop(UInt8Array *arr);
 
 /**
  * Insert an array of values to the and of the existing array.
