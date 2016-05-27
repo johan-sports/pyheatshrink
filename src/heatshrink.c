@@ -150,25 +150,3 @@ initheatshrink(void)
 {
 		(void) Py_InitModule("heatshrink", Heatshrink_methods);
 }
-
-int main() {
-		UInt8Array *arr = uint8_array_alloc();
-		uint8_array_init(arr, 5);
-
-		for(int i = 0; i < 10; ++i) {
-				uint8_array_push(arr, i + 1);
-		}
-
-		for(size_t i = 0; i < arr->used; ++i) {
-				printf("%i, ", arr->items[i]);
-		}
-		printf("\n");
-
-		uint8_t new_array[] = {15, 16, 17, 18};
-		uint8_array_insert(arr, &new_array, 4);
-
-		for(size_t i = 0; i < arr->used; ++i) {
-				printf("%i, ", arr->items[i]);
-		}
-		printf("\n");
-}
