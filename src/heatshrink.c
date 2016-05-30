@@ -1,6 +1,13 @@
 /* FIXME: This isn't cross platform */
 #include <Python/Python.h>
 
+
+/* FIXME: Add to include path */
+#include "../heatshrink/heatshrink_encoder.h"
+#include "../heatshrink/heatshrink_decoder.h"
+
+#include "dynamic_arrays.h"
+
 /* Redefine HEATSHRINK_DEBUGGING_LOGS to work with NDEBUG */
 #undef HEATSHRINK_DEBUGGING_LOGS
 #ifdef NDEBUG
@@ -14,11 +21,6 @@
 		fprintf(stdout, "[DEBUG] (%s:%d) " msg "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif /* NDEBUG */
 
-/* FIXME: Add to include path */
-#include "../heatshrink/heatshrink_encoder.h"
-#include "../heatshrink/heatshrink_decoder.h"
-
-#include "dynamic_arrays.h"
 
 #define DEFAULT_HEATSHRINK_WINDOW_SZ2 11
 #define DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2 4
@@ -44,49 +46,48 @@ _encode_to_out(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
 
 		size_t out_size = 4096;
 		uint8_t out_buf[out_size];
-		do {
+		while(1) {
 				size_t sunk_size;
 				size_t poll_size;
 
-				if(in_size > 0) {
-						log_debug("sinking...");
+				/* Sink */
+				if(total_sunk_size < in_size) {
 						sink_res = heatshrink_encoder_sink(hse,
 																							 &in_buf[total_sunk_size],
 																							 in_size - total_sunk_size,
 																							 &sunk_size);
-						log_debug("sunk %zd bytes", sunk_size);
 						if(sink_res < 0) {
 								return PYHS_FAILED_SINK;
 						}
 						total_sunk_size += sunk_size;
 				}
 
-				/* Poll input result */
 				do
-				{ poll:
-						log_debug("polling...");
+				{
+						/* Poll input result */
 						poll_res = heatshrink_encoder_poll(hse, out_buf, out_size, &poll_size);
 						if(poll_res < 0) {
 								return PYHS_FAILED_POLL;
 						}
-						log_debug("poll_size: %zd", poll_size);
 						uint8_array_insert(out_arr, out_buf, poll_size);
 				} while(poll_res == HSER_POLL_MORE);
 
-				if(poll_size == 0) {
-						switch(heatshrink_encoder_finish(hse)) {
-						case HSER_FINISH_DONE:
+				if(total_sunk_size >= in_size) {
+						/* Ensure all input is processed */
+						finish_res = heatshrink_encoder_finish(hse);
+						/* We can't use a switch because we need break to refer to the while loop */
+						if(finish_res == HSER_FINISH_DONE) {
 								log_debug("HSER_FINISH_DONE, encoding finished");
 								break;
-						case HSER_FINISH_MORE:
+						} else if(finish_res == HSER_FINISH_MORE) {
 								log_debug("HSER_FINISH_MORE, reruning poll");
-								goto poll;
-						default:
+								continue;
+						} else {
 								log_debug("encoder finish failed");
 								return PYHS_FAILED_FINISH;
 						}
 				}
-		} while(total_sunk_size < in_size);
+		}
 
 		return PYHS_OK;
 }
