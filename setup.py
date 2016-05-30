@@ -2,6 +2,8 @@ from distutils.core import setup, Extension
 
 heatshrink_module = Extension('heatshrink',
                               include_dirs=['./heatshrink', './src'],
+                              define_macros=[('HEATSHRINK_DEBUGGING_LOGS', '1')],
+                              undef_macros=['NDEBUG'],
                               sources=['src/heatshrink.c',
                                        'src/dynamic_arrays.c',
                                        'heatshrink/heatshrink_encoder.c',

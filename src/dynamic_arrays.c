@@ -68,6 +68,9 @@ uint8_array_pop(UInt8Array *arr)
 void
 uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
 {
+		if(vals_size == 0)
+				return;
+
 		/* Can we fit the new values without resizing? */
 		if(vals_size + arr->end <= arr->capacity) {
 				memcpy(arr->data + arr->end, vals, vals_size);
