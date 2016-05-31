@@ -34,8 +34,9 @@ typedef enum {
 		PYHS_FAILED_FINISH=-3,
 } PyHS_encode_res;
 
+
 static PyHS_encode_res
-_encode_to_out(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
+encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
 							 UInt8Array *out_arr)
 {
 		HSE_sink_res sink_res;
@@ -43,7 +44,7 @@ _encode_to_out(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
 		HSE_finish_res finish_res;
 		size_t total_sunk_size = 0;
 
-		size_t out_size = 4096;
+		size_t out_size = 1 << hse->window_sz2;
 		uint8_t out_buf[out_size];
 		while(1) {
 				size_t sunk_size;
@@ -96,7 +97,7 @@ PyHS_encode(PyObject *self, PyObject *args)
 {
 		unsigned char *in_buf = NULL;
 		int in_size;
-		/* static_cast(char * => unsigned char *). */
+		/* static_cast(char * => unsigned char *) */
 		if(!PyArg_ParseTuple(args, "t#", &in_buf, &in_size))
 				return NULL;
 
@@ -109,17 +110,30 @@ PyHS_encode(PyObject *self, PyObject *args)
 		}
 
 		/* Initialize output buffer */
-		UInt8Array *out_arr = uint8_array_create(1024);
-		/* We can safely cast them as unsigned char and uint8 have the
-		   same size. See this: http://stackoverflow.com/a/1725867
-			 FIXME: Make type relationships more explicit in code. */
-		PyHS_encode_res eres = _encode_to_out(hse, (uint8_t *) in_buf, in_size, out_arr);
+		UInt8Array *out_arr = uint8_array_create(1 << hse->window_sz2);
+		/* We can safely cast them as unsigned char and uint8 always
+			 have the same size. See this: http://stackoverflow.com/a/1725867 */
+		PyHS_encode_res eres = encode_to_array(hse, (uint8_t *) in_buf, in_size, out_arr);
 
 		log_debug("Wrote %zd bytes to out_arr", uint8_array_count(out_arr));
 		log_debug("Capacity %zd bytes of out_arr", uint8_array_capacity(out_arr));
 
 		heatshrink_encoder_free(hse);
-		uint8_array_free(out_arr);
+		/* FIXME: Move ownership to Py_buffer */
+		/* uint8_array_free(out_arr); */
+
+		Py_buffer *view = (Py_buffer *) malloc(sizeof(Py_buffer));
+		view->obj = NULL;
+		view->buf = uint8_array_raw(out_arr);
+		view->len = uint8_array_count(out_arr) * sizeof(uint8_t);
+		view->itemsize = sizeof(uint8_t);
+		view->readonly = 1;
+		view->format = "B"; /* 8-bit unsigned char */
+		view->ndim = 1;
+		view->shape = (Py_ssize_t *) &uint8_array_count(out_arr);
+		view->strides = &view->itemsize;
+		view->suboffsets = NULL;
+		view->internal = NULL;
 
 		switch(eres) {
 		case PYHS_FAILED_SINK:
@@ -133,7 +147,7 @@ PyHS_encode(PyObject *self, PyObject *args)
 				return NULL;
 		default:
 				/* TODO: Use PyString_Encode */
-				return PyInt_FromSize_t(uint8_array_count(out_arr));
+				return PyMemoryView_FromBuffer(view);
 				/* return PyString_Encode(uint8_array_all(out_arr), */
 				/* 											 uint8_array_count(out_arr), */
 				/* 											 "ascii", NULL); */
