@@ -119,12 +119,10 @@ PyHS_encode(PyObject *self, PyObject *args)
 		log_debug("Capacity %zd bytes of out_arr", uint8_array_capacity(out_arr));
 
 		heatshrink_encoder_free(hse);
-		/* FIXME: Move ownership to Py_buffer */
-		/* uint8_array_free(out_arr); */
 
 		Py_buffer *view = (Py_buffer *) malloc(sizeof(Py_buffer));
 		view->obj = NULL;
-		view->buf = uint8_array_raw(out_arr);
+		view->buf = uint8_array_raw(out_arr); /* FIXME: Move ownership to Py_buffer */
 		view->len = uint8_array_count(out_arr) * sizeof(uint8_t);
 		view->itemsize = sizeof(uint8_t);
 		view->readonly = 1;

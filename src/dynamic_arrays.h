@@ -2,6 +2,7 @@
 #define _PY_HS_DYNAMIC_ARRAYS__
 
 #include <stdlib.h>
+#include <stdint.h>
 #include <assert.h>
 
 /************************************************************
