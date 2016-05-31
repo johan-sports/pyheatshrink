@@ -168,7 +168,7 @@ PyHS_encode(PyObject *self, PyObject *args)
 }
 
 /************************************************************
- * Decoder
+ * Decoding
  ************************************************************/
 typedef enum {
 		PyHSD_OK,
@@ -219,13 +219,13 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size,
 						finish_res = heatshrink_decoder_finish(hsd);
 						/* We can't use a switch because we need break to refer to the while loop */
 						if(finish_res == HSDR_FINISH_DONE) {
-								log_debug("HSER_FINISH_DONE, encoding finished");
+								log_debug("HSDR_FINISH_DONE, decoder finished");
 								break;
 						} else if(finish_res == HSDR_FINISH_MORE) {
-								log_debug("HSER_FINISH_MORE, reruning poll");
+								log_debug("HSDR_FINISH_MORE, reruning poll");
 								continue;
 						} else {
-								log_debug("encoder finish failed");
+								log_debug("decoder finish failed");
 								return PyHSD_FAILED_FINISH;
 						}
 				}
@@ -249,6 +249,7 @@ PyHS_decode(PyObject *self, PyObject *args)
 				return NULL;
 		}
 
+		/* Thow a python error and release the view buffer, returning NULL. */
 #define THROW_AND_EXIT(error_type, msg) {			\
 				PyErr_SetString((error_type), (msg)); \
 				PyBuffer_Release(&view);							\
@@ -263,6 +264,8 @@ PyHS_decode(PyObject *self, PyObject *args)
 		if(strcmp(view.format, "B") != 0)
 				THROW_AND_EXIT(PyExc_TypeError, "Expected an array of unsigned bytes");
 
+		log_debug("Received buffer of size %zd", view.shape[0]);
+
 		heatshrink_decoder *hsd = heatshrink_decoder_alloc(
 				DEFAULT_DECODER_INPUT_BUFFER_SIZE,
 				DEFAULT_HEATSHRINK_WINDOW_SZ2,
@@ -273,6 +276,9 @@ PyHS_decode(PyObject *self, PyObject *args)
 		UInt8Array *out_arr = uint8_array_create(1 << hsd->window_sz2);
 		PyHS_decode_res dres = decode_to_array(hsd, (uint8_t *) view.buf,
 																					 view.shape[0], out_arr);
+
+		log_debug("Wrote %zd bytes to out_arr", uint8_array_count(out_arr));
+		log_debug("Capacity %zd bytes of out_arr", uint8_array_capacity(out_arr));
 
 		PyObject *ret;
 		switch(dres) {
@@ -292,7 +298,8 @@ PyHS_decode(PyObject *self, PyObject *args)
 				break;
 		}
 		default: {
-				ret = PyString_FromString((char *) uint8_array_raw(out_arr));
+				ret = PyString_FromStringAndSize((char *) uint8_array_raw(out_arr),
+																				 (Py_ssize_t) uint8_array_count(out_arr));
 				break;
 		}
 		}
