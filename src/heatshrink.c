@@ -275,13 +275,37 @@ PyHS_decode(PyObject *self, PyObject *args)
 		}
 
 		UInt8Array *out_arr = uint8_array_create(1 << hsd->window_sz2);
-		decode_to_array(hsd, (uint8_t *) view.buf, view.shape[0], out_arr);
-		heatshrink_decoder_free(hsd);
+		PyHS_decode_res dres = decode_to_array(hsd, (uint8_t *) view.buf,
+																					 view.shape[0], out_arr);
 
-		PyObject *ret_str = PyString_FromString((char *) uint8_array_raw(out_arr));
+		PyObject *ret;
+		switch(dres) {
+		case PyHSD_FAILED_SINK: {
+				PyErr_SetString(PyExc_RuntimeError, "Decoder sink failed.");
+				ret = NULL;
+				break;
+		}
+		case PyHSD_FAILED_POLL: {
+				PyErr_SetString(PyExc_RuntimeError, "Decoder poll failed.");
+				ret = NULL;
+				break;
+		}
+		case PyHSD_FAILED_FINISH: {
+				PyErr_SetString(PyExc_RuntimeError, "Decoder finish failed.");
+				ret = NULL;
+				break;
+		}
+		default: {
+				ret = PyString_FromString((char *) uint8_array_raw(out_arr));
+				break;
+		}
+		}
+
+		/* De-allocate resources */
+		heatshrink_decoder_free(hsd);
 		uint8_array_free(out_arr);
 
-		return ret_str;
+		return ret;
 }
 
 /************************************************************
