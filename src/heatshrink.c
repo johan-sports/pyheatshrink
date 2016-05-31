@@ -23,6 +23,7 @@
 
 #define DEFAULT_HEATSHRINK_WINDOW_SZ2 11
 #define DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2 4
+#define DEFAULT_DECODER_INPUT_BUFFER_SIZE 256
 
 /************************************************************
  * Encoding
@@ -118,11 +119,9 @@ PyHS_encode(PyObject *self, PyObject *args)
 		log_debug("Wrote %zd bytes to out_arr", uint8_array_count(out_arr));
 		log_debug("Capacity %zd bytes of out_arr", uint8_array_capacity(out_arr));
 
-		heatshrink_encoder_free(hse);
-
 		Py_buffer *view = (Py_buffer *) malloc(sizeof(Py_buffer));
 		view->obj = NULL;
-		view->buf = uint8_array_raw(out_arr); /* FIXME: Move ownership to Py_buffer */
+		view->buf = uint8_array_copy(out_arr); /* Transfer ownership to Py_buffer */
 		view->len = uint8_array_count(out_arr) * sizeof(uint8_t);
 		view->itemsize = sizeof(uint8_t);
 		view->readonly = 1;
@@ -132,6 +131,9 @@ PyHS_encode(PyObject *self, PyObject *args)
 		view->strides = &view->itemsize;
 		view->suboffsets = NULL;
 		view->internal = NULL;
+
+		uint8_array_free(out_arr);
+		heatshrink_encoder_free(hse);
 
 		switch(eres) {
 		case PYHS_FAILED_SINK:
@@ -155,6 +157,45 @@ PyHS_encode(PyObject *self, PyObject *args)
 static PyObject *
 PyHS_decode(PyObject *self, PyObject *args)
 {
+		PyObject *in_obj = NULL;
+		if(!PyArg_ParseTuple(args, "O", in_obj))
+				return NULL;
+
+		Py_buffer view;
+		if(PyObject_GetBuffer(in_obj, &view,
+													PyBUF_ANY_CONTIGUOUS | PyBUF_FORMAT) == -1) {
+				PyErr_SetString(PyExc_TypeError, "parameter implement the buffer protocol");
+				return NULL;
+		}
+
+		/* Validate dimensions */
+		if(view.ndim != 1) {
+				PyErr_SetString(PyExc_TypeError, "expected a 1-dimensional array");
+				PyBuffer_Release(&view);
+				return NULL;
+		}
+
+		/* Validate array item type */
+		if(strcmp(view.format, "B") != 0) {
+				PyErr_SetString(PyExc_TypeError, "expected an array of unsigned bytes");
+				PyBuffer_Release(&view);
+				return NULL;
+		}
+
+		heatshrink_decoder *hsd = heatshrink_decoder_alloc(
+				DEFAULT_DECODER_INPUT_BUFFER_SIZE,
+				DEFAULT_HEATSHRINK_WINDOW_SZ2,
+				DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2);
+		if(hsd == NULL) {
+				PyErr_SetString(PyExc_MemoryError, "failed to allocate decoder");
+				return NULL;
+		}
+
+		UInt8Array *out_arr = uint8_array_create(1 << hsd->window_sz2);
+		/* decode_to_array(hsd, (uint8_t *) view.buf, view.shape[0], out_arr); */
+
+		heatshrink_decoder_free(hsd);
+
 		PyErr_SetString(PyExc_NotImplementedError, "not implemented");
 		return NULL;
 }

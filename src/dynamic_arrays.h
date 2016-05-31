@@ -68,6 +68,12 @@ uint8_array_pop(UInt8Array *arr);
 void
 uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size);
 
+/**
+ * Copy internal array data and return it.
+ */
+uint8_t *
+uint8_array_copy(UInt8Array *arr);
+
 #define uint8_array_last(A) ((A)->data[(A)->end - 1])
 #define uint8_array_first(A) ((A)->data[0])
 #define uint8_array_raw(A) ((A)->data)
@@ -88,5 +94,6 @@ uint8_array_set(UInt8Array *arr, int i, uint8_t val)
 		assert(i < arr->capacity);
 		arr->data[i] = val;
 }
+
 
 #endif /* _PY_HS_DYNAMIC_ARRAYS__ */

@@ -35,14 +35,6 @@ uint8_array_free(UInt8Array *arr)
 }
 
 void
-uint8_array_init(UInt8Array *arr, size_t size)
-{
-		arr->data = (uint8_t *) calloc(size, sizeof(uint8_t));
-		arr->capacity = size;
-		arr->end = 0;
-}
-
-void
 uint8_array_clear(UInt8Array *arr)
 {
 		arr->end = 0;
@@ -71,6 +63,9 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
 		if(vals_size == 0)
 				return;
 
+		/* Ensure array is sized correctly anyway */
+		_check_array_size(arr);
+
 		/* Can we fit the new values without resizing? */
 		if(vals_size + arr->end <= arr->capacity) {
 				memcpy(arr->data + arr->end, vals, vals_size);
@@ -87,6 +82,13 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
 				arr->capacity = new_size;
 				arr->end += vals_size;
 		}
-		/* Ensure array is sized correctly anyway */
-		_check_array_size(arr);
+}
+
+uint8_t *
+uint8_array_copy(UInt8Array *arr)
+{
+		size_t size = uint8_array_count(arr);
+		uint8_t *copy = (uint8_t *) calloc(size, sizeof(uint8_t));
+		memcpy(copy, uint8_array_raw(arr), size);
+		return copy;
 }
