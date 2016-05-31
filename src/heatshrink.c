@@ -153,12 +153,11 @@ PyHS_encode(PyObject *self, PyObject *args)
 /************************************************************
  * TODO: Decoder
  ************************************************************/
-
 static PyObject *
 PyHS_decode(PyObject *self, PyObject *args)
 {
 		PyObject *in_obj = NULL;
-		if(!PyArg_ParseTuple(args, "O", in_obj))
+		if(!PyArg_ParseTuple(args, "O", &in_obj))
 				return NULL;
 
 		Py_buffer view;
