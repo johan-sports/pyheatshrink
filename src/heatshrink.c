@@ -1,10 +1,8 @@
 /* FIXME: This isn't cross platform */
-#include <Python/Python.h>
+#include <Python.h>
 
-
-/* FIXME: Add to include path */
-#include "../heatshrink/heatshrink_encoder.h"
-#include "../heatshrink/heatshrink_decoder.h"
+#include <heatshrink/heatshrink_encoder.h>
+#include <heatshrink/heatshrink_decoder.h>
 
 #include "dynamic_arrays.h"
 
@@ -38,7 +36,7 @@ typedef enum {
 
 static PyHS_encode_res
 encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
-							 UInt8Array *out_arr)
+								UInt8Array *out_arr)
 {
 		HSE_sink_res sink_res;
 		HSE_poll_res poll_res;
@@ -181,7 +179,7 @@ typedef enum {
 
 static PyHS_decode_res
 decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size,
-							 UInt8Array *out_arr)
+								UInt8Array *out_arr)
 {
 		HSD_sink_res sink_res;
 		HSD_poll_res poll_res;

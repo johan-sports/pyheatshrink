@@ -1,7 +1,7 @@
 from distutils.core import setup, Extension
 
 heatshrink_module = Extension('heatshrink',
-                              include_dirs=['./heatshrink', './src'],
+                              include_dirs=['.', './src'],
                               undef_macros=['NDEBUG'],
                               sources=['src/heatshrink.c',
                                        'src/dynamic_arrays.c',
