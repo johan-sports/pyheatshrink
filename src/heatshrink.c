@@ -8,7 +8,6 @@
 
 #include "dynamic_arrays.h"
 
-/* Redefine HEATSHRINK_DEBUGGING_LOGS to work with NDEBUG */
 #undef HEATSHRINK_DEBUGGING_LOGS
 #ifdef NDEBUG
 #define HEATSHRINK_DEBUGGING_LOGS 0
@@ -20,7 +19,6 @@
 #define log_debug(msg, ...)																							\
 		fprintf(stdout, "[DEBUG] (%s:%d) " msg "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif /* NDEBUG */
-
 
 #define DEFAULT_HEATSHRINK_WINDOW_SZ2 11
 #define DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2 4
@@ -95,8 +93,9 @@ _encode_to_out(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
 static PyObject *
 PyHS_encode(PyObject *self, PyObject *args)
 {
-		char *in_buf = NULL;
+		unsigned char *in_buf = NULL;
 		int in_size;
+		/* static_cast(char * => unsigned char *). */
 		if(!PyArg_ParseTuple(args, "t#", &in_buf, &in_size))
 				return NULL;
 
@@ -110,8 +109,10 @@ PyHS_encode(PyObject *self, PyObject *args)
 
 		/* Initialize output buffer */
 		UInt8Array *out_arr = uint8_array_create(1024);
-		/* FIXME: Safely convert char * to uint8_t * (aka unsigned char*) */
-		PyHS_encode_res eres = _encode_to_out(hse, in_buf, in_size, out_arr);
+		/* We can safely cast them as unsigned char and uint8 have the
+		   same size. See this: http://stackoverflow.com/a/1725867
+			 FIXME: Make type relationships more explicit in code. */
+		PyHS_encode_res eres = _encode_to_out(hse, (uint8_t *) in_buf, in_size, out_arr);
 
 		log_debug("Wrote %zd bytes to out_arr", uint8_array_count(out_arr));
 		log_debug("Capacity %zd bytes of out_arr", uint8_array_capacity(out_arr));
@@ -132,6 +133,9 @@ PyHS_encode(PyObject *self, PyObject *args)
 		default:
 				/* TODO: Use PyString_Encode */
 				return PyInt_FromSize_t(uint8_array_count(out_arr));
+				/* return PyString_Encode(uint8_array_all(out_arr), */
+				/* 											 uint8_array_count(out_arr), */
+				/* 											 "ascii", NULL); */
 		}
 }
 

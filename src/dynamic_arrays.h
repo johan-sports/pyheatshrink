@@ -69,6 +69,7 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size);
 
 #define uint8_array_last(A) ((A)->data[(A)->end - 1])
 #define uint8_array_first(A) ((A)->data[0])
+#define uint8_array_all(A) ((A)->data)
 #define uint8_array_end(A) ((A)->end)
 #define uint8_array_count(A) uint8_array_end(A)
 #define uint8_array_capacity(A) ((A)->capacity)
