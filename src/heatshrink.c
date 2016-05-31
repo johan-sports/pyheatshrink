@@ -168,7 +168,7 @@ PyHS_encode(PyObject *self, PyObject *args)
 }
 
 /************************************************************
- * TODO: Decoder
+ * Decoder
  ************************************************************/
 typedef enum {
 		PyHSD_OK,
@@ -249,28 +249,26 @@ PyHS_decode(PyObject *self, PyObject *args)
 				return NULL;
 		}
 
-		/* Validate dimensions */
-		if(view.ndim != 1) {
-				PyErr_SetString(PyExc_TypeError, "Expected a 1-dimensional array");
-				PyBuffer_Release(&view);
-				return NULL;
+#define THROW_AND_EXIT(error_type, msg) {			\
+				PyErr_SetString((error_type), (msg)); \
+				PyBuffer_Release(&view);							\
+				return NULL;													\
 		}
 
+		/* Validate dimensions */
+		if(view.ndim != 1)
+				THROW_AND_EXIT(PyExc_TypeError, "Expected a 1-dimensional array");
+
 		/* Validate array item type */
-		if(strcmp(view.format, "B") != 0) {
-				PyErr_SetString(PyExc_TypeError, "Expected an array of unsigned bytes");
-				PyBuffer_Release(&view);
-				return NULL;
-		}
+		if(strcmp(view.format, "B") != 0)
+				THROW_AND_EXIT(PyExc_TypeError, "Expected an array of unsigned bytes");
 
 		heatshrink_decoder *hsd = heatshrink_decoder_alloc(
 				DEFAULT_DECODER_INPUT_BUFFER_SIZE,
 				DEFAULT_HEATSHRINK_WINDOW_SZ2,
 				DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2);
-		if(hsd == NULL) {
-				PyErr_SetString(PyExc_MemoryError, "Failed to allocate decoder");
-				return NULL;
-		}
+		if(hsd == NULL)
+				THROW_AND_EXIT(PyExc_MemoryError, "Failed to allocate decoder");
 
 		UInt8Array *out_arr = uint8_array_create(1 << hsd->window_sz2);
 		PyHS_decode_res dres = decode_to_array(hsd, (uint8_t *) view.buf,
@@ -299,6 +297,8 @@ PyHS_decode(PyObject *self, PyObject *args)
 		}
 		}
 
+		/* Indicate that we're done with the buffer */
+		PyBuffer_Release(&view);
 		/* De-allocate resources */
 		heatshrink_decoder_free(hsd);
 		uint8_array_free(out_arr);
