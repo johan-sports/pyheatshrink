@@ -8,6 +8,7 @@
 
 #include "dynamic_arrays.h"
 
+/* Redefine heatshrink debug logs according to NDEBUG. */
 #undef HEATSHRINK_DEBUGGING_LOGS
 #ifdef NDEBUG
 #define HEATSHRINK_DEBUGGING_LOGS 0
