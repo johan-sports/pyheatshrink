@@ -146,11 +146,7 @@ PyHS_encode(PyObject *self, PyObject *args)
 				PyErr_SetString(PyExc_RuntimeError, "encoder finish failed");
 				return NULL;
 		default:
-				/* TODO: Use PyString_Encode */
 				return PyMemoryView_FromBuffer(view);
-				/* return PyString_Encode(uint8_array_all(out_arr), */
-				/* 											 uint8_array_count(out_arr), */
-				/* 											 "ascii", NULL); */
 		}
 }
 
