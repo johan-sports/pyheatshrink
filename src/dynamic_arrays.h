@@ -72,7 +72,7 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size);
  * Copy internal array data and return it.
  */
 uint8_t *
-uint8_array_copy(UInt8Array *arr);
+uint8_array_copy(const UInt8Array *arr);
 
 #define uint8_array_last(A) ((A)->data[(A)->end - 1])
 #define uint8_array_first(A) ((A)->data[0])
@@ -82,7 +82,7 @@ uint8_array_copy(UInt8Array *arr);
 #define uint8_array_capacity(A) ((A)->capacity)
 
 static inline uint8_t
-uint8_array_get(UInt8Array *arr, int i)
+uint8_array_get(const UInt8Array *arr, int i)
 {
 		assert(i < arr->capacity);
 		return arr->data[i];

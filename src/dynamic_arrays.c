@@ -85,7 +85,7 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
 }
 
 uint8_t *
-uint8_array_copy(UInt8Array *arr)
+uint8_array_copy(const UInt8Array *arr)
 {
 		size_t size = uint8_array_count(arr);
 		uint8_t *copy = (uint8_t *) calloc(size, sizeof(uint8_t));

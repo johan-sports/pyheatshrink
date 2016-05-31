@@ -29,10 +29,10 @@
  * Encoding
  ************************************************************/
 typedef enum {
-		PYHS_OK,
-		PYHS_FAILED_SINK=-1,
-		PYHS_FAILED_POLL=-2,
-		PYHS_FAILED_FINISH=-3,
+		PyHSE_OK,
+		PyHSE_FAILED_SINK=-1,
+		PyHSE_FAILED_POLL=-2,
+		PyHSE_FAILED_FINISH=-3,
 } PyHS_encode_res;
 
 
@@ -58,7 +58,7 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
 																							 in_size - total_sunk_size,
 																							 &sunk_size);
 						if(sink_res < 0) {
-								return PYHS_FAILED_SINK;
+								return PyHSE_FAILED_SINK;
 						}
 						total_sunk_size += sunk_size;
 				}
@@ -68,7 +68,7 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
 						/* Poll input result */
 						poll_res = heatshrink_encoder_poll(hse, out_buf, out_size, &poll_size);
 						if(poll_res < 0) {
-								return PYHS_FAILED_POLL;
+								return PyHSE_FAILED_POLL;
 						}
 						uint8_array_insert(out_arr, out_buf, poll_size);
 				} while(poll_res == HSER_POLL_MORE);
@@ -85,12 +85,31 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
 								continue;
 						} else {
 								log_debug("encoder finish failed");
-								return PYHS_FAILED_FINISH;
+								return PyHSE_FAILED_FINISH;
 						}
 				}
 		}
 
-		return PYHS_OK;
+		return PyHSE_OK;
+}
+
+static Py_buffer *
+array_to_buffer(const UInt8Array *arr)
+{
+		Py_buffer *view = (Py_buffer *) malloc(sizeof(Py_buffer));
+		view->obj = NULL;
+		view->buf = uint8_array_copy(arr); /* Transfer ownership to Py_buffer */
+		view->len = uint8_array_count(arr) * sizeof(uint8_t);
+		view->itemsize = sizeof(uint8_t);
+		view->readonly = 1;
+		view->format = "B"; /* 8-bit unsigned char */
+		view->ndim = 1;
+		view->shape = (Py_ssize_t *) &uint8_array_count(arr);
+		view->strides = &view->itemsize;
+		view->suboffsets = NULL;
+		view->internal = NULL;
+
+		return view;
 }
 
 static PyObject *
@@ -119,40 +138,104 @@ PyHS_encode(PyObject *self, PyObject *args)
 		log_debug("Wrote %zd bytes to out_arr", uint8_array_count(out_arr));
 		log_debug("Capacity %zd bytes of out_arr", uint8_array_capacity(out_arr));
 
-		Py_buffer *view = (Py_buffer *) malloc(sizeof(Py_buffer));
-		view->obj = NULL;
-		view->buf = uint8_array_copy(out_arr); /* Transfer ownership to Py_buffer */
-		view->len = uint8_array_count(out_arr) * sizeof(uint8_t);
-		view->itemsize = sizeof(uint8_t);
-		view->readonly = 1;
-		view->format = "B"; /* 8-bit unsigned char */
-		view->ndim = 1;
-		view->shape = (Py_ssize_t *) &uint8_array_count(out_arr);
-		view->strides = &view->itemsize;
-		view->suboffsets = NULL;
-		view->internal = NULL;
-
-		uint8_array_free(out_arr);
-		heatshrink_encoder_free(hse);
-
+		PyObject *ret;
 		switch(eres) {
-		case PYHS_FAILED_SINK:
+		case PyHSE_FAILED_SINK: {
 				PyErr_SetString(PyExc_RuntimeError, "Encoder sink failed.");
-				return NULL;
-		case PYHS_FAILED_POLL:
-				PyErr_SetString(PyExc_RuntimeError, "Encoder poll failed.");
-				return NULL;
-		case PYHS_FAILED_FINISH:
-				PyErr_SetString(PyExc_RuntimeError, "Encoder finish failed.");
-				return NULL;
-		default:
-				return PyMemoryView_FromBuffer(view);
+				ret = NULL;
+				break;
 		}
+		case PyHSE_FAILED_POLL: {
+				PyErr_SetString(PyExc_RuntimeError, "Encoder poll failed.");
+				ret = NULL;
+				break;
+		}
+		case PyHSE_FAILED_FINISH: {
+				PyErr_SetString(PyExc_RuntimeError, "Encoder finish failed.");
+				ret = NULL;
+				break;
+		}
+		default: {
+				Py_buffer *view = array_to_buffer(out_arr);
+				ret = PyMemoryView_FromBuffer(view);
+				break;
+		}
+		}
+
+		/* De-allocate resources */
+		heatshrink_encoder_free(hse);
+		uint8_array_free(out_arr);
+
+		return ret;
 }
 
 /************************************************************
  * TODO: Decoder
  ************************************************************/
+typedef enum {
+		PyHSD_OK,
+		PyHSD_FAILED_SINK=-1,
+		PyHSD_FAILED_POLL=-2,
+		PyHSD_FAILED_FINISH=-3,
+} PyHS_decode_res;
+
+static PyHS_decode_res
+decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size,
+							 UInt8Array *out_arr)
+{
+		HSD_sink_res sink_res;
+		HSD_poll_res poll_res;
+		HSD_finish_res finish_res;
+		size_t total_sunk_size = 0;
+
+		size_t out_size = 1 << hsd->window_sz2;
+		uint8_t out_buf[out_size];
+		while(1) {
+				size_t sunk_size;
+				size_t poll_size;
+
+				/* Sink */
+				if(total_sunk_size < in_size) {
+						sink_res = heatshrink_decoder_sink(hsd,
+																							 &in_buf[total_sunk_size],
+																							 in_size - total_sunk_size,
+																							 &sunk_size);
+						if(sink_res < 0) {
+								return PyHSD_FAILED_SINK;
+						}
+						total_sunk_size += sunk_size;
+				}
+
+				do
+				{
+						/* Poll input result */
+						poll_res = heatshrink_decoder_poll(hsd, out_buf, out_size, &poll_size);
+						if(poll_res < 0) {
+								return PyHSD_FAILED_POLL;
+						}
+						uint8_array_insert(out_arr, out_buf, poll_size);
+				} while(poll_res == HSDR_POLL_MORE);
+
+				if(total_sunk_size >= in_size) {
+						/* Ensure all input is processed */
+						finish_res = heatshrink_decoder_finish(hsd);
+						/* We can't use a switch because we need break to refer to the while loop */
+						if(finish_res == HSDR_FINISH_DONE) {
+								log_debug("HSER_FINISH_DONE, encoding finished");
+								break;
+						} else if(finish_res == HSDR_FINISH_MORE) {
+								log_debug("HSER_FINISH_MORE, reruning poll");
+								continue;
+						} else {
+								log_debug("encoder finish failed");
+								return PyHSD_FAILED_FINISH;
+						}
+				}
+		}
+
+		return PyHSD_OK;
+}
+
 static PyObject *
 PyHS_decode(PyObject *self, PyObject *args)
 {
@@ -192,12 +275,13 @@ PyHS_decode(PyObject *self, PyObject *args)
 		}
 
 		UInt8Array *out_arr = uint8_array_create(1 << hsd->window_sz2);
-		/* decode_to_array(hsd, (uint8_t *) view.buf, view.shape[0], out_arr); */
-
+		decode_to_array(hsd, (uint8_t *) view.buf, view.shape[0], out_arr);
 		heatshrink_decoder_free(hsd);
 
-		PyErr_SetString(PyExc_NotImplementedError, "not implemented");
-		return NULL;
+		PyObject *ret_str = PyString_FromString((char *) uint8_array_raw(out_arr));
+		uint8_array_free(out_arr);
+
+		return ret_str;
 }
 
 /************************************************************
