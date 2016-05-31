@@ -106,7 +106,7 @@ PyHS_encode(PyObject *self, PyObject *args)
 				DEFAULT_HEATSHRINK_WINDOW_SZ2,
 				DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2);
 		if(hse == NULL) {
-				PyErr_SetString(PyExc_MemoryError, "failed to allocate encoder");
+				PyErr_SetString(PyExc_MemoryError, "Failed to allocate encoder");
 				return NULL;
 		}
 
@@ -137,13 +137,13 @@ PyHS_encode(PyObject *self, PyObject *args)
 
 		switch(eres) {
 		case PYHS_FAILED_SINK:
-				PyErr_SetString(PyExc_RuntimeError, "encoder sink failed");
+				PyErr_SetString(PyExc_RuntimeError, "Encoder sink failed.");
 				return NULL;
 		case PYHS_FAILED_POLL:
-				PyErr_SetString(PyExc_RuntimeError, "encoder poll failed");
+				PyErr_SetString(PyExc_RuntimeError, "Encoder poll failed.");
 				return NULL;
 		case PYHS_FAILED_FINISH:
-				PyErr_SetString(PyExc_RuntimeError, "encoder finish failed");
+				PyErr_SetString(PyExc_RuntimeError, "Encoder finish failed.");
 				return NULL;
 		default:
 				return PyMemoryView_FromBuffer(view);
@@ -164,20 +164,21 @@ PyHS_decode(PyObject *self, PyObject *args)
 		Py_buffer view;
 		if(PyObject_GetBuffer(in_obj, &view,
 													PyBUF_ANY_CONTIGUOUS | PyBUF_FORMAT) == -1) {
-				PyErr_SetString(PyExc_TypeError, "parameter implement the buffer protocol");
+				PyErr_SetString(PyExc_TypeError,
+												"Parameter must implement the buffer protocol.");
 				return NULL;
 		}
 
 		/* Validate dimensions */
 		if(view.ndim != 1) {
-				PyErr_SetString(PyExc_TypeError, "expected a 1-dimensional array");
+				PyErr_SetString(PyExc_TypeError, "Expected a 1-dimensional array");
 				PyBuffer_Release(&view);
 				return NULL;
 		}
 
 		/* Validate array item type */
 		if(strcmp(view.format, "B") != 0) {
-				PyErr_SetString(PyExc_TypeError, "expected an array of unsigned bytes");
+				PyErr_SetString(PyExc_TypeError, "Expected an array of unsigned bytes");
 				PyBuffer_Release(&view);
 				return NULL;
 		}
@@ -187,7 +188,7 @@ PyHS_decode(PyObject *self, PyObject *args)
 				DEFAULT_HEATSHRINK_WINDOW_SZ2,
 				DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2);
 		if(hsd == NULL) {
-				PyErr_SetString(PyExc_MemoryError, "failed to allocate decoder");
+				PyErr_SetString(PyExc_MemoryError, "Failed to allocate decoder");
 				return NULL;
 		}
 
