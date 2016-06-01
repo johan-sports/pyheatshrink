@@ -280,10 +280,6 @@ static PyMethodDef Heatshrink_methods [] = {
 /************************************************************
  * Initialization
  ************************************************************/
-#ifndef PyMODINIT_FUNC	/* declarations for DLL import/export */
-#define PyMODINIT_FUNC void
-#endif
-
 #if PY_MAJOR_VERSION >= 3
 #define MOD_ERROR_VAL NULL
 #define MOD_SUCCESS_VAL(val) val
