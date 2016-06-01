@@ -8,9 +8,9 @@
  * uint8 type array
  ************************************************************/
 typedef struct UInt8Array {
-		size_t capacity;
-		size_t end;
-		uint8_t *data;
+    size_t capacity;
+    size_t end;
+    uint8_t *data;
 } UInt8Array;
 
 /**
@@ -83,15 +83,15 @@ uint8_array_copy(const UInt8Array *arr);
 static inline uint8_t
 uint8_array_get(const UInt8Array *arr, int i)
 {
-		PyHS_assert(i < arr->capacity);
-		return arr->data[i];
+    PyHS_assert(i < arr->capacity);
+    return arr->data[i];
 }
 
 static inline void
 uint8_array_set(UInt8Array *arr, int i, uint8_t val)
 {
-		PyHS_assert(i < arr->capacity);
-		arr->data[i] = val;
+    PyHS_assert(i < arr->capacity);
+    arr->data[i] = val;
 }
 
 

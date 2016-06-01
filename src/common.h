@@ -6,8 +6,8 @@
 #ifdef NDEBUG
 #define log_debug(msg, ...) ((void) 0) /* Do nothing */
 #else
-#define log_debug(msg, ...)																							\
-		fprintf(stdout, "[DEBUG] (%s:%d) " msg "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define log_debug(msg, ...)                                             \
+    fprintf(stdout, "[DEBUG] (%s:%d) " msg "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif /* NDEBUG */
 
 #ifdef UNIT_TESTING
@@ -16,10 +16,10 @@ extern void *
 _test_malloc(const size_t, const char *file, const int line);
 extern void *
 _test_calloc(const size_t number_of_elements, const size_t size,
-						 const char *file, const int line);
+             const char *file, const int line);
 extern void *
 _test_realloc(void *const ptr, size_t size,
-							const char *file, const int line);
+              const char *file, const int line);
 extern void
 _test_free(void *const ptr, const char *file, const int line);
 
@@ -31,9 +31,9 @@ _test_free(void *const ptr, const char *file, const int line);
 /* Redefine assert */
 extern void
 mock_assert(const int result, const char *const expression,
-						const char *const file, const int line);
+            const char *const file, const int line);
 #define PyHS_assert(expr) \
-		mock_assert((int) (expr), #expr, __FILE__, __LINE__);
+    mock_assert((int) (expr), #expr, __FILE__, __LINE__);
 #else
 #include <stdlib.h>
 
