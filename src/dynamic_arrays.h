@@ -8,8 +8,8 @@
  * uint8 type array
  ************************************************************/
 typedef struct UInt8Array {
-    size_t capacity;
-    size_t end;
+    size_t capacity; /* Maximum items */
+    size_t count;    /* Number of used items */
     uint8_t *data;
 } UInt8Array;
 
@@ -54,11 +54,8 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size);
 uint8_t *
 uint8_array_copy(const UInt8Array *arr);
 
-#define uint8_array_last(A) ((A)->data[(A)->end - 1])
-#define uint8_array_first(A) ((A)->data[0])
 #define uint8_array_raw(A) ((A)->data)
-#define uint8_array_end(A) ((A)->end)
-#define uint8_array_count(A) uint8_array_end(A)
+#define uint8_array_count(A) ((A)->count)
 #define uint8_array_capacity(A) ((A)->capacity)
 
 #endif /* _PY_HS_DYNAMIC_ARRAYS__ */

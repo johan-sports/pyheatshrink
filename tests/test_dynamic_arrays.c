@@ -11,7 +11,7 @@ void test_uint8_array_create(void)
     assert_non_null(arr);
     assert_non_null(arr->data);
     assert_int_equal(arr->capacity, 10);
-    assert_int_equal(arr->end, 0);
+    assert_int_equal(arr->count, 0);
 
     uint8_array_free(arr);
 }
@@ -22,7 +22,6 @@ void test_uint8_array_free()
     uint8_array_free(arr);
 }
 
-
 void test_uint8_array_clear(void)
 {
     UInt8Array *arr = uint8_array_create(10);
@@ -30,7 +29,7 @@ void test_uint8_array_clear(void)
 		uint8_array_insert(arr, new_items, 2);
     uint8_array_clear(arr);
     assert_int_equal(arr->capacity, 10);
-    assert_int_equal(arr->end, 0);
+    assert_int_equal(arr->count, 0);
 
     uint8_array_free(arr);
 }
@@ -44,16 +43,16 @@ void test_uint8_array_insert(void)
     uint8_t new_items[] = {1, 2, 3, 4};
     uint8_array_insert(arr, new_items, 4);
     assert_int_equal(arr->capacity, 5);
-    assert_int_equal(arr->end, 4);
+    assert_int_equal(arr->count, 4);
 
     uint8_array_insert(arr, new_items, 4);
     assert_int_equal(arr->capacity, 9); /* Recapacity current capacity + new */
-    assert_int_equal(arr->end, 8);
+    assert_int_equal(arr->count, 8);
 
     /* Insert just enough to hit the capacity limit */
     uint8_array_insert(arr, new_items, 1);
     assert_int_equal(arr->capacity, 9);
-    assert_int_equal(arr->end, 9);
+    assert_int_equal(arr->count, 9);
 
     uint8_t expected_arr[] = {1, 2, 3, 4, 1, 2, 3, 4, 1};
     assert_memory_equal(arr->data, expected_arr, 9);
@@ -79,22 +78,6 @@ void test_uint8_array_copy(void)
     free(copied);
 }
 
-void test_uint8_array_helpers(void)
-{
-    UInt8Array *arr = uint8_array_create(8);
-
-    assert_int_equal(uint8_array_count(arr), 0);
-    assert_int_equal(uint8_array_end(arr), 0);
-    assert_int_equal(uint8_array_capacity(arr), 8);
-		uint8_t new_items[] = {1, 2, 3, 4, 5};
-		uint8_array_insert(arr, new_items, 5);
-
-    assert_int_equal(uint8_array_first(arr), 1);
-    assert_int_equal(uint8_array_last(arr), 5);
-
-    uint8_array_free(arr);
-}
-
 int main(void)
 {
     const struct CMUnitTest tests[] = {
@@ -103,7 +86,6 @@ int main(void)
         cmocka_unit_test(test_uint8_array_clear),
         cmocka_unit_test(test_uint8_array_insert),
         cmocka_unit_test(test_uint8_array_copy),
-        cmocka_unit_test(test_uint8_array_helpers),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
