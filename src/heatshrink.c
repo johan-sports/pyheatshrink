@@ -6,14 +6,9 @@
 #include "dynamic_arrays.h"
 
 /* Redefine heatshrink debug logs according to NDEBUG. */
-#undef HEATSHRINK_DEBUGGING_LOGS
 #ifdef NDEBUG
-#define HEATSHRINK_DEBUGGING_LOGS 0
-
 #define log_debug(msg, ...) ((void) 0) /* Do nothing */
 #else
-#define HEATSHRINK_DEBUGGING_LOGS 1
-
 #define log_debug(msg, ...)																							\
 		fprintf(stdout, "[DEBUG] (%s:%d) " msg "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif /* NDEBUG */
