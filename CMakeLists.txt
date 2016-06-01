@@ -4,6 +4,6 @@ project(pyheatshrink)
 include(CTest)
 
 add_subdirectory(src)
-add_subdirectory(tests)
+add_subdirectory(ctests)
 
 enable_testing()
