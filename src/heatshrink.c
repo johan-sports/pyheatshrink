@@ -81,6 +81,8 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size)
 				}
 		}
 
+#undef THROW_AND_EXIT
+
 		return out_arr;
 }
 
@@ -127,7 +129,7 @@ PyHS_encode(PyObject *self, PyObject *args)
 		heatshrink_encoder_free(hse);
 
 		if(out_arr == NULL)
-				return NULL;
+				return NULL; /* delegate error */
 
 		log_debug("Wrote %zd bytes to out_arr", uint8_array_count(out_arr));
 		log_debug("Capacity %zd bytes of out_arr", uint8_array_capacity(out_arr));
@@ -141,16 +143,8 @@ PyHS_encode(PyObject *self, PyObject *args)
 /************************************************************
  * Decoding
  ************************************************************/
-typedef enum {
-		PyHSD_OK,
-		PyHSD_FAILED_SINK=-1,
-		PyHSD_FAILED_POLL=-2,
-		PyHSD_FAILED_FINISH=-3,
-} PyHS_decode_res;
-
-static PyHS_decode_res
-decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size,
-								UInt8Array *out_arr)
+static UInt8Array *
+decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size)
 {
 		HSD_sink_res sink_res;
 		HSD_poll_res poll_res;
@@ -158,7 +152,15 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size,
 		size_t total_sunk_size = 0;
 
 		size_t out_size = 1 << hsd->window_sz2;
+		UInt8Array *out_arr = uint8_array_create(out_size);
 		uint8_t out_buf[out_size];
+
+#define THROW_AND_EXIT(exc, msg) { \
+				PyErr_SetString(exc, msg); \
+				uint8_array_free(out_arr); \
+				return NULL;							 \
+		}
+
 		while(1) {
 				size_t sunk_size;
 				size_t poll_size;
@@ -169,9 +171,9 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size,
 																							 &in_buf[total_sunk_size],
 																							 in_size - total_sunk_size,
 																							 &sunk_size);
-						if(sink_res < 0) {
-								return PyHSD_FAILED_SINK;
-						}
+						if(sink_res < 0)
+								THROW_AND_EXIT(PyExc_RuntimeError, "Decoder sink failed.")
+
 						total_sunk_size += sunk_size;
 				}
 
@@ -179,9 +181,9 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size,
 				{
 						/* Poll input result */
 						poll_res = heatshrink_decoder_poll(hsd, out_buf, out_size, &poll_size);
-						if(poll_res < 0) {
-								return PyHSD_FAILED_POLL;
-						}
+						if(poll_res < 0)
+								THROW_AND_EXIT(PyExc_RuntimeError, "Decoder poll failed.")
+
 						uint8_array_insert(out_arr, out_buf, poll_size);
 				} while(poll_res == HSDR_POLL_MORE);
 
@@ -196,13 +198,14 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size,
 								log_debug("HSDR_FINISH_MORE, reruning poll");
 								continue;
 						} else {
-								log_debug("decoder finish failed");
-								return PyHSD_FAILED_FINISH;
+								THROW_AND_EXIT(PyExc_RuntimeError, "Decoder finish failed.")
 						}
 				}
 		}
 
-		return PyHSD_OK;
+#undef THROW_AND_EXIT
+
+		return out_arr;
 }
 
 static PyObject *
@@ -244,44 +247,23 @@ PyHS_decode(PyObject *self, PyObject *args)
 		if(hsd == NULL)
 				THROW_AND_EXIT(PyExc_MemoryError, "Failed to allocate decoder");
 
-		UInt8Array *out_arr = uint8_array_create(1 << hsd->window_sz2);
-		PyHS_decode_res dres = decode_to_array(hsd, (uint8_t *) view.buf,
-																					 view.shape[0], out_arr);
+#undef THROW_AND_EXIT
+
+		UInt8Array *out_arr = decode_to_array(hsd, (uint8_t *) view.buf, view.shape[0]);
+		heatshrink_decoder_free(hsd);
+		/* Indicate that we're done with the buffer */
+		PyBuffer_Release(&view);
+
+		if(out_arr == NULL)
+				return NULL; /* delegate error */
 
 		log_debug("Wrote %zd bytes to out_arr", uint8_array_count(out_arr));
 		log_debug("Capacity %zd bytes of out_arr", uint8_array_capacity(out_arr));
 
-		PyObject *ret;
-		switch(dres) {
-		case PyHSD_FAILED_SINK: {
-				PyErr_SetString(PyExc_RuntimeError, "Decoder sink failed.");
-				ret = NULL;
-				break;
-		}
-		case PyHSD_FAILED_POLL: {
-				PyErr_SetString(PyExc_RuntimeError, "Decoder poll failed.");
-				ret = NULL;
-				break;
-		}
-		case PyHSD_FAILED_FINISH: {
-				PyErr_SetString(PyExc_RuntimeError, "Decoder finish failed.");
-				ret = NULL;
-				break;
-		}
-		default: {
-				ret = PyString_FromStringAndSize((char *) uint8_array_raw(out_arr),
-																				 (Py_ssize_t) uint8_array_count(out_arr));
-				break;
-		}
-		}
-
-		/* Indicate that we're done with the buffer */
-		PyBuffer_Release(&view);
-		/* De-allocate resources */
-		heatshrink_decoder_free(hsd);
 		uint8_array_free(out_arr);
 
-		return ret;
+		return PyString_FromStringAndSize((char *) uint8_array_raw(out_arr),
+																			(Py_ssize_t) uint8_array_count(out_arr));
 }
 
 /************************************************************
