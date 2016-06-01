@@ -1,7 +1,6 @@
 #ifndef _PY_HS_DYNAMIC_ARRAYS__
 #define _PY_HS_DYNAMIC_ARRAYS__
 
-#include <stdlib.h>
 #include <stdint.h>
 #include "utils.h"
 
