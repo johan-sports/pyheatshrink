@@ -4,11 +4,15 @@ PyHeatshrink
 Python binding to the [heatshrink library](https://github.com/atomicobject/heatshrink).
 
 *Supported versions:*  
-  
 Python >= 2.6
 
-Usage
-=====
+## Installation
+
+```
+$ python setup.py install
+```
+
+## Usage
 
 The encoder accepts any object that implements the buffer protocol
 and returns a memoryview containing unsigned bytes.
@@ -32,8 +36,7 @@ the decoded data.
 'a string'
 ```
 
-Testing
-=======
+## Testing
 
 CMake + CMocka is used for generating unit tests. To build run:
 ```
@@ -43,7 +46,6 @@ $ make
 $ make test
 ```
 
-License
-=======
+## License
 
 [ISC license](LICENSE)
