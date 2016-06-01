@@ -9,7 +9,7 @@ heatshrink_module = Extension('heatshrink',
                                        'heatshrink/heatshrink_decoder.c'])
 
 setup(name='Heatshrink',
-      version='0.1',
+      version='0.1.0',
       description='Python bindings to the heatshrink library',
       author='JOHAN Sports',
       author_email='antonis@johan-sports.com',

@@ -2,7 +2,7 @@
 #define _PY_HS_DYNAMIC_ARRAYS__
 
 #include <stdint.h>
-#include "utils.h"
+#include "common.h"
 
 /************************************************************
  * uint8 type array

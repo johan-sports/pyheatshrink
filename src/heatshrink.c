@@ -3,15 +3,8 @@
 #include <heatshrink/heatshrink_encoder.h>
 #include <heatshrink/heatshrink_decoder.h>
 
+#include "common.h"
 #include "dynamic_arrays.h"
-
-/* Redefine heatshrink debug logs according to NDEBUG. */
-#ifdef NDEBUG
-#define log_debug(msg, ...) ((void) 0) /* Do nothing */
-#else
-#define log_debug(msg, ...)																							\
-		fprintf(stdout, "[DEBUG] (%s:%d) " msg "\n", __FILE__, __LINE__, ##__VA_ARGS__)
-#endif /* NDEBUG */
 
 #define DEFAULT_HEATSHRINK_WINDOW_SZ2 11
 #define DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2 4

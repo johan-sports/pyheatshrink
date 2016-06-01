@@ -1,6 +1,15 @@
 #ifndef _PY_HS_UTILS__
 #define _PY_HS_UTILS__
 
+#include <stdio.h>
+
+#ifdef NDEBUG
+#define log_debug(msg, ...) ((void) 0) /* Do nothing */
+#else
+#define log_debug(msg, ...)																							\
+		fprintf(stdout, "[DEBUG] (%s:%d) " msg "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#endif /* NDEBUG */
+
 #ifdef UNIT_TESTING
 /* Redefine allocation functions */
 extern void *
