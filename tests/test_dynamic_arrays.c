@@ -133,6 +133,23 @@ void test_uint8_array_getset(void)
 		uint8_array_free(arr);
 }
 
+void test_uint8_array_helpers(void)
+{
+		UInt8Array *arr = uint8_array_create(3);
+
+		assert_int_equal(uint8_array_count(arr), 0);
+		assert_int_equal(uint8_array_end(arr), 0);
+		assert_int_equal(uint8_array_capacity(arr), 3);
+		for(int i = 0; i < 5; ++i) {
+				uint8_array_push(arr, i + 1);
+		}
+
+		assert_int_equal(uint8_array_first(arr), 1);
+		assert_int_equal(uint8_array_last(arr), 5);
+
+		uint8_array_free(arr);
+}
+
 int main(void)
 {
 		const struct CMUnitTest tests[] = {
@@ -144,6 +161,7 @@ int main(void)
 				cmocka_unit_test(test_uint8_array_insert),
 				cmocka_unit_test(test_uint8_array_copy),
 				cmocka_unit_test(test_uint8_array_getset),
+				cmocka_unit_test(test_uint8_array_helpers),
 		};
 
 		return cmocka_run_group_tests(tests, NULL, NULL);
