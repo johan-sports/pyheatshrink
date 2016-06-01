@@ -6,15 +6,13 @@ Python binding to the [heatshrink library](https://github.com/atomicobject/heats
 *Supported versions:*  
 Python >= 2.6
 
-Installation
-============
+## Installation
 
 ```
 $ python setup.py install
 ```
 
-Usage
-=====
+## Usage
 
 The encoder accepts any object that implements the buffer protocol
 and returns a memoryview containing unsigned bytes.
@@ -38,7 +36,6 @@ the decoded data.
 'a string'
 ```
 
-License
-=======
+## License
 
 [ISC license](LICENSE)
