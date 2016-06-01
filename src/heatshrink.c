@@ -147,7 +147,7 @@ PyHS_encode(PyObject *self, PyObject *args)
     uint8_array_free(out_arr);
 
 		if(view == NULL) {
-				PyExc_MemoryError(PyExc_MemoryError, "Failed to allocate view buffer.");
+				PyErr_SetString(PyExc_MemoryError, "Failed to allocate view buffer.");
 				return NULL;
 		}
     return PyMemoryView_FromBuffer(view);
