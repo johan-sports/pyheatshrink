@@ -34,6 +34,8 @@ and returns a byte representation of the decoded data.
 >>> mem = memoryview(b'\xb0\xc8.wK\x95\xa6\xddg')
 >>> heatshrink.decode(mem)
 'a string'
+>>> heatshrink.decode(b'\xb0\xc8.wK\x95\xa6\xddg')
+'a string'
 ```
 
 ## Testing
