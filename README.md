@@ -14,7 +14,7 @@ $ python setup.py install
 
 ## Usage
 
-The encoder accepts any object that implements the buffer protocol
+The encoder accepts any object which implements the read-only buffer interface
 and returns a memoryview containing unsigned bytes.
 ```
 >>> import heatshrink
@@ -27,8 +27,8 @@ and returns a memoryview containing unsigned bytes.
 'B'
 ```
 
-The decoder accepts a memoryview and returns a byte representation of
-the decoded data.
+The decoder accepts any object that implements the buffer protocol
+and returns a byte representation of the decoded data.
 ```
 >>> import heatshrink
 >>> mem = memoryview(b'\xb0\xc8.wK\x95\xa6\xddg')
