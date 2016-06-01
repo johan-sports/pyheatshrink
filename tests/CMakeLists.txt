@@ -1,5 +1,8 @@
 find_package(CMocka REQUIRED)
 
+# Add definitions specific to the testing environment
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DTESTING -g -O0")
+
 include_directories("${CMOCKA_INCLUDE_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}/src")

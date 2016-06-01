@@ -95,6 +95,43 @@ void test_uint8_array_insert(void)
 		uint8_array_free(arr);
 }
 
+void test_uint8_array_copy(void)
+{
+		UInt8Array *arr = uint8_array_create(5);
+		uint8_t new_items[] = {1, 2, 3, 4, 5};
+		uint8_array_insert(arr, new_items, 5);
+
+		uint8_t *copied = uint8_array_copy(arr);
+		assert_memory_equal(arr->data, copied, 5);
+		/* Ensure copy */
+		assert_ptr_not_equal(arr->data, copied);
+
+		uint8_array_free(arr);
+
+		/* Ensure copy remains after original array free */
+		assert_memory_equal(copied, new_items, 5);
+		free(copied);
+}
+
+void test_uint8_array_getset(void)
+{
+		UInt8Array *arr = uint8_array_create(5);
+
+		uint8_array_set(arr, 0, 3);
+		uint8_array_set(arr, 1, 4);
+		uint8_t expected_arr[] = {3, 4};
+		assert_memory_equal(arr->data, expected_arr, 2);
+		assert_int_equal(uint8_array_get(arr, 0), 3);
+		assert_int_equal(uint8_array_get(arr, 1), 4);
+
+		/* Out of bounds */
+		expect_assert_failure(uint8_array_set(arr, 10, 8));
+		expect_assert_failure(uint8_array_get(arr, 10));
+		expect_assert_failure(uint8_array_set(arr, -1, 12));
+		expect_assert_failure(uint8_array_get(arr, -1));
+
+		uint8_array_free(arr);
+}
 
 int main(void)
 {
@@ -105,6 +142,8 @@ int main(void)
 				cmocka_unit_test(test_uint8_array_push),
 				cmocka_unit_test(test_uint8_array_push_resizing),
 				cmocka_unit_test(test_uint8_array_insert),
+				cmocka_unit_test(test_uint8_array_copy),
+				cmocka_unit_test(test_uint8_array_getset),
 		};
 
 		return cmocka_run_group_tests(tests, NULL, NULL);
