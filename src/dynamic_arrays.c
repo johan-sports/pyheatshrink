@@ -2,16 +2,6 @@
 
 #include <string.h>
 
-void
-_check_array_size(UInt8Array *arr)
-{
-    if(arr->end == arr->capacity) {
-        arr->capacity *= 2;
-        arr->data = realloc(arr->data, arr->capacity * sizeof(uint8_t));
-        PyHS_assert(arr->data != NULL);
-    }
-}
-
 UInt8Array *
 uint8_array_create(size_t initial_size)
 {
@@ -46,31 +36,11 @@ uint8_array_clear(UInt8Array *arr)
     arr->end = 0;
 }
 
-uint8_t
-uint8_array_push(UInt8Array *arr, uint8_t val)
-{
-    _check_array_size(arr);
-    arr->data[arr->end++] = val;
-    return val;
-}
-
-uint8_t
-uint8_array_pop(UInt8Array *arr)
-{
-    if(arr->end > 0) {
-        return arr->data[arr->end--];
-    }
-    return 0;
-}
-
 void
 uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
 {
     if(vals == NULL || vals_size == 0)
         return;
-
-    /* Ensure array is sized correctly anyway */
-    _check_array_size(arr);
 
     /* Can we fit the new values without resizing? */
     if(vals_size + arr->end <= arr->capacity) {

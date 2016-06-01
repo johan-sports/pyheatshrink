@@ -26,45 +26,11 @@ void test_uint8_array_free()
 void test_uint8_array_clear(void)
 {
     UInt8Array *arr = uint8_array_create(10);
-    uint8_array_push(arr, 1);
-    uint8_array_push(arr, 2);
+		uint8_t new_items[] = {1, 2};
+		uint8_array_insert(arr, new_items, 2);
     uint8_array_clear(arr);
     assert_int_equal(arr->capacity, 10);
     assert_int_equal(arr->end, 0);
-
-    uint8_array_free(arr);
-}
-
-void test_uint8_array_push(void)
-{
-    UInt8Array *arr = uint8_array_create(3);
-    uint8_array_push(arr, 1);
-    uint8_array_push(arr, 2);
-
-    uint8_t expected_arr[] = {1, 2};
-    assert_memory_equal(arr->data, expected_arr, 2);
-    assert_int_equal(arr->capacity, 3);
-    assert_int_equal(arr->end, 2);
-
-    uint8_array_free(arr);
-}
-
-void test_uint8_array_push_resizing(void)
-{
-    UInt8Array *arr = uint8_array_create(2);
-
-    uint8_array_push(arr, 1);
-    assert_int_equal(arr->end, 1);
-    assert_int_equal(arr->capacity, 2);
-
-    uint8_array_push(arr, 2);
-    assert_int_equal(arr->end, 2);
-    assert_int_equal(arr->capacity, 2);
-
-    /* Recapacityd here */
-    uint8_array_push(arr, 3);
-    assert_int_equal(arr->end, 3);
-    assert_int_equal(arr->capacity, 4);
 
     uint8_array_free(arr);
 }
@@ -113,36 +79,15 @@ void test_uint8_array_copy(void)
     free(copied);
 }
 
-void test_uint8_array_getset(void)
-{
-    UInt8Array *arr = uint8_array_create(5);
-
-    uint8_array_set(arr, 0, 3);
-    uint8_array_set(arr, 1, 4);
-    uint8_t expected_arr[] = {3, 4};
-    assert_memory_equal(arr->data, expected_arr, 2);
-    assert_int_equal(uint8_array_get(arr, 0), 3);
-    assert_int_equal(uint8_array_get(arr, 1), 4);
-
-    /* Out of bounds */
-    expect_assert_failure(uint8_array_set(arr, 10, 8));
-    expect_assert_failure(uint8_array_get(arr, 10));
-    expect_assert_failure(uint8_array_set(arr, -1, 12));
-    expect_assert_failure(uint8_array_get(arr, -1));
-
-    uint8_array_free(arr);
-}
-
 void test_uint8_array_helpers(void)
 {
-    UInt8Array *arr = uint8_array_create(3);
+    UInt8Array *arr = uint8_array_create(8);
 
     assert_int_equal(uint8_array_count(arr), 0);
     assert_int_equal(uint8_array_end(arr), 0);
-    assert_int_equal(uint8_array_capacity(arr), 3);
-    for(int i = 0; i < 5; ++i) {
-        uint8_array_push(arr, i + 1);
-    }
+    assert_int_equal(uint8_array_capacity(arr), 8);
+		uint8_t new_items[] = {1, 2, 3, 4, 5};
+		uint8_array_insert(arr, new_items, 5);
 
     assert_int_equal(uint8_array_first(arr), 1);
     assert_int_equal(uint8_array_last(arr), 5);
@@ -156,11 +101,8 @@ int main(void)
         cmocka_unit_test(test_uint8_array_create),
         cmocka_unit_test(test_uint8_array_free),
         cmocka_unit_test(test_uint8_array_clear),
-        cmocka_unit_test(test_uint8_array_push),
-        cmocka_unit_test(test_uint8_array_push_resizing),
         cmocka_unit_test(test_uint8_array_insert),
         cmocka_unit_test(test_uint8_array_copy),
-        cmocka_unit_test(test_uint8_array_getset),
         cmocka_unit_test(test_uint8_array_helpers),
     };
 

@@ -39,25 +39,6 @@ void
 uint8_array_clear(UInt8Array *arr);
 
 /**
- * Appends an item to the front of the array.
- *
- * @param {UInt8Array *} arr
- * @param {uint8_t} val      The value to append to the array
- * @returns {uint8_t}        The appended element
- */
-uint8_t
-uint8_array_push(UInt8Array *arr, uint8_t val);
-
-/**
- * Removes and returns the last item in the array.
- *
- * @param{UInt8Array *} arr
- * @returns {uint8_t}       The removed element
- */
-uint8_t
-uint8_array_pop(UInt8Array *arr);
-
-/**
  * Insert an array of values to the and of the existing array.
  *
  * @param {UInt8Array *} arr
@@ -79,20 +60,5 @@ uint8_array_copy(const UInt8Array *arr);
 #define uint8_array_end(A) ((A)->end)
 #define uint8_array_count(A) uint8_array_end(A)
 #define uint8_array_capacity(A) ((A)->capacity)
-
-static inline uint8_t
-uint8_array_get(const UInt8Array *arr, int i)
-{
-    PyHS_assert(i < arr->capacity);
-    return arr->data[i];
-}
-
-static inline void
-uint8_array_set(UInt8Array *arr, int i, uint8_t val)
-{
-    PyHS_assert(i < arr->capacity);
-    arr->data[i] = val;
-}
-
 
 #endif /* _PY_HS_DYNAMIC_ARRAYS__ */
