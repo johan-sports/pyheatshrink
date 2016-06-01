@@ -39,7 +39,7 @@ CMake + CMocka is used for generating unit tests. To build run:
 ```
 $ mkdir build && cd build
 $ cmake ..
-$ make
+$ make test
 ```
 
 License
