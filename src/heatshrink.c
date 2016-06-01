@@ -31,6 +31,10 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size)
 
     size_t out_size = 1 << hse->window_sz2;
     UInt8Array *out_arr = uint8_array_create(out_size);
+		if(out_arr == NULL) {
+				PyErr_SetString(PyExc_MemoryError, "Failed to allocate output buffer.");
+				return NULL;
+		}
     uint8_t out_buf[out_size];
 
 #define THROW_AND_EXIT(exc, msg) { \
@@ -90,8 +94,12 @@ static Py_buffer *
 array_to_buffer(const UInt8Array *arr)
 {
     Py_buffer *view = (Py_buffer *) malloc(sizeof(Py_buffer));
+		void *buf = uint8_array_copy(arr);
+		if(buf == NULL)
+				return NULL;
+
     view->obj = NULL;
-    view->buf = uint8_array_copy(arr); /* Transfer ownership to Py_buffer */
+    view->buf = buf; /* Transfer ownership to Py_buffer */
     view->len = uint8_array_count(arr) * sizeof(uint8_t);
     view->itemsize = sizeof(uint8_t);
     view->readonly = 1;
@@ -137,6 +145,11 @@ PyHS_encode(PyObject *self, PyObject *args)
     Py_buffer *view = array_to_buffer(out_arr);
     /* De-allocate original array, as the buffer owns a copy */
     uint8_array_free(out_arr);
+
+		if(view == NULL) {
+				PyExc_MemoryError(PyExc_MemoryError, "Failed to allocate view buffer.");
+				return NULL;
+		}
     return PyMemoryView_FromBuffer(view);
 }
 
@@ -153,6 +166,10 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size)
 
     size_t out_size = 1 << hsd->window_sz2;
     UInt8Array *out_arr = uint8_array_create(out_size);
+		if(out_arr == NULL) {
+				PyErr_SetString(PyExc_MemoryError, "Failed to allocate output buffer.");
+				return NULL;
+		}
     uint8_t out_buf[out_size];
 
 #define THROW_AND_EXIT(exc, msg) { \
