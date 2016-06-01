@@ -1,4 +1,4 @@
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 
 heatshrink_module = Extension('heatshrink',
                               include_dirs=['.', './src'],
@@ -12,4 +12,6 @@ setup(name='Heatshrink',
       description='Python bindings to the heatshrink library',
       author='JOHAN Sports',
       author_email='antonis@johan-sports.com',
+      test_suite="pytests.test_encoder",
+      zip_safe=False,
       ext_modules=[heatshrink_module])

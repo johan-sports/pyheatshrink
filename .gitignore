@@ -1,2 +1,5 @@
 # Build files
 build/
+
+*.so
+*.egg-info
