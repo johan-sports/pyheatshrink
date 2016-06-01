@@ -21,9 +21,8 @@ typedef enum {
 } PyHS_encode_res;
 
 
-static PyHS_encode_res
-encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
-								UInt8Array *out_arr)
+static UInt8Array *
+encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size)
 {
 		HSE_sink_res sink_res;
 		HSE_poll_res poll_res;
@@ -31,7 +30,15 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
 		size_t total_sunk_size = 0;
 
 		size_t out_size = 1 << hse->window_sz2;
+		UInt8Array *out_arr = uint8_array_create(out_size);
 		uint8_t out_buf[out_size];
+
+#define THROW_AND_EXIT(exc, msg) { \
+				PyErr_SetString(exc, msg); \
+				uint8_array_free(out_arr); \
+				return NULL;							 \
+		}
+
 		while(1) {
 				size_t sunk_size;
 				size_t poll_size;
@@ -42,9 +49,9 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
 																							 &in_buf[total_sunk_size],
 																							 in_size - total_sunk_size,
 																							 &sunk_size);
-						if(sink_res < 0) {
-								return PyHSE_FAILED_SINK;
-						}
+						if(sink_res < 0)
+								THROW_AND_EXIT(PyExc_RuntimeError, "Encoder sink failed.")
+
 						total_sunk_size += sunk_size;
 				}
 
@@ -52,9 +59,9 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
 				{
 						/* Poll input result */
 						poll_res = heatshrink_encoder_poll(hse, out_buf, out_size, &poll_size);
-						if(poll_res < 0) {
-								return PyHSE_FAILED_POLL;
-						}
+						if(poll_res < 0)
+								THROW_AND_EXIT(PyExc_RuntimeError, "Encoder poll failed.")
+
 						uint8_array_insert(out_arr, out_buf, poll_size);
 				} while(poll_res == HSER_POLL_MORE);
 
@@ -69,13 +76,12 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size,
 								log_debug("HSER_FINISH_MORE, reruning poll");
 								continue;
 						} else {
-								log_debug("encoder finish failed");
-								return PyHSE_FAILED_FINISH;
+								THROW_AND_EXIT(PyExc_RuntimeError, "Encoder finish failed.")
 						}
 				}
 		}
 
-		return PyHSE_OK;
+		return out_arr;
 }
 
 static Py_buffer *
@@ -114,44 +120,22 @@ PyHS_encode(PyObject *self, PyObject *args)
 				return NULL;
 		}
 
-		/* Initialize output buffer */
-		UInt8Array *out_arr = uint8_array_create(1 << hse->window_sz2);
 		/* We can safely cast them as unsigned char and uint8 always
 			 have the same size. See this: http://stackoverflow.com/a/1725867 */
-		PyHS_encode_res eres = encode_to_array(hse, (uint8_t *) in_buf, in_size, out_arr);
+		UInt8Array *out_arr = encode_to_array(hse, (uint8_t *) in_buf, in_size);
+		/* We're done with the encoder. */
+		heatshrink_encoder_free(hse);
+
+		if(out_arr == NULL)
+				return NULL;
 
 		log_debug("Wrote %zd bytes to out_arr", uint8_array_count(out_arr));
 		log_debug("Capacity %zd bytes of out_arr", uint8_array_capacity(out_arr));
 
-		PyObject *ret;
-		switch(eres) {
-		case PyHSE_FAILED_SINK: {
-				PyErr_SetString(PyExc_RuntimeError, "Encoder sink failed.");
-				ret = NULL;
-				break;
-		}
-		case PyHSE_FAILED_POLL: {
-				PyErr_SetString(PyExc_RuntimeError, "Encoder poll failed.");
-				ret = NULL;
-				break;
-		}
-		case PyHSE_FAILED_FINISH: {
-				PyErr_SetString(PyExc_RuntimeError, "Encoder finish failed.");
-				ret = NULL;
-				break;
-		}
-		default: {
-				Py_buffer *view = array_to_buffer(out_arr);
-				ret = PyMemoryView_FromBuffer(view);
-				break;
-		}
-		}
-
-		/* De-allocate resources */
-		heatshrink_encoder_free(hse);
+		Py_buffer *view = array_to_buffer(out_arr);
+		/* De-allocate original array, as the buffer owns a copy */
 		uint8_array_free(out_arr);
-
-		return ret;
+		return PyMemoryView_FromBuffer(view);
 }
 
 /************************************************************
