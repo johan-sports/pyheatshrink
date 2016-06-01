@@ -53,44 +53,39 @@ class EncoderTest(unittest.TestCase):
         self.assertEqual(copied.tobytes(), '\xb0\xd8\xacvK(')
 
     # TODO: Move me to a benchmark
-    def test_encode_large_strings(self):
-        string_size = 100000
-        rand_string = ''.join(random.choice(string.lowercase)
-                              for _ in range(string_size))
-        start_time = time.time()
-        # Just test that it doesn't fail
-        heatshrink.encode(rand_string)
-        print('\n--- encoded {} bytes in {} seconds ---'
-              .format(string_size, time.time() - start_time))
+    # def test_encode_large_strings(self):
+    #     string_size = 100000
+    #     rand_string = ''.join(random.choice(string.lowercase)
+    #                           for _ in range(string_size))
+    #     start_time = time.time()
+    #     # Just test that it doesn't fail
+    #     heatshrink.encode(rand_string)
+    #     print('\n--- encoded {} bytes in {} seconds ---'
+    #           .format(string_size, time.time() - start_time))
 
 
-# import sys
-# import heatshrink
+class DecoderTest(unittest.TestCase):
+    def setUp(self):
+        pass
 
-# if __name__ == '__main__':
-#     filename = sys.argv[1]
+    def test_returns_string(self):
+        self.assertIsInstance(heatshrink.decode('abcde'), str)
 
-#     with open(filename, 'rb') as f:
-#         data = f.read()
-#         print('Uncompressed size: {}'.format(len(data)))
+    def test_accepts_buffer_like_objects(self):
+        heatshrink.decode('abcde')
+        heatshrink.decode(b'abcde')
+        # heatshrink.decode(u'abcde')
+        heatshrink.decode(bytearray([1, 2, 3]))
+        # heatshrink.decode(array.array('B', [1, 2, 3]))
+        heatshrink.decode(memoryview(b'abcde'))
+        with self.assertRaisesRegexp(TypeError, ".*buffer protocol.*"):
+            heatshrink.decode([1, 2, 3])
+            heatshrink.decode(1)
+            heatshrink.decode(lambda x: x)
+            heatshrink.decode(True)
 
-#         encoded_data = heatshrink.encode(data)
-#         print('Compressed size: {}'.format(encoded_data.shape[0]))
 
-#         print('Running memoryview checks:')
-#         print('\t==> Running .tobytes()')
-#         encoded_data.tobytes()
-#         print('\t==> Running .tolist()')
-#         encoded_data.tolist()
-#         print('\t==> Copying memoryview')
-#         copied_data = encoded_data[:]
-#         print('\t==> Deleting original reference')
-#         del encoded_data
-#         print('\t==> Running .tobytes() on copy')
-#         copied_data.tobytes()
-#         print('\t==> Running .tolist() on copy')
-#         copied_data.tolist()
-
-#         print('Decompressing data...')
-#         decoded_data = heatshrink.decode(copied_data)
-#         print('Decompressed size: {}'.format(len(decoded_data)))
+class EncoderToDecoderTest(unittest.TestCase):
+    def test_encoder_output_to_decoder_valid(self):
+        encoded = heatshrink.encode(b'a string')
+        self.assertEqual(heatshrink.decode(encoded), 'a string')

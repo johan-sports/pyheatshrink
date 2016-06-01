@@ -249,11 +249,11 @@ PyHS_decode(PyObject *self, PyObject *args)
 
     /* Validate dimensions */
     if(view.ndim != 1)
-        THROW_AND_EXIT(PyExc_TypeError, "Expected a 1-dimensional array");
+        THROW_AND_EXIT(PyExc_TypeError, "Expected a 1-dimensional buffer");
 
     /* Validate array item type */
     if(strcmp(view.format, "B") != 0)
-        THROW_AND_EXIT(PyExc_TypeError, "Expected an array of unsigned bytes");
+        THROW_AND_EXIT(PyExc_TypeError, "Expected a buffer of format 'B'.");
 
     log_debug("Received buffer of size %zd", view.shape[0]);
 
