@@ -16,6 +16,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(name='Heatshrink',
       version='0.1.0',
+      # Author details
       author='JOHAN Sports',
       author_email='antonis@johan-sports.com',
       # Project details
@@ -33,10 +34,10 @@ setup(name='Heatshrink',
 
         # Indicate who your project is intended for
         'Intended Audience :: Developers',
-        'Topic :: Software Development :: Compression',
+        'Topic :: System :: Archiving :: Compression',
 
         # Pick your license as you wish (should match "license" above)
-        'License :: OSI Approved :: ISC License',
+        'License :: OSI Approved :: ISC License (ISCL)',
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
@@ -50,7 +51,6 @@ setup(name='Heatshrink',
       ],
 
       keywords='compression bindings heatshrink LZSS',
-      # Author details
       test_suite="pytests",
       zip_safe=False,
       ext_modules=[heatshrink_module])
