@@ -38,6 +38,8 @@ and returns a byte representation of the decoded data.
 'a string'
 ```
 
+For more use cases, please refer to [pytests.py](pytests.py)
+
 ## Testing
 
 CMake + CMocka is used for generating unit tests. To build run:
