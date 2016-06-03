@@ -12,6 +12,6 @@ setup(name='Heatshrink',
       description='Python bindings to the heatshrink library',
       author='JOHAN Sports',
       author_email='antonis@johan-sports.com',
-      test_suite="pytests.test_encoder",
+      test_suite="pytests",
       zip_safe=False,
       ext_modules=[heatshrink_module])
