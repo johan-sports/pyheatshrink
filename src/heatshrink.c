@@ -13,14 +13,6 @@
 /************************************************************
  * Encoding
  ************************************************************/
-typedef enum {
-    PyHSE_OK,
-    PyHSE_FAILED_SINK=-1,
-    PyHSE_FAILED_POLL=-2,
-    PyHSE_FAILED_FINISH=-3,
-} PyHS_encode_res;
-
-
 static UInt8Array *
 encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size)
 {
