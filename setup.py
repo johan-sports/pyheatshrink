@@ -4,6 +4,7 @@ from codecs import open
 
 heatshrink_module = Extension('heatshrink',
                               include_dirs=['.', './src'],
+                              extra_compile_args=['--std=c99'],
                               sources=['src/heatshrink.c',
                                        'src/dynamic_arrays.c',
                                        'heatshrink/heatshrink_encoder.c',
