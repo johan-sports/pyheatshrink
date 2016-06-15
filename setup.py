@@ -4,11 +4,6 @@ from codecs import open
 
 heatshrink_module = Extension('heatshrink',
                               include_dirs=['.', './src'],
-                              depends=['heatshrink/heatshrink_common.h',
-                                       'heatshrink/heatshrink_config.h',
-                                       'heatshrink/heatshrink_encoder.h',
-                                       'heatshrink/heatshrink_decoder.h'
-                                       'src/dynamic_arrays.h'],
                               sources=['src/heatshrink.c',
                                        'src/dynamic_arrays.c',
                                        'heatshrink/heatshrink_encoder.c',
