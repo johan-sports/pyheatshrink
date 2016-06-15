@@ -4,6 +4,11 @@ from codecs import open
 
 heatshrink_module = Extension('heatshrink',
                               include_dirs=['.', './src'],
+                              depends=['heatshrink/heatshrink_common.h',
+                                       'heatshrink/heatshrink_config.h',
+                                       'heatshrink/heatshrink_encoder.h',
+                                       'heatshrink/heatshrink_decoder.h'
+                                       'src/dynamic_arrays.h'],
                               sources=['src/heatshrink.c',
                                        'src/dynamic_arrays.c',
                                        'heatshrink/heatshrink_encoder.c',
@@ -11,11 +16,11 @@ heatshrink_module = Extension('heatshrink',
 
 here = path.abspath(path.dirname(__file__))
 
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(path.join(here, 'README'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='Heatshrink',
-      version='0.1.0',
+      version='0.1.1',
       # Author details
       author='JOHAN Sports',
       author_email='antonis@johan-sports.com',
