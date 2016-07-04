@@ -130,6 +130,7 @@ PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 				PyObject *exc_msg = PyString_FromFormat("Invalid window size %d. Valid values are between %d and %d.",
 																								window_sz2, HEATSHRINK_MIN_WINDOW_BITS, HEATSHRINK_MAX_WINDOW_BITS);
 				PyErr_SetObject(PyExc_ValueError, exc_msg);
+				Py_DECREF(exc_msg);
 				return NULL;
 		}
 
@@ -138,6 +139,7 @@ PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 				PyObject *exc_msg = PyString_FromFormat("Invalid lookahead size %d. Valid values are between %d and %d.",
 																								lookahead_sz2, HEATSHRINK_MIN_LOOKAHEAD_BITS, window_sz2);
 				PyErr_SetObject(PyExc_ValueError, exc_msg);
+				Py_DECREF(exc_msg);
 				return NULL;
 		}
 
