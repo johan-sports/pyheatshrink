@@ -106,17 +106,28 @@ array_to_buffer(const UInt8Array *arr)
 }
 
 static PyObject *
-PyHS_encode(PyObject *self, PyObject *args)
+PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     unsigned char *in_buf = NULL;
     int in_size;
     /* static_cast(char * => unsigned char *) */
-    if(!PyArg_ParseTuple(args, "t#", &in_buf, &in_size))
-        return NULL;
+    /* if(!PyArg_ParseTuple(args, "t#", &in_buf, &in_size)) */
+    /*     return NULL; */
 
-    heatshrink_encoder *hse = heatshrink_encoder_alloc(
-        DEFAULT_HEATSHRINK_WINDOW_SZ2,
-        DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2);
+		uint8_t window_sz2 = DEFAULT_HEATSHRINK_WINDOW_SZ2;
+		uint8_t lookahead_sz2 = DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2;
+
+		static char *kwlist[] = {"buf", "window_size", "lookahead_size", NULL};
+		if(!PyArg_ParseTupleAndKeywords(args, kwargs, "t#|BB", kwlist,
+																		/* static_cast(char * => unsigned char *) */
+																		&in_buf, &in_size,
+																		&window_sz2, &lookahead_sz2)) {
+				return NULL;
+		}
+
+		// TODO: Throw exception on window/lookahead exceeding maximum
+		// TODO: allowed value
+    heatshrink_encoder *hse = heatshrink_encoder_alloc(window_sz2, lookahead_sz2);
     if(hse == NULL) {
         PyErr_SetString(PyExc_MemoryError, "Failed to allocate encoder");
         return NULL;
@@ -279,7 +290,7 @@ PyHS_decode(PyObject *self, PyObject *args)
  * Module definition
  ************************************************************/
 static PyMethodDef Heatshrink_methods [] = {
-    {"encode", PyHS_encode, METH_VARARGS,
+    {"encode", PyHS_encode, METH_VARARGS | METH_KEYWORDS,
      "Encode buffer."},
     {"decode", PyHS_decode, METH_VARARGS,
      "Decode buffer."},

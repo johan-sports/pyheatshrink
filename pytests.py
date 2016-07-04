@@ -18,6 +18,29 @@ class EncoderTest(unittest.TestCase):
     def test_encoded_bytes(self):
         self.assertEqual(self.encoded.tobytes(), '\xb0\xd8\xacvK(')
 
+    def test_encode_with_window_size(self):
+        encoded = heatshrink.encode('abcde', window_size=8)
+        # FIXME: Prove that this setting changes output
+        self.assertEqual(encoded.tobytes(), b'\xb0\xd8\xacvK(')
+
+    def test_encode_checks_window_size_type(self):
+        with self.assertRaises(TypeError):
+            heatshrink.encode('abcde', window_size='a string')
+        with self.assertRaises(TypeError):
+            heatshrink.encode('abcde', window_size=2.123)
+
+    def test_encode_with_lookahead_size(self):
+        encoded = heatshrink.encode('abcde', lookahead_size=2)
+        self.assertEqual(encoded.tobytes(), b'\xb0\xd8\xacvK(')
+
+    def test_encode_checks_window_size_within_limits(self):
+        with self.assertRaises(ValueError):
+            heatshrink.encode('abcde', window_size=3)
+        with self.assertRaises(ValueError):
+            heatshrink.encode('abcde', window_size=16)
+        heatshrink.encode('abcde', window_size=4)
+        heatshrink.encode('abcde', window_size=15)
+
     def test_encoded_format(self):
         self.assertEqual(self.encoded.format, 'B')
 
