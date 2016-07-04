@@ -125,11 +125,23 @@ PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 				return NULL;
 		}
 
+		if((window_sz2 < HEATSHRINK_MIN_WINDOW_BITS) ||
+			 (window_sz2 > HEATSHRINK_MAX_WINDOW_BITS)) {
+				PyErr_SetString(PyExc_ValueError, "Invalid window size.");
+				return NULL;
+		}
+
+		if ((lookahead_sz2 < HEATSHRINK_MIN_LOOKAHEAD_BITS) ||
+				(lookahead_sz2 >= window_sz2)) {
+				PyErr_SetString(PyExc_ValueError, "Invalid lookahead size.");
+				return NULL;
+		}
+
 		// TODO: Throw exception on window/lookahead exceeding maximum
 		// TODO: allowed value
     heatshrink_encoder *hse = heatshrink_encoder_alloc(window_sz2, lookahead_sz2);
     if(hse == NULL) {
-        PyErr_SetString(PyExc_MemoryError, "Failed to allocate encoder");
+        PyErr_SetString(PyExc_MemoryError, "Failed to allocate encoder.");
         return NULL;
     }
 
