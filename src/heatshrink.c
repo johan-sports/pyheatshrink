@@ -108,16 +108,14 @@ array_to_buffer(const UInt8Array *arr)
 static PyObject *
 PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-    unsigned char *in_buf = NULL;
+    unsigned char *in_buf;
     int in_size;
-    /* static_cast(char * => unsigned char *) */
-    /* if(!PyArg_ParseTuple(args, "t#", &in_buf, &in_size)) */
-    /*     return NULL; */
-
 		uint8_t window_sz2 = DEFAULT_HEATSHRINK_WINDOW_SZ2;
 		uint8_t lookahead_sz2 = DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2;
 
 		static char *kwlist[] = {"buf", "window_size", "lookahead_size", NULL};
+		// FIXME: Python doesn't check that these are actually 8 bit integers
+		// FIXME: so I'll have to do this manually
 		if(!PyArg_ParseTupleAndKeywords(args, kwargs, "t#|BB", kwlist,
 																		/* static_cast(char * => unsigned char *) */
 																		&in_buf, &in_size,
