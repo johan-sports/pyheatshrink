@@ -1,6 +1,5 @@
 import unittest
 
-import array
 import random
 import string
 import time
@@ -29,10 +28,6 @@ class EncoderTest(unittest.TestCase):
         with self.assertRaises(TypeError):
             heatshrink.encode('abcde', window_size=2.123)
 
-    def test_encode_with_lookahead_size(self):
-        encoded = heatshrink.encode('abcde', lookahead_size=2)
-        self.assertEqual(encoded.tobytes(), b'\xb0\xd8\xacvK(')
-
     def test_encode_checks_window_size_within_limits(self):
         with self.assertRaises(ValueError):
             heatshrink.encode('abcde', window_size=3)
@@ -40,6 +35,24 @@ class EncoderTest(unittest.TestCase):
             heatshrink.encode('abcde', window_size=16)
         heatshrink.encode('abcde', window_size=4)
         heatshrink.encode('abcde', window_size=15)
+
+    def test_encode_with_lookahead_size(self):
+        encoded = heatshrink.encode('abcde', lookahead_size=2)
+        self.assertEqual(encoded.tobytes(), b'\xb0\xd8\xacvK(')
+
+    def test_encode_checks_lookahead_size_type(self):
+        with self.assertRaises(TypeError):
+            heatshrink.encode('abcde', lookahead_size='a string')
+        with self.assertRaises(TypeError):
+            heatshrink.encode('abcde', lookahead_size=2.123)
+
+    def test_encode_checks_lookahead_size_within_limits(self):
+        with self.assertRaises(ValueError):
+            heatshrink.encode('abcde', lookahead_size=1)
+        with self.assertRaises(ValueError):
+            heatshrink.encode('abcde', lookahead_size=16)
+        heatshrink.encode('abcde', lookahead_size=4)
+        heatshrink.encode('abcde', lookahead_size=10)
 
     def test_encoded_format(self):
         self.assertEqual(self.encoded.format, 'B')
