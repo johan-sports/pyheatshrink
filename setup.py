@@ -16,7 +16,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='Heatshrink',
-      version='0.2.2',
+      version='0.2.0',
       # Author details
       author='JOHAN Sports',
       author_email='antonis@johan-sports.com',
