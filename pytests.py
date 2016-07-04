@@ -28,6 +28,14 @@ class EncoderTest(unittest.TestCase):
         with self.assertRaises(TypeError):
             heatshrink.encode('abcde', window_size=2.123)
 
+    def test_encode_handles_window_size_overflow(self):
+        with self.assertRaises(OverflowError):
+            heatshrink.encode('abcde', window_size=256)
+        with self.assertRaises(OverflowError):
+            heatshrink.encode('abcde', window_size=1000)
+        with self.assertRaises(OverflowError):
+            heatshrink.encode('abcde', window_size=-1)
+
     def test_encode_checks_window_size_within_limits(self):
         with self.assertRaises(ValueError):
             heatshrink.encode('abcde', window_size=3)
@@ -45,6 +53,14 @@ class EncoderTest(unittest.TestCase):
             heatshrink.encode('abcde', lookahead_size='a string')
         with self.assertRaises(TypeError):
             heatshrink.encode('abcde', lookahead_size=2.123)
+
+    def test_encode_handles_lookahead_size_overflow(self):
+        with self.assertRaises(OverflowError):
+            heatshrink.encode('abcde', lookahead_size=256)
+        with self.assertRaises(OverflowError):
+            heatshrink.encode('abcde', lookahead_size=1000)
+        with self.assertRaises(OverflowError):
+            heatshrink.encode('abcde', lookahead_size=-1)
 
     def test_encode_checks_lookahead_size_within_limits(self):
         with self.assertRaises(ValueError):

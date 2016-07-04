@@ -6,6 +6,8 @@ Python binding to the [heatshrink LZSS compression library](https://github.com/a
 *Supported versions:*  
 Python >= 2.6
 
+Note: This hasn't been tested with python 3
+
 ## Installation
 
 ```
