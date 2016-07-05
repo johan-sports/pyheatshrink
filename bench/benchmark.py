@@ -3,13 +3,14 @@ import time
 
 import heatshrink
 
+
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
 PLAIN_FILE_PATH = os.path.join(DATA_DIR, 'plain_file.txt')
 COMPRESSED_FILE_PATH = os.path.join(DATA_DIR, 'compressed_file.txt')
 
 
-def timing(f):
+def timed(f):
     def wrap(*args):
         initial = time.time()
         ret = f(*args)
@@ -23,7 +24,7 @@ def run_benchmark(filename, f):
     with open(filename, 'rb') as fp:
         contents = fp.read()
 
-    timed_f = timing(f)
+    timed_f = timed(f)
 
     print('*** Reading 10,000 bytes ***')
     timed_f(contents[:10000])

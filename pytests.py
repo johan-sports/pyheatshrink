@@ -1,9 +1,5 @@
 import unittest
 
-import random
-import string
-import time
-
 import heatshrink
 
 
@@ -173,8 +169,6 @@ class DecoderTest(unittest.TestCase):
             heatshrink.decode('abcde', lookahead_sz2=16)
         heatshrink.decode('abcde', lookahead_sz2=4)
         heatshrink.decode('abcde', lookahead_sz2=10)
-
-
 
 
 class EncoderToDecoderTest(unittest.TestCase):
