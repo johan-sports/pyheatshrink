@@ -49,6 +49,29 @@ static int validate_size_params(uint8_t window_sz2, uint8_t lookahead_sz2)
 		return 1;
 }
 
+static Py_buffer *
+array_to_buffer(const UInt8Array *arr)
+{
+    Py_buffer *view = (Py_buffer *) malloc(sizeof(Py_buffer));
+		void *buf = uint8_array_copy(arr);
+		if(buf == NULL)
+				return NULL;
+
+    view->obj = NULL;
+    view->buf = buf; /* Transfer ownership to Py_buffer */
+    view->len = uint8_array_count(arr) * sizeof(uint8_t);
+    view->itemsize = sizeof(uint8_t);
+    view->readonly = 1;
+    view->format = "B"; /* 8-bit unsigned char */
+    view->ndim = 1;
+    view->shape = (Py_ssize_t *) &uint8_array_count(arr);
+    view->strides = &view->itemsize;
+    view->suboffsets = NULL;
+    view->internal = NULL;
+
+    return view;
+}
+
 /************************************************************
  * Encoding
  ************************************************************/
@@ -121,29 +144,6 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size)
     return out_arr;
 }
 
-static Py_buffer *
-array_to_buffer(const UInt8Array *arr)
-{
-    Py_buffer *view = (Py_buffer *) malloc(sizeof(Py_buffer));
-		void *buf = uint8_array_copy(arr);
-		if(buf == NULL)
-				return NULL;
-
-    view->obj = NULL;
-    view->buf = buf; /* Transfer ownership to Py_buffer */
-    view->len = uint8_array_count(arr) * sizeof(uint8_t);
-    view->itemsize = sizeof(uint8_t);
-    view->readonly = 1;
-    view->format = "B"; /* 8-bit unsigned char */
-    view->ndim = 1;
-    view->shape = (Py_ssize_t *) &uint8_array_count(arr);
-    view->strides = &view->itemsize;
-    view->suboffsets = NULL;
-    view->internal = NULL;
-
-    return view;
-}
-
 static PyObject *
 PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 {
@@ -154,9 +154,9 @@ PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 
 		static char *kwlist[] = {"buf", "window_size", "lookahead_size", NULL};
 		if(!PyArg_ParseTupleAndKeywords(args, kwargs, "t#|bb", kwlist,
-																		/* static_cast(char * => unsigned char *) */
-																		&in_buf, &in_size,
-																		&window_sz2, &lookahead_sz2)) {
+						/* static_cast(char * => unsigned char *) */
+						&in_buf, &in_size,
+						&window_sz2, &lookahead_sz2)) {
 				return NULL;
 		}
 
@@ -274,7 +274,7 @@ PyHS_decode(PyObject *self, PyObject *args, PyObject *kwargs)
 
 		static char *kwlist[] = {"buf", "window_size", "lookahead_size", NULL};
     if(!PyArg_ParseTupleAndKeywords(args, kwargs, "O|bb", kwlist,
-																		&in_obj, &window_sz2, &lookahead_sz2)) {
+				    &in_obj, &window_sz2, &lookahead_sz2)) {
         return NULL;
 		}
 
