@@ -1,5 +1,6 @@
 import time
 import heatshrink
+import urllib2
 
 
 def run_benchmark(filename, fn):
@@ -20,9 +21,11 @@ def run_benchmark(filename, fn):
 
     print('*** Reading whole file ({} bytes) ***'.format(len(contents)))
     t0 = time.time()
-    fn(contents)
+    result = fn(contents)
     elapsed = time.time() - t0
     print('==> {}s elapsed'.format(elapsed))
+
+    return result
 
 
 def print_block(msg, size=50):
@@ -34,7 +37,11 @@ def print_block(msg, size=50):
 
 def main():
     print_block('Encode benchmarks')
-    run_benchmark('plain_file.txt', heatshrink.encode)
+    encoded = run_benchmark('plain_file.txt', heatshrink.encode)
+    # Store encoded data for use py the decoder
+    with open('compressed_file.txt', 'wb') as fp:
+        fp.write(encoded)
+
     print_block('Decode benchmarks')
     run_benchmark('compressed_file.txt', heatshrink.decode)
 
