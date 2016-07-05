@@ -25,8 +25,8 @@ void test_uint8_array_free()
 void test_uint8_array_clear(void)
 {
     UInt8Array *arr = uint8_array_create(10);
-		uint8_t new_items[] = {1, 2};
-		uint8_array_insert(arr, new_items, 2);
+    uint8_t new_items[] = {1, 2};
+    uint8_array_insert(arr, new_items, 2);
     uint8_array_clear(arr);
     assert_int_equal(arr->capacity, 10);
     assert_int_equal(arr->count, 0);
@@ -57,14 +57,14 @@ void test_uint8_array_insert(void)
     uint8_t expected_arr[] = {1, 2, 3, 4, 1, 2, 3, 4, 1};
     assert_memory_equal(arr->data, expected_arr, 9);
 
-		/* Resize array with more than 2 times the size */
-		uint8_t larger_array[15];
-		for(int i = 0; i < 15; ++i) {
-				larger_array[i] = i + 10;
-		}
-		uint8_array_insert(arr, larger_array, 15);
-		assert_int_equal(arr->capacity, (size_t) (10 * GROWTH_RATE * GROWTH_RATE));
-		assert_int_equal(arr->count, 24);
+    /* Resize array with more than 2 times the size */
+    uint8_t larger_array[15];
+    for(int i = 0; i < 15; ++i) {
+        larger_array[i] = i + 10;
+    }
+    uint8_array_insert(arr, larger_array, 15);
+    assert_int_equal(arr->capacity, (size_t) (10 * GROWTH_RATE * GROWTH_RATE));
+    assert_int_equal(arr->count, 24);
 
     uint8_array_free(arr);
 }

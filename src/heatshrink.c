@@ -25,38 +25,38 @@
 static int
 validate_size_params(uint8_t window_sz2, uint8_t lookahead_sz2)
 {
-		if((window_sz2 < HEATSHRINK_MIN_WINDOW_BITS) ||
-			 (window_sz2 > HEATSHRINK_MAX_WINDOW_BITS)) {
-				PyObject *exc_msg = PyUnicode_FromFormat(
-						"Invalid window_sz2 %d. Valid values are between %d and %d.",
-						window_sz2, HEATSHRINK_MIN_WINDOW_BITS, HEATSHRINK_MAX_WINDOW_BITS
-				);
-				PyErr_SetObject(PyExc_ValueError, exc_msg);
-				Py_DECREF(exc_msg);
-				return 0;
-		}
+    if((window_sz2 < HEATSHRINK_MIN_WINDOW_BITS) ||
+       (window_sz2 > HEATSHRINK_MAX_WINDOW_BITS)) {
+        PyObject *exc_msg = PyUnicode_FromFormat(
+            "Invalid window_sz2 %d. Valid values are between %d and %d.",
+            window_sz2, HEATSHRINK_MIN_WINDOW_BITS, HEATSHRINK_MAX_WINDOW_BITS
+            );
+        PyErr_SetObject(PyExc_ValueError, exc_msg);
+        Py_DECREF(exc_msg);
+        return 0;
+    }
 
-		if ((lookahead_sz2 < HEATSHRINK_MIN_LOOKAHEAD_BITS) ||
-				(lookahead_sz2 >= window_sz2)) {
-				PyObject *exc_msg = PyUnicode_FromFormat(
-						"Invalid lookahead_sz2 %d. Valid values are between %d and %d.",
-						lookahead_sz2, HEATSHRINK_MIN_LOOKAHEAD_BITS, window_sz2
-				);
-				PyErr_SetObject(PyExc_ValueError, exc_msg);
-				Py_DECREF(exc_msg);
-				return 0;
-		}
+    if ((lookahead_sz2 < HEATSHRINK_MIN_LOOKAHEAD_BITS) ||
+        (lookahead_sz2 >= window_sz2)) {
+        PyObject *exc_msg = PyUnicode_FromFormat(
+            "Invalid lookahead_sz2 %d. Valid values are between %d and %d.",
+            lookahead_sz2, HEATSHRINK_MIN_LOOKAHEAD_BITS, window_sz2
+            );
+        PyErr_SetObject(PyExc_ValueError, exc_msg);
+        Py_DECREF(exc_msg);
+        return 0;
+    }
 
-		return 1;
+    return 1;
 }
 
 static Py_buffer *
 array_to_buffer(const UInt8Array *arr)
 {
     Py_buffer *view = (Py_buffer *) malloc(sizeof(Py_buffer));
-		void *buf = uint8_array_copy(arr);
-		if(buf == NULL)
-				return NULL;
+    void *buf = uint8_array_copy(arr);
+    if(buf == NULL)
+        return NULL;
 
     view->obj = NULL;
     view->buf = buf; /* Transfer ownership to Py_buffer */
@@ -86,16 +86,16 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size)
 
     size_t out_size = 1 << hse->window_sz2;
     UInt8Array *out_arr = uint8_array_create(out_size);
-		if(out_arr == NULL) {
-				PyErr_SetString(PyExc_MemoryError, "Failed to allocate output buffer.");
-				return NULL;
-		}
+    if(out_arr == NULL) {
+        PyErr_SetString(PyExc_MemoryError, "Failed to allocate output buffer.");
+        return NULL;
+    }
     uint8_t out_buf[out_size];
 
-#define THROW_AND_EXIT(exc, msg) { \
-        PyErr_SetString(exc, msg); \
-        uint8_array_free(out_arr); \
-        return NULL;               \
+#define THROW_AND_EXIT(exc, msg) {              \
+        PyErr_SetString(exc, msg);              \
+        uint8_array_free(out_arr);              \
+        return NULL;                            \
     }
 
     while(1) {
@@ -111,7 +111,7 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size)
             if(sink_res < 0)
                 THROW_AND_EXIT(PyExc_RuntimeError, "Encoder sink failed.")
 
-            total_sunk_size += sunk_size;
+                    total_sunk_size += sunk_size;
         }
 
         do
@@ -121,7 +121,7 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size)
             if(poll_res < 0)
                 THROW_AND_EXIT(PyExc_RuntimeError, "Encoder poll failed.")
 
-            uint8_array_insert(out_arr, out_buf, poll_size);
+                    uint8_array_insert(out_arr, out_buf, poll_size);
         } while(poll_res == HSER_POLL_MORE);
 
         if(total_sunk_size >= in_size) {
@@ -136,7 +136,7 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size)
                 continue;
             } else {
                 THROW_AND_EXIT(PyExc_RuntimeError, "Encoder finish failed.")
-            }
+                    }
         }
     }
 
@@ -150,20 +150,20 @@ PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     unsigned char *in_buf = NULL;
     int in_size;
-		uint8_t window_sz2 = DEFAULT_HEATSHRINK_WINDOW_SZ2;
-		uint8_t lookahead_sz2 = DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2;
+    uint8_t window_sz2 = DEFAULT_HEATSHRINK_WINDOW_SZ2;
+    uint8_t lookahead_sz2 = DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2;
 
-		static char *kwlist[] = {"buf", "window_sz2", "lookahead_sz2", NULL};
-		if(!PyArg_ParseTupleAndKeywords(args, kwargs, "t#|bb", kwlist,
-						/* static_cast(char * => unsigned char *) */
-						&in_buf, &in_size,
-						&window_sz2, &lookahead_sz2)) {
-				return NULL;
-		}
+    static char *kwlist[] = {"buf", "window_sz2", "lookahead_sz2", NULL};
+    if(!PyArg_ParseTupleAndKeywords(args, kwargs, "t#|bb", kwlist,
+                                    /* static_cast(char * => unsigned char *) */
+                                    &in_buf, &in_size,
+                                    &window_sz2, &lookahead_sz2)) {
+        return NULL;
+    }
 
-		if(!validate_size_params(window_sz2, lookahead_sz2)) {
-				return NULL;
-		}
+    if(!validate_size_params(window_sz2, lookahead_sz2)) {
+        return NULL;
+    }
 
     heatshrink_encoder *hse = heatshrink_encoder_alloc(window_sz2, lookahead_sz2);
     if(hse == NULL) {
@@ -187,10 +187,10 @@ PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
     /* De-allocate original array, as the buffer owns a copy */
     uint8_array_free(out_arr);
 
-		if(view == NULL) {
-				PyErr_SetString(PyExc_MemoryError, "Failed to allocate view buffer.");
-				return NULL;
-		}
+    if(view == NULL) {
+        PyErr_SetString(PyExc_MemoryError, "Failed to allocate view buffer.");
+        return NULL;
+    }
     return PyMemoryView_FromBuffer(view);
 }
 
@@ -207,16 +207,16 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size)
 
     size_t out_size = 1 << hsd->window_sz2;
     UInt8Array *out_arr = uint8_array_create(out_size);
-		if(out_arr == NULL) {
-				PyErr_SetString(PyExc_MemoryError, "Failed to allocate output buffer.");
-				return NULL;
-		}
+    if(out_arr == NULL) {
+        PyErr_SetString(PyExc_MemoryError, "Failed to allocate output buffer.");
+        return NULL;
+    }
     uint8_t out_buf[out_size];
 
-#define THROW_AND_EXIT(exc, msg) { \
-        PyErr_SetString(exc, msg); \
-        uint8_array_free(out_arr); \
-        return NULL;               \
+#define THROW_AND_EXIT(exc, msg) {              \
+        PyErr_SetString(exc, msg);              \
+        uint8_array_free(out_arr);              \
+        return NULL;                            \
     }
 
     while(1) {
@@ -232,7 +232,7 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size)
             if(sink_res < 0)
                 THROW_AND_EXIT(PyExc_RuntimeError, "Decoder sink failed.")
 
-            total_sunk_size += sunk_size;
+                    total_sunk_size += sunk_size;
         }
 
         do
@@ -242,7 +242,7 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size)
             if(poll_res < 0)
                 THROW_AND_EXIT(PyExc_RuntimeError, "Decoder poll failed.")
 
-            uint8_array_insert(out_arr, out_buf, poll_size);
+                    uint8_array_insert(out_arr, out_buf, poll_size);
         } while(poll_res == HSDR_POLL_MORE);
 
         if(total_sunk_size >= in_size) {
@@ -257,7 +257,7 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size)
                 continue;
             } else {
                 THROW_AND_EXIT(PyExc_RuntimeError, "Decoder finish failed.")
-            }
+                    }
         }
     }
 
@@ -270,14 +270,14 @@ static PyObject *
 PyHS_decode(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *in_obj = NULL;
-		uint8_t window_sz2 = DEFAULT_HEATSHRINK_WINDOW_SZ2;
-		uint8_t lookahead_sz2 = DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2;
+    uint8_t window_sz2 = DEFAULT_HEATSHRINK_WINDOW_SZ2;
+    uint8_t lookahead_sz2 = DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2;
 
-		static char *kwlist[] = {"buf", "window_sz2", "lookahead_sz2", NULL};
+    static char *kwlist[] = {"buf", "window_sz2", "lookahead_sz2", NULL};
     if(!PyArg_ParseTupleAndKeywords(args, kwargs, "O|bb", kwlist,
-				    &in_obj, &window_sz2, &lookahead_sz2)) {
+                                    &in_obj, &window_sz2, &lookahead_sz2)) {
         return NULL;
-		}
+    }
 
     Py_buffer view;
     if(PyObject_GetBuffer(in_obj, &view,
@@ -288,10 +288,10 @@ PyHS_decode(PyObject *self, PyObject *args, PyObject *kwargs)
     }
 
     /* Thow a python error and release the view buffer, returning NULL. */
-#define THROW_AND_EXIT(error_type, msg) {     \
-        PyErr_SetString((error_type), (msg)); \
-        PyBuffer_Release(&view);              \
-        return NULL;                          \
+#define THROW_AND_EXIT(error_type, msg) {       \
+        PyErr_SetString((error_type), (msg));   \
+        PyBuffer_Release(&view);                \
+        return NULL;                            \
     }
 
     /* Validate dimensions */
@@ -304,9 +304,9 @@ PyHS_decode(PyObject *self, PyObject *args, PyObject *kwargs)
 
     log_debug("Received buffer of size %zd", view.shape[0]);
 
-		if(!validate_size_params(window_sz2, lookahead_sz2)) {
-				return NULL;
-		}
+    if(!validate_size_params(window_sz2, lookahead_sz2)) {
+        return NULL;
+    }
 
     heatshrink_decoder *hsd = heatshrink_decoder_alloc(
         DEFAULT_DECODER_INPUT_BUFFER_SIZE,
@@ -330,7 +330,7 @@ PyHS_decode(PyObject *self, PyObject *args, PyObject *kwargs)
     uint8_array_free(out_arr);
 
     return PyBytes_FromStringAndSize((char *) uint8_array_raw(out_arr),
-																		 (Py_ssize_t) uint8_array_count(out_arr));
+                                     (Py_ssize_t) uint8_array_count(out_arr));
 }
 
 /************************************************************
