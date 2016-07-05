@@ -7,6 +7,8 @@ library <https://github.com/atomicobject/heatshrink>`__.
 | *Supported versions:*
 | Python >= 2.6
 
+| Note: Python 3 support is experimental.
+
 Installation
 ------------
 

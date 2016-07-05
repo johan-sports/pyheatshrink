@@ -10,6 +10,69 @@
 #define DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2 4
 #define DEFAULT_DECODER_INPUT_BUFFER_SIZE 256
 
+
+/************************************************************
+ * Utils
+ ************************************************************/
+/**
+ * Check that the window and lookahead size paramters are valid.
+ * If not, 0 is returned and an exception is thrown.
+ *
+ * @param {uint8_t} window_sz2
+ * @param {uint8_t} lookahead_sz2
+ * @returns {int}  1 if parameters are valid, else 0
+ */
+static int
+validate_size_params(uint8_t window_sz2, uint8_t lookahead_sz2)
+{
+		if((window_sz2 < HEATSHRINK_MIN_WINDOW_BITS) ||
+			 (window_sz2 > HEATSHRINK_MAX_WINDOW_BITS)) {
+				PyObject *exc_msg = PyUnicode_FromFormat(
+						"Invalid window_sz2 %d. Valid values are between %d and %d.",
+						window_sz2, HEATSHRINK_MIN_WINDOW_BITS, HEATSHRINK_MAX_WINDOW_BITS
+				);
+				PyErr_SetObject(PyExc_ValueError, exc_msg);
+				Py_DECREF(exc_msg);
+				return 0;
+		}
+
+		if ((lookahead_sz2 < HEATSHRINK_MIN_LOOKAHEAD_BITS) ||
+				(lookahead_sz2 >= window_sz2)) {
+				PyObject *exc_msg = PyUnicode_FromFormat(
+						"Invalid lookahead_sz2 %d. Valid values are between %d and %d.",
+						lookahead_sz2, HEATSHRINK_MIN_LOOKAHEAD_BITS, window_sz2
+				);
+				PyErr_SetObject(PyExc_ValueError, exc_msg);
+				Py_DECREF(exc_msg);
+				return 0;
+		}
+
+		return 1;
+}
+
+static Py_buffer *
+array_to_buffer(const UInt8Array *arr)
+{
+    Py_buffer *view = (Py_buffer *) malloc(sizeof(Py_buffer));
+		void *buf = uint8_array_copy(arr);
+		if(buf == NULL)
+				return NULL;
+
+    view->obj = NULL;
+    view->buf = buf; /* Transfer ownership to Py_buffer */
+    view->len = uint8_array_count(arr) * sizeof(uint8_t);
+    view->itemsize = sizeof(uint8_t);
+    view->readonly = 1;
+    view->format = "B"; /* 8-bit unsigned char */
+    view->ndim = 1;
+    view->shape = (Py_ssize_t *) &uint8_array_count(arr);
+    view->strides = &view->itemsize;
+    view->suboffsets = NULL;
+    view->internal = NULL;
+
+    return view;
+}
+
 /************************************************************
  * Encoding
  ************************************************************/
@@ -82,43 +145,29 @@ encode_to_array(heatshrink_encoder *hse, uint8_t *in_buf, size_t in_size)
     return out_arr;
 }
 
-static Py_buffer *
-array_to_buffer(const UInt8Array *arr)
-{
-    Py_buffer *view = (Py_buffer *) malloc(sizeof(Py_buffer));
-		void *buf = uint8_array_copy(arr);
-		if(buf == NULL)
-				return NULL;
-
-    view->obj = NULL;
-    view->buf = buf; /* Transfer ownership to Py_buffer */
-    view->len = uint8_array_count(arr) * sizeof(uint8_t);
-    view->itemsize = sizeof(uint8_t);
-    view->readonly = 1;
-    view->format = "B"; /* 8-bit unsigned char */
-    view->ndim = 1;
-    view->shape = (Py_ssize_t *) &uint8_array_count(arr);
-    view->strides = &view->itemsize;
-    view->suboffsets = NULL;
-    view->internal = NULL;
-
-    return view;
-}
-
 static PyObject *
-PyHS_encode(PyObject *self, PyObject *args)
+PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     unsigned char *in_buf = NULL;
     int in_size;
-    /* static_cast(char * => unsigned char *) */
-    if(!PyArg_ParseTuple(args, "t#", &in_buf, &in_size))
-        return NULL;
+		uint8_t window_sz2 = DEFAULT_HEATSHRINK_WINDOW_SZ2;
+		uint8_t lookahead_sz2 = DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2;
 
-    heatshrink_encoder *hse = heatshrink_encoder_alloc(
-        DEFAULT_HEATSHRINK_WINDOW_SZ2,
-        DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2);
+		static char *kwlist[] = {"buf", "window_sz2", "lookahead_sz2", NULL};
+		if(!PyArg_ParseTupleAndKeywords(args, kwargs, "t#|bb", kwlist,
+						/* static_cast(char * => unsigned char *) */
+						&in_buf, &in_size,
+						&window_sz2, &lookahead_sz2)) {
+				return NULL;
+		}
+
+		if(!validate_size_params(window_sz2, lookahead_sz2)) {
+				return NULL;
+		}
+
+    heatshrink_encoder *hse = heatshrink_encoder_alloc(window_sz2, lookahead_sz2);
     if(hse == NULL) {
-        PyErr_SetString(PyExc_MemoryError, "Failed to allocate encoder");
+        PyErr_SetString(PyExc_MemoryError, "Failed to allocate encoder.");
         return NULL;
     }
 
@@ -218,11 +267,17 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size)
 }
 
 static PyObject *
-PyHS_decode(PyObject *self, PyObject *args)
+PyHS_decode(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *in_obj = NULL;
-    if(!PyArg_ParseTuple(args, "O", &in_obj))
+		uint8_t window_sz2 = DEFAULT_HEATSHRINK_WINDOW_SZ2;
+		uint8_t lookahead_sz2 = DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2;
+
+		static char *kwlist[] = {"buf", "window_sz2", "lookahead_sz2", NULL};
+    if(!PyArg_ParseTupleAndKeywords(args, kwargs, "O|bb", kwlist,
+				    &in_obj, &window_sz2, &lookahead_sz2)) {
         return NULL;
+		}
 
     Py_buffer view;
     if(PyObject_GetBuffer(in_obj, &view,
@@ -249,10 +304,13 @@ PyHS_decode(PyObject *self, PyObject *args)
 
     log_debug("Received buffer of size %zd", view.shape[0]);
 
+		if(!validate_size_params(window_sz2, lookahead_sz2)) {
+				return NULL;
+		}
+
     heatshrink_decoder *hsd = heatshrink_decoder_alloc(
         DEFAULT_DECODER_INPUT_BUFFER_SIZE,
-        DEFAULT_HEATSHRINK_WINDOW_SZ2,
-        DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2);
+        window_sz2, lookahead_sz2);
     if(hsd == NULL)
         THROW_AND_EXIT(PyExc_MemoryError, "Failed to allocate decoder");
 
@@ -271,17 +329,17 @@ PyHS_decode(PyObject *self, PyObject *args)
 
     uint8_array_free(out_arr);
 
-    return PyString_FromStringAndSize((char *) uint8_array_raw(out_arr),
-                                      (Py_ssize_t) uint8_array_count(out_arr));
+    return PyBytes_FromStringAndSize((char *) uint8_array_raw(out_arr),
+																		 (Py_ssize_t) uint8_array_count(out_arr));
 }
 
 /************************************************************
  * Module definition
  ************************************************************/
 static PyMethodDef Heatshrink_methods [] = {
-    {"encode", PyHS_encode, METH_VARARGS,
+    {"encode", PyHS_encode, METH_VARARGS | METH_KEYWORDS,
      "Encode buffer."},
-    {"decode", PyHS_decode, METH_VARARGS,
+    {"decode", PyHS_decode, METH_VARARGS | METH_KEYWORDS,
      "Decode buffer."},
     {NULL, NULL, 0, NULL} // Sentinel
 };
@@ -296,7 +354,7 @@ static PyMethodDef Heatshrink_methods [] = {
 #define MOD_DEF(obj, name, doc, methods)                  \
     static struct PyModuleDef moduledef = {               \
         PyModuleDef_HEAD_INIT, name, doc, -1, methods, }; \
-    obj = PyModuleDef_HEAD_INIT(&moduledef);
+    obj = PyModule_Create(&moduledef);
 #else
 #define MOD_ERROR_VAL
 #define MOD_SUCCESS_VAL(val)

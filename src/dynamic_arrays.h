@@ -7,6 +7,9 @@
 /************************************************************
  * uint8 type array
  ************************************************************/
+/* Dynamic array growth rate. */
+extern const float GROWTH_RATE;
+
 typedef struct UInt8Array {
     size_t capacity; /* Maximum items */
     size_t count;    /* Number of used items */

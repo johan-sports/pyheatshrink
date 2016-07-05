@@ -1,10 +1,5 @@
 import unittest
 
-import array
-import random
-import string
-import time
-
 import heatshrink
 
 
@@ -13,10 +8,63 @@ class EncoderTest(unittest.TestCase):
         self.encoded = heatshrink.encode('abcde')
 
     def test_encoded_size(self):
-        self.assertEqual(self.encoded.shape[0], 6L)
+        self.assertEqual(self.encoded.shape[0], 6)
 
     def test_encoded_bytes(self):
         self.assertEqual(self.encoded.tobytes(), '\xb0\xd8\xacvK(')
+
+    def test_encode_with_window_sz2(self):
+        encoded = heatshrink.encode('abcde', window_sz2=8)
+        # FIXME: Prove that this setting changes output
+        self.assertEqual(encoded.tobytes(), b'\xb0\xd8\xacvK(')
+
+    def test_encode_checks_window_sz2_type(self):
+        with self.assertRaises(TypeError):
+            heatshrink.encode('abcde', window_sz2='a string')
+        with self.assertRaises(TypeError):
+            heatshrink.encode('abcde', window_sz2=2.123)
+
+    def test_encode_handles_window_sz2_overflow(self):
+        with self.assertRaises(OverflowError):
+            heatshrink.encode('abcde', window_sz2=256)
+        with self.assertRaises(OverflowError):
+            heatshrink.encode('abcde', window_sz2=1000)
+        with self.assertRaises(OverflowError):
+            heatshrink.encode('abcde', window_sz2=-1)
+
+    def test_encode_checks_window_sz2_within_limits(self):
+        with self.assertRaises(ValueError):
+            heatshrink.encode('abcde', window_sz2=3)
+        with self.assertRaises(ValueError):
+            heatshrink.encode('abcde', window_sz2=16)
+        heatshrink.encode('abcde', window_sz2=5)
+        heatshrink.encode('abcde', window_sz2=14)
+
+    def test_encode_with_lookahead_sz2(self):
+        encoded = heatshrink.encode('abcde', lookahead_sz2=3)
+        self.assertEqual(encoded.tobytes(), b'\xb0\xd8\xacvK(')
+
+    def test_encode_checks_lookahead_sz2_type(self):
+        with self.assertRaises(TypeError):
+            heatshrink.encode('abcde', lookahead_sz2='a string')
+        with self.assertRaises(TypeError):
+            heatshrink.encode('abcde', lookahead_sz2=2.123)
+
+    def test_encode_handles_lookahead_sz2_overflow(self):
+        with self.assertRaises(OverflowError):
+            heatshrink.encode('abcde', lookahead_sz2=256)
+        with self.assertRaises(OverflowError):
+            heatshrink.encode('abcde', lookahead_sz2=1000)
+        with self.assertRaises(OverflowError):
+            heatshrink.encode('abcde', lookahead_sz2=-1)
+
+    def test_encode_checks_lookahead_sz2_within_limits(self):
+        with self.assertRaises(ValueError):
+            heatshrink.encode('abcde', lookahead_sz2=1)
+        with self.assertRaises(ValueError):
+            heatshrink.encode('abcde', lookahead_sz2=16)
+        heatshrink.encode('abcde', lookahead_sz2=4)
+        heatshrink.encode('abcde', lookahead_sz2=10)
 
     def test_encoded_format(self):
         self.assertEqual(self.encoded.format, 'B')
@@ -52,17 +100,6 @@ class EncoderTest(unittest.TestCase):
         # Ensure everything still works
         self.assertEqual(copied.tobytes(), '\xb0\xd8\xacvK(')
 
-    # TODO: Move me to a benchmark
-    def test_encode_large_strings(self):
-        string_size = 50000
-        rand_string = ''.join(random.choice(string.lowercase)
-                              for _ in range(string_size))
-        start_time = time.time()
-        # Just test that it doesn't fail
-        heatshrink.encode(rand_string)
-        print('\n--- encoded {} bytes in {} seconds ---'
-              .format(string_size, time.time() - start_time))
-
 
 class DecoderTest(unittest.TestCase):
     def test_returns_string(self):
@@ -80,6 +117,58 @@ class DecoderTest(unittest.TestCase):
             heatshrink.decode(1)
             heatshrink.decode(lambda x: x)
             heatshrink.decode(True)
+
+    def test_decode_with_window_sz2(self):
+        decoded = heatshrink.decode(b'\xb0\xd8\xacvK(', window_sz2=11)
+        self.assertEqual(decoded, 'abcde')
+
+    def test_decode_checks_window_sz2_type(self):
+        with self.assertRaises(TypeError):
+            heatshrink.decode('abcde', window_sz2='a string')
+        with self.assertRaises(TypeError):
+            heatshrink.decode('abcde', window_sz2=2.123)
+
+    def test_decode_handles_window_sz2_overflow(self):
+        with self.assertRaises(OverflowError):
+            heatshrink.decode('abcde', window_sz2=256)
+        with self.assertRaises(OverflowError):
+            heatshrink.decode('abcde', window_sz2=1000)
+        with self.assertRaises(OverflowError):
+            heatshrink.decode('abcde', window_sz2=-1)
+
+    def test_decode_checks_window_sz2_within_limits(self):
+        with self.assertRaises(ValueError):
+            heatshrink.decode('abcde', window_sz2=3)
+        with self.assertRaises(ValueError):
+            heatshrink.decode('abcde', window_sz2=16)
+        heatshrink.decode('abcde', window_sz2=5)
+        heatshrink.decode('abcde', window_sz2=14)
+
+    def test_decode_with_lookahead_sz2(self):
+        decoded = heatshrink.decode('\xb0\xd8\xacvK(', lookahead_sz2=3)
+        self.assertEqual(decoded, 'abcde')
+
+    def test_decode_checks_lookahead_sz2_type(self):
+        with self.assertRaises(TypeError):
+            heatshrink.decode('abcde', lookahead_sz2='a string')
+        with self.assertRaises(TypeError):
+            heatshrink.decode('abcde', lookahead_sz2=2.123)
+
+    def test_decode_handles_lookahead_sz2_overflow(self):
+        with self.assertRaises(OverflowError):
+            heatshrink.decode('abcde', lookahead_sz2=256)
+        with self.assertRaises(OverflowError):
+            heatshrink.decode('abcde', lookahead_sz2=1000)
+        with self.assertRaises(OverflowError):
+            heatshrink.decode('abcde', lookahead_sz2=-1)
+
+    def test_decode_checks_lookahead_sz2_within_limits(self):
+        with self.assertRaises(ValueError):
+            heatshrink.decode('abcde', lookahead_sz2=1)
+        with self.assertRaises(ValueError):
+            heatshrink.decode('abcde', lookahead_sz2=16)
+        heatshrink.decode('abcde', lookahead_sz2=4)
+        heatshrink.decode('abcde', lookahead_sz2=10)
 
 
 class EncoderToDecoderTest(unittest.TestCase):
