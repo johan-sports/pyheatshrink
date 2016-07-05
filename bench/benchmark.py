@@ -9,27 +9,30 @@ PLAIN_FILE_PATH = os.path.join(DATA_DIR, 'plain_file.txt')
 COMPRESSED_FILE_PATH = os.path.join(DATA_DIR, 'compressed_file.txt')
 
 
-def run_benchmark(filename, fn):
+def timing(f):
+    def wrap(*args):
+        initial = time.time()
+        ret = f(*args)
+        elapsed = time.time() - initial
+        print('==> {}s elapsed'.format(elapsed))
+        return ret
+    return wrap
+
+
+def run_benchmark(filename, f):
     with open(filename, 'rb') as fp:
         contents = fp.read()
 
+    timed_f = timing(f)
+
     print('*** Reading 10,000 bytes ***')
-    t0 = time.time()
-    fn(contents[:10000])
-    elapsed = time.time() - t0
-    print('==> {}s elapsed'.format(elapsed))
+    timed_f(contents[:10000])
 
     print('*** Reading 1,000,000 bytes ***')
-    t0 = time.time()
-    fn(contents[:1000000])
-    elapsed = time.time() - t0
-    print('==> {}s elapsed'.format(elapsed))
+    timed_f(contents[:1000000])
 
     print('*** Reading whole file ({} bytes) ***'.format(len(contents)))
-    t0 = time.time()
-    result = fn(contents)
-    elapsed = time.time() - t0
-    print('==> {}s elapsed'.format(elapsed))
+    result = timed_f(contents)
 
     return result
 
