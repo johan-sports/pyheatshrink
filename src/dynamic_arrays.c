@@ -49,12 +49,12 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
         memcpy(arr->data + arr->count, vals, vals_size * sizeof(uint8_t));
         arr->count += vals_size;
     } else {
-    /* Resize strategy attempts to resize the array by 2. If the new
-       data still exceeds this, try and resize again. */
-    size_t new_size = arr->capacity * GROWTH_RATE;
-    while(new_size < arr->capacity + vals_size) {
-        new_size *= GROWTH_RATE;
-    }
+        /* Resize strategy attempts to resize the array by 2. If the new
+           data still exceeds this, try and resize again. */
+        size_t new_size = arr->capacity * GROWTH_RATE;
+        while(new_size < arr->capacity + vals_size) {
+            new_size *= GROWTH_RATE;
+        }
 
         uint8_t *new_array = malloc(new_size);
         /* Copy current data */
