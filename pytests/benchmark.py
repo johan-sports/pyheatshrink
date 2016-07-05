@@ -1,6 +1,12 @@
+import os
 import time
+
 import heatshrink
-import urllib2
+
+DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+
+PLAIN_FILE_PATH = os.path.join(DATA_DIR, 'plain_file.txt')
+COMPRESSED_FILE_PATH = os.path.join(DATA_DIR, 'compressed_file.txt')
 
 
 def run_benchmark(filename, fn):
@@ -37,13 +43,13 @@ def print_block(msg, size=50):
 
 def main():
     print_block('Encode benchmarks')
-    encoded = run_benchmark('plain_file.txt', heatshrink.encode)
+    encoded = run_benchmark(PLAIN_FILE_PATH, heatshrink.encode)
     # Store encoded data for use py the decoder
-    with open('compressed_file.txt', 'wb') as fp:
+    with open(COMPRESSED_FILE_PATH, 'wb') as fp:
         fp.write(encoded)
 
     print_block('Decode benchmarks')
-    run_benchmark('compressed_file.txt', heatshrink.decode)
+    run_benchmark(COMPRESSED_FILE_PATH, heatshrink.decode)
 
 
 if __name__ == '__main__':
