@@ -5,9 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - window_size and lookahead_size parameters for encode/decode functions.
-- Python 3 compatibility
 
 ### Fixed
 - Performance of encoding/decoding large files
+- Compilation for python 3 (still not fully working)
 
 [Unreleased]: https://github.com/johan-sports/pyheatshrink/compare/v0.1.2...HEAD
