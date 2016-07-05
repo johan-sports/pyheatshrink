@@ -26,7 +26,7 @@ static int validate_size_params(uint8_t window_sz2, uint8_t lookahead_sz2)
 {
 		if((window_sz2 < HEATSHRINK_MIN_WINDOW_BITS) ||
 			 (window_sz2 > HEATSHRINK_MAX_WINDOW_BITS)) {
-				PyObject *exc_msg = PyString_FromFormat(
+				PyObject *exc_msg = PyUnicode_FromFormat(
 						"Invalid window size %d. Valid values are between %d and %d.",
 						window_sz2, HEATSHRINK_MIN_WINDOW_BITS, HEATSHRINK_MAX_WINDOW_BITS
 						);
@@ -37,7 +37,7 @@ static int validate_size_params(uint8_t window_sz2, uint8_t lookahead_sz2)
 
 		if ((lookahead_sz2 < HEATSHRINK_MIN_LOOKAHEAD_BITS) ||
 				(lookahead_sz2 >= window_sz2)) {
-				PyObject *exc_msg = PyString_FromFormat(
+				PyObject *exc_msg = PyUnicode_FromFormat(
 						"Invalid lookahead size %d. Valid values are between %d and %d.",
 						lookahead_sz2, HEATSHRINK_MIN_LOOKAHEAD_BITS, window_sz2
 						);
