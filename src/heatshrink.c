@@ -353,7 +353,7 @@ static PyMethodDef Heatshrink_methods [] = {
 #define MOD_DEF(obj, name, doc, methods)                  \
     static struct PyModuleDef moduledef = {               \
         PyModuleDef_HEAD_INIT, name, doc, -1, methods, }; \
-    obj = PyModuleDef_HEAD_INIT(&moduledef);
+    obj = PyModule_Create(&moduledef);
 #else
 #define MOD_ERROR_VAL
 #define MOD_SUCCESS_VAL(val)
