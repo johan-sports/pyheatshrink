@@ -10,6 +10,45 @@
 #define DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2 4
 #define DEFAULT_DECODER_INPUT_BUFFER_SIZE 256
 
+
+/************************************************************
+ * Utils
+ ************************************************************/
+/**
+ * Check that the window and lookahead size paramters are valid.
+ * If not, 0 is returned and an exception is thrown.
+ *
+ * @param {uint8_t} window_sz2
+ * @param {uint8_t} lookahead_sz2
+ * @returns {int}  1 if parameters are valid, else 0
+ */
+static int validate_size_params(uint8_t window_sz2, uint8_t lookahead_sz2)
+{
+		if((window_sz2 < HEATSHRINK_MIN_WINDOW_BITS) ||
+			 (window_sz2 > HEATSHRINK_MAX_WINDOW_BITS)) {
+				PyObject *exc_msg = PyString_FromFormat(
+						"Invalid window size %d. Valid values are between %d and %d.",
+						window_sz2, HEATSHRINK_MIN_WINDOW_BITS, HEATSHRINK_MAX_WINDOW_BITS
+						);
+				PyErr_SetObject(PyExc_ValueError, exc_msg);
+				Py_DECREF(exc_msg);
+				return 0;
+		}
+
+		if ((lookahead_sz2 < HEATSHRINK_MIN_LOOKAHEAD_BITS) ||
+				(lookahead_sz2 >= window_sz2)) {
+				PyObject *exc_msg = PyString_FromFormat(
+						"Invalid lookahead size %d. Valid values are between %d and %d.",
+						lookahead_sz2, HEATSHRINK_MIN_LOOKAHEAD_BITS, window_sz2
+						);
+				PyErr_SetObject(PyExc_ValueError, exc_msg);
+				Py_DECREF(exc_msg);
+				return 0;
+		}
+
+		return 1;
+}
+
 /************************************************************
  * Encoding
  ************************************************************/
@@ -121,25 +160,7 @@ PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 				return NULL;
 		}
 
-		if((window_sz2 < HEATSHRINK_MIN_WINDOW_BITS) ||
-			 (window_sz2 > HEATSHRINK_MAX_WINDOW_BITS)) {
-				PyObject *exc_msg = PyString_FromFormat(
-						"Invalid window size %d. Valid values are between %d and %d.",
-						window_sz2, HEATSHRINK_MIN_WINDOW_BITS, HEATSHRINK_MAX_WINDOW_BITS
-				);
-				PyErr_SetObject(PyExc_ValueError, exc_msg);
-				Py_DECREF(exc_msg);
-				return NULL;
-		}
-
-		if ((lookahead_sz2 < HEATSHRINK_MIN_LOOKAHEAD_BITS) ||
-				(lookahead_sz2 >= window_sz2)) {
-				PyObject *exc_msg = PyString_FromFormat(
-						"Invalid lookahead size %d. Valid values are between %d and %d.",
-						lookahead_sz2, HEATSHRINK_MIN_LOOKAHEAD_BITS, window_sz2
-				);
-				PyErr_SetObject(PyExc_ValueError, exc_msg);
-				Py_DECREF(exc_msg);
+		if(!validate_size_params(window_sz2, lookahead_sz2)) {
 				return NULL;
 		}
 
@@ -282,25 +303,7 @@ PyHS_decode(PyObject *self, PyObject *args, PyObject *kwargs)
 
     log_debug("Received buffer of size %zd", view.shape[0]);
 
-		if((window_sz2 < HEATSHRINK_MIN_WINDOW_BITS) ||
-			 (window_sz2 > HEATSHRINK_MAX_WINDOW_BITS)) {
-				PyObject *exc_msg = PyString_FromFormat(
-						"Invalid window size %d. Valid values are between %d and %d.",
-						window_sz2, HEATSHRINK_MIN_WINDOW_BITS, HEATSHRINK_MAX_WINDOW_BITS
-				);
-				PyErr_SetObject(PyExc_ValueError, exc_msg);
-				Py_DECREF(exc_msg);
-				return NULL;
-		}
-
-		if ((lookahead_sz2 < HEATSHRINK_MIN_LOOKAHEAD_BITS) ||
-				(lookahead_sz2 >= window_sz2)) {
-				PyObject *exc_msg = PyString_FromFormat(
-						"Invalid lookahead size %d. Valid values are between %d and %d.",
-						lookahead_sz2, HEATSHRINK_MIN_LOOKAHEAD_BITS, window_sz2
-				);
-				PyErr_SetObject(PyExc_ValueError, exc_msg);
-				Py_DECREF(exc_msg);
+		if(!validate_size_params(window_sz2, lookahead_sz2)) {
 				return NULL;
 		}
 
