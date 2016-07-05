@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - window_size and lookahead_size parameters for encode/decode functions.
+- automated benchmarks
 
 ### Fixed
 - Performance of encoding/decoding large files

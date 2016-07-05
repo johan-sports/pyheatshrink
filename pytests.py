@@ -17,58 +17,58 @@ class EncoderTest(unittest.TestCase):
     def test_encoded_bytes(self):
         self.assertEqual(self.encoded.tobytes(), '\xb0\xd8\xacvK(')
 
-    def test_encode_with_window_size(self):
-        encoded = heatshrink.encode('abcde', window_size=8)
+    def test_encode_with_window_sz2(self):
+        encoded = heatshrink.encode('abcde', window_sz2=8)
         # FIXME: Prove that this setting changes output
         self.assertEqual(encoded.tobytes(), b'\xb0\xd8\xacvK(')
 
-    def test_encode_checks_window_size_type(self):
+    def test_encode_checks_window_sz2_type(self):
         with self.assertRaises(TypeError):
-            heatshrink.encode('abcde', window_size='a string')
+            heatshrink.encode('abcde', window_sz2='a string')
         with self.assertRaises(TypeError):
-            heatshrink.encode('abcde', window_size=2.123)
+            heatshrink.encode('abcde', window_sz2=2.123)
 
-    def test_encode_handles_window_size_overflow(self):
+    def test_encode_handles_window_sz2_overflow(self):
         with self.assertRaises(OverflowError):
-            heatshrink.encode('abcde', window_size=256)
+            heatshrink.encode('abcde', window_sz2=256)
         with self.assertRaises(OverflowError):
-            heatshrink.encode('abcde', window_size=1000)
+            heatshrink.encode('abcde', window_sz2=1000)
         with self.assertRaises(OverflowError):
-            heatshrink.encode('abcde', window_size=-1)
+            heatshrink.encode('abcde', window_sz2=-1)
 
-    def test_encode_checks_window_size_within_limits(self):
+    def test_encode_checks_window_sz2_within_limits(self):
         with self.assertRaises(ValueError):
-            heatshrink.encode('abcde', window_size=3)
+            heatshrink.encode('abcde', window_sz2=3)
         with self.assertRaises(ValueError):
-            heatshrink.encode('abcde', window_size=16)
-        heatshrink.encode('abcde', window_size=4)
-        heatshrink.encode('abcde', window_size=15)
+            heatshrink.encode('abcde', window_sz2=16)
+        heatshrink.encode('abcde', window_sz2=4)
+        heatshrink.encode('abcde', window_sz2=15)
 
-    def test_encode_with_lookahead_size(self):
-        encoded = heatshrink.encode('abcde', lookahead_size=2)
+    def test_encode_with_lookahead_sz2(self):
+        encoded = heatshrink.encode('abcde', lookahead_sz2=2)
         self.assertEqual(encoded.tobytes(), b'\xb0\xd8\xacvK(')
 
-    def test_encode_checks_lookahead_size_type(self):
+    def test_encode_checks_lookahead_sz2_type(self):
         with self.assertRaises(TypeError):
-            heatshrink.encode('abcde', lookahead_size='a string')
+            heatshrink.encode('abcde', lookahead_sz2='a string')
         with self.assertRaises(TypeError):
-            heatshrink.encode('abcde', lookahead_size=2.123)
+            heatshrink.encode('abcde', lookahead_sz2=2.123)
 
-    def test_encode_handles_lookahead_size_overflow(self):
+    def test_encode_handles_lookahead_sz2_overflow(self):
         with self.assertRaises(OverflowError):
-            heatshrink.encode('abcde', lookahead_size=256)
+            heatshrink.encode('abcde', lookahead_sz2=256)
         with self.assertRaises(OverflowError):
-            heatshrink.encode('abcde', lookahead_size=1000)
+            heatshrink.encode('abcde', lookahead_sz2=1000)
         with self.assertRaises(OverflowError):
-            heatshrink.encode('abcde', lookahead_size=-1)
+            heatshrink.encode('abcde', lookahead_sz2=-1)
 
-    def test_encode_checks_lookahead_size_within_limits(self):
+    def test_encode_checks_lookahead_sz2_within_limits(self):
         with self.assertRaises(ValueError):
-            heatshrink.encode('abcde', lookahead_size=1)
+            heatshrink.encode('abcde', lookahead_sz2=1)
         with self.assertRaises(ValueError):
-            heatshrink.encode('abcde', lookahead_size=16)
-        heatshrink.encode('abcde', lookahead_size=4)
-        heatshrink.encode('abcde', lookahead_size=10)
+            heatshrink.encode('abcde', lookahead_sz2=16)
+        heatshrink.encode('abcde', lookahead_sz2=4)
+        heatshrink.encode('abcde', lookahead_sz2=10)
 
     def test_encoded_format(self):
         self.assertEqual(self.encoded.format, 'B')

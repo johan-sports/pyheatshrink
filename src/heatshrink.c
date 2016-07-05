@@ -27,7 +27,7 @@ static int validate_size_params(uint8_t window_sz2, uint8_t lookahead_sz2)
 		if((window_sz2 < HEATSHRINK_MIN_WINDOW_BITS) ||
 			 (window_sz2 > HEATSHRINK_MAX_WINDOW_BITS)) {
 				PyObject *exc_msg = PyUnicode_FromFormat(
-						"Invalid window size %d. Valid values are between %d and %d.",
+						"Invalid window_sz2 %d. Valid values are between %d and %d.",
 						window_sz2, HEATSHRINK_MIN_WINDOW_BITS, HEATSHRINK_MAX_WINDOW_BITS
 						);
 				PyErr_SetObject(PyExc_ValueError, exc_msg);
@@ -38,7 +38,7 @@ static int validate_size_params(uint8_t window_sz2, uint8_t lookahead_sz2)
 		if ((lookahead_sz2 < HEATSHRINK_MIN_LOOKAHEAD_BITS) ||
 				(lookahead_sz2 >= window_sz2)) {
 				PyObject *exc_msg = PyUnicode_FromFormat(
-						"Invalid lookahead size %d. Valid values are between %d and %d.",
+						"Invalid lookahead_sz2 %d. Valid values are between %d and %d.",
 						lookahead_sz2, HEATSHRINK_MIN_LOOKAHEAD_BITS, window_sz2
 						);
 				PyErr_SetObject(PyExc_ValueError, exc_msg);
@@ -152,7 +152,7 @@ PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 		uint8_t window_sz2 = DEFAULT_HEATSHRINK_WINDOW_SZ2;
 		uint8_t lookahead_sz2 = DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2;
 
-		static char *kwlist[] = {"buf", "window_size", "lookahead_size", NULL};
+		static char *kwlist[] = {"buf", "window_sz2", "lookahead_sz2", NULL};
 		if(!PyArg_ParseTupleAndKeywords(args, kwargs, "t#|bb", kwlist,
 						/* static_cast(char * => unsigned char *) */
 						&in_buf, &in_size,
@@ -272,7 +272,7 @@ PyHS_decode(PyObject *self, PyObject *args, PyObject *kwargs)
 		uint8_t window_sz2 = DEFAULT_HEATSHRINK_WINDOW_SZ2;
 		uint8_t lookahead_sz2 = DEFAULT_HEATSHRINK_LOOKAHEAD_SZ2;
 
-		static char *kwlist[] = {"buf", "window_size", "lookahead_size", NULL};
+		static char *kwlist[] = {"buf", "window_sz2", "lookahead_sz2", NULL};
     if(!PyArg_ParseTupleAndKeywords(args, kwargs, "O|bb", kwlist,
 				    &in_obj, &window_sz2, &lookahead_sz2)) {
         return NULL;
