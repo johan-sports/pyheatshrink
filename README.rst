@@ -57,6 +57,14 @@ Check out the `heatshrink configuration page <https://github.com/atomicobject/he
 
 For more use cases, please refer to `pytests.py <pytests.py>`__.
 
+Benchmarks
+----------
+
+The benchmarks check compression/decompression against a ~6MB file:
+
+::
+   $ python bench/benchmarks.py
+
 Testing
 -------
 
