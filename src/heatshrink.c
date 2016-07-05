@@ -328,8 +328,8 @@ PyHS_decode(PyObject *self, PyObject *args, PyObject *kwargs)
 
     uint8_array_free(out_arr);
 
-    return PyString_FromStringAndSize((char *) uint8_array_raw(out_arr),
-                                      (Py_ssize_t) uint8_array_count(out_arr));
+    return PyBytes_FromStringAndSize((char *) uint8_array_raw(out_arr),
+																		 (Py_ssize_t) uint8_array_count(out_arr));
 }
 
 /************************************************************

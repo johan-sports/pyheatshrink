@@ -12,7 +12,7 @@ class EncoderTest(unittest.TestCase):
         self.encoded = heatshrink.encode('abcde')
 
     def test_encoded_size(self):
-        self.assertEqual(self.encoded.shape[0], 6L)
+        self.assertEqual(self.encoded.shape[0], 6)
 
     def test_encoded_bytes(self):
         self.assertEqual(self.encoded.tobytes(), '\xb0\xd8\xacvK(')
