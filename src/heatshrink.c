@@ -123,8 +123,10 @@ PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 
 		if((window_sz2 < HEATSHRINK_MIN_WINDOW_BITS) ||
 			 (window_sz2 > HEATSHRINK_MAX_WINDOW_BITS)) {
-				PyObject *exc_msg = PyString_FromFormat("Invalid window size %d. Valid values are between %d and %d.",
-																								window_sz2, HEATSHRINK_MIN_WINDOW_BITS, HEATSHRINK_MAX_WINDOW_BITS);
+				PyObject *exc_msg = PyString_FromFormat(
+						"Invalid window size %d. Valid values are between %d and %d.",
+						window_sz2, HEATSHRINK_MIN_WINDOW_BITS, HEATSHRINK_MAX_WINDOW_BITS
+				);
 				PyErr_SetObject(PyExc_ValueError, exc_msg);
 				Py_DECREF(exc_msg);
 				return NULL;
@@ -132,15 +134,15 @@ PyHS_encode(PyObject *self, PyObject *args, PyObject *kwargs)
 
 		if ((lookahead_sz2 < HEATSHRINK_MIN_LOOKAHEAD_BITS) ||
 				(lookahead_sz2 >= window_sz2)) {
-				PyObject *exc_msg = PyString_FromFormat("Invalid lookahead size %d. Valid values are between %d and %d.",
-																								lookahead_sz2, HEATSHRINK_MIN_LOOKAHEAD_BITS, window_sz2);
+				PyObject *exc_msg = PyString_FromFormat(
+						"Invalid lookahead size %d. Valid values are between %d and %d.",
+						lookahead_sz2, HEATSHRINK_MIN_LOOKAHEAD_BITS, window_sz2
+				);
 				PyErr_SetObject(PyExc_ValueError, exc_msg);
 				Py_DECREF(exc_msg);
 				return NULL;
 		}
 
-		// TODO: Throw exception on window/lookahead exceeding maximum
-		// TODO: allowed value
     heatshrink_encoder *hse = heatshrink_encoder_alloc(window_sz2, lookahead_sz2);
     if(hse == NULL) {
         PyErr_SetString(PyExc_MemoryError, "Failed to allocate encoder.");
