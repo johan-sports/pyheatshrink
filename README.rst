@@ -63,6 +63,7 @@ Benchmarks
 The benchmarks check compression/decompression against a ~6MB file:
 
 ::
+
    $ python bench/benchmarks.py
 
 Testing
