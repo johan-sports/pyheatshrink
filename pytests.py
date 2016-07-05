@@ -104,17 +104,6 @@ class EncoderTest(unittest.TestCase):
         # Ensure everything still works
         self.assertEqual(copied.tobytes(), '\xb0\xd8\xacvK(')
 
-    # TODO: Move me to a benchmark
-    def test_encode_large_strings(self):
-        string_size = 50000
-        rand_string = ''.join(random.choice(string.lowercase)
-                              for _ in range(string_size))
-        start_time = time.time()
-        # Just test that it doesn't fail
-        heatshrink.encode(rand_string)
-        print('\n--- encoded {} bytes in {} seconds ---'
-              .format(string_size, time.time() - start_time))
-
 
 class DecoderTest(unittest.TestCase):
     def test_returns_string(self):
