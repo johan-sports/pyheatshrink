@@ -2,6 +2,8 @@
 
 #include <string.h>
 
+const float GROWTH_RATE = 2.0;
+
 UInt8Array *
 uint8_array_create(size_t initial_size)
 {
@@ -49,10 +51,10 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
     } else {
 		/* Resize strategy attempts to resize the array by 2. If the new
 		   data still exceeds this, try and resize again. */
-		size_t new_size;
-		do {
-				new_size = arr->capacity * 2;
-		} while(new_size < arr->capacity + vals_size);
+		size_t new_size = arr->capacity * GROWTH_RATE;
+		while(new_size < arr->capacity + vals_size) {
+				new_size *= GROWTH_RATE;
+		}
 
         uint8_t *new_array = malloc(new_size);
         /* Copy current data */
