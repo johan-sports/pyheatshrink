@@ -1,20 +1,6 @@
 import unittest
-import os
-import random
-import string
 
 import heatshrink
-
-
-BASE_DIR = os.path.dirname(__file__)
-
-
-def random_string(size):
-    """
-    Generate a random string of size `size`.
-    """
-    choices = string.lowercase + string.uppercase + string.digits + '\n'
-    return ''.join(random.choice(choices) for _ in range(size))
 
 
 class EncoderTest(unittest.TestCase):
