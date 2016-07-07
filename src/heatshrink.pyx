@@ -1,21 +1,25 @@
 cimport cheatshrink
 
+DEFAULT_WINDOW_SZ2 = 11
+DEFAULT_LOOKAHEAD_SZ2 = 4
+
+cdef class Encoder:
+    cdef cheatshrink.heatshrink_encoder* _hse
+
+    def __cinit__(self, **kwargs):
+        self._hse = cheatshrink.heatshrink_encoder_alloc(
+            kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2),
+            kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2))
+        if self._hse is NULL:
+            raise MemoryError()
+
+    def __dealloc__(self):
+        if self._hse is not NULL:
+            cheatshrink.heatshrink_encoder_free(self._hse)
+
+
 def encode(buf, window_sz2=11, lookahead_sz2=4):
-    hse = cheatshrink.heatshrink_encoder_alloc(window_sz2, lookahead_sz2)
-    if not hse:
-        raise MemoryError("Failed to allocate encoder.")
-
-    total_sunk_size = 0
-    out_buf = []
-
-    # while True:
-    #     cdef size_t sunk_size
-    #     cdef size_t poll_size
-
-    #     if total_sunk_size < len(buf):
-    #         sink_res = cheatshrink.heatshrink_encoder_sink(hse)
-
-    cheatshrink.heatshrink_encoder_free(hse)
+    encoder = Encoder()
 
 def decode(buf, window_sz2=11, lookahead_sz2=4):
-    print('Decode')
+    pass
