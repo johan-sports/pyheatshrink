@@ -1,6 +1,10 @@
 import unittest
+import os
 
 import heatshrink
+
+
+BASE_DIR = os.path.dirname(__file__)
 
 
 class EncoderTest(unittest.TestCase):
@@ -172,6 +176,33 @@ class DecoderTest(unittest.TestCase):
 
 
 class EncoderToDecoderTest(unittest.TestCase):
-    def test_encoder_output_to_decoder_valid(self):
+    def test_encoder_output_to_decoder_input_valid(self):
         encoded = heatshrink.encode(b'a string')
         self.assertEqual(heatshrink.decode(encoded), 'a string')
+
+    def test_with_a_paragraph(self):
+        quotes = """I know this from my own experience, as a high school kid writing programs in Basic.
+        That language didn't even support recursion. It's hard to imagine writing programs
+        without using recursion, but I didn't miss it at the time. I thought in Basic.
+        And I was a whiz at it. Master of all I surveyed. - Paul Graham
+
+        A programming language is for thinking about programs, not for expressing programs you've
+        already thought of. It should be a pencil, not a pen. - Paul Graham
+
+        A recursive definition does not necessarily lead to a recursive process. - Gerald Jay Sussman
+        """
+        encoded = heatshrink.encode(quotes)
+        self.assertEqual(heatshrink.decode(encoded), quotes)
+
+    # For large files the decoding step fails for some reason
+    def test_with_large_file(self):
+        with open(os.path.join(BASE_DIR, 'bench/data/plain_file.txt')) as fp:
+            contents = fp.read()
+
+        decoded = heatshrink.decode(heatshrink.encode(contents))
+        # Check start and ends of files if they are the same
+        self.assertEqual(decoded[:100], contents[:100])
+        self.assertEqual(decoded[-100:], contents[-100:])
+        # Check whole file, but don't use assertEqual as it will print all the data
+        if decoded != contents:
+            self.fail('Decoded and original file contents do not match')
