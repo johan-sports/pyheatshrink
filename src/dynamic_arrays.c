@@ -56,24 +56,21 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
             new_size *= GROWTH_RATE;
         }
 
-        uint8_t *new_array = malloc(new_size);
-        /* Copy current data */
-        memcpy(new_array, arr->data, arr->count * sizeof(uint8_t));
-        /* Copy new data */
-        memcpy(new_array + arr->count, vals, vals_size * sizeof(uint8_t));
-        free(arr->data);
-        arr->data = new_array;
+        arr->data = realloc(arr->data, new_size * sizeof(uint8_t));
         arr->capacity = new_size;
-        arr->count += vals_size;
+				/* Insert new data */
+				uint8_array_insert(arr, vals, vals_size);
     }
 }
 
 uint8_t *
 uint8_array_copy(const UInt8Array *arr)
 {
-    uint8_t *copy = calloc(arr->count, sizeof(uint8_t));
+		uint8_t *copy = malloc(arr->count * sizeof(uint8_t));
     if(copy == NULL)
         return NULL;
+
     memcpy(copy, arr->data, arr->count * sizeof(uint8_t));
-    return copy;
+
+		return copy;
 }

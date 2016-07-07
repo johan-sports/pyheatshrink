@@ -59,7 +59,7 @@ array_to_buffer(const UInt8Array *arr)
         return NULL;
 
     view->obj = NULL;
-    view->buf = buf; /* Transfer ownership to Py_buffer */
+    view->buf = buf; buf = NULL; /* Transfer ownership to Py_buffer */
     view->len = uint8_array_count(arr) * sizeof(uint8_t);
     view->itemsize = sizeof(uint8_t);
     view->readonly = 1;
