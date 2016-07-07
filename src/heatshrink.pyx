@@ -17,6 +17,15 @@ cdef class Encoder:
         if self._hse is not NULL:
             cheatshrink.heatshrink_encoder_free(self._hse)
 
+    def sink(self, in_buf):
+		pass
+
+    def poll(self, out_buf):
+	    pass
+
+    def finish(self):
+	    pass
+
 
 def encode(buf, window_sz2=11, lookahead_sz2=4):
     encoder = Encoder()
