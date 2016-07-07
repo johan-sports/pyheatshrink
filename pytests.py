@@ -1,6 +1,20 @@
 import unittest
+import os
+import random
+import string
 
 import heatshrink
+
+
+BASE_DIR = os.path.dirname(__file__)
+
+
+def random_string(size):
+    """
+    Generate a random string of size `size`.
+    """
+    choices = string.lowercase + string.uppercase + string.digits + '\n'
+    return ''.join(random.choice(choices) for _ in range(size))
 
 
 class EncoderTest(unittest.TestCase):
@@ -195,3 +209,18 @@ class EncoderToDecoderTest(unittest.TestCase):
         """
         encoded = heatshrink.encode(quotes)
         self.assertEqual(heatshrink.decode(encoded), quotes)
+
+    # For large files the decoding step fails for some reason
+    def test_with_large_strings(self):
+        test_sizes = [1000, 10000, 100000, 200000]
+
+        for size in test_sizes:
+            print('*** Testing with size: {} ***'.format(size))
+            contents = random_string(size)
+
+            decoded = heatshrink.decode(heatshrink.encode(contents))
+            # Check whole file, but don't use assertEqual as it will print all the data
+            if decoded != contents:
+                msg = ('Decoded and original file contents '
+                       'do not match for size: {}')
+                self.fail(msg.format(size))

@@ -232,7 +232,7 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size)
             if(sink_res < 0)
                 THROW_AND_EXIT(PyExc_RuntimeError, "Decoder sink failed.")
 
-                    total_sunk_size += sunk_size;
+            total_sunk_size += sunk_size;
         }
 
         do
@@ -242,7 +242,7 @@ decode_to_array(heatshrink_decoder *hsd, uint8_t *in_buf, size_t in_size)
             if(poll_res < 0)
                 THROW_AND_EXIT(PyExc_RuntimeError, "Decoder poll failed.")
 
-                    uint8_array_insert(out_arr, out_buf, poll_size);
+            uint8_array_insert(out_arr, out_buf, poll_size);
         } while(poll_res == HSDR_POLL_MORE);
 
         if(total_sunk_size >= in_size) {
@@ -337,9 +337,9 @@ PyHS_decode(PyObject *self, PyObject *args, PyObject *kwargs)
  * Module definition
  ************************************************************/
 static PyMethodDef Heatshrink_methods [] = {
-    {"encode", PyHS_encode, METH_VARARGS | METH_KEYWORDS,
+    {"encode", (PyCFunction) PyHS_encode, METH_VARARGS | METH_KEYWORDS,
      "Encode buffer."},
-    {"decode", PyHS_decode, METH_VARARGS | METH_KEYWORDS,
+    {"decode", (PyCFunction) PyHS_decode, METH_VARARGS | METH_KEYWORDS,
      "Decode buffer."},
     {NULL, NULL, 0, NULL} // Sentinel
 };

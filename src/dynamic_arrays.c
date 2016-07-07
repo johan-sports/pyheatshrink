@@ -41,8 +41,11 @@ uint8_array_clear(UInt8Array *arr)
 void
 uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
 {
-    if(vals == NULL || vals_size == 0)
+    PyHS_assert(vals != NULL);
+
+    if(vals_size == 0) {
         return;
+    }
 
     /* Can we fit the new values without resizing? */
     if(vals_size + arr->count <= arr->capacity) {
@@ -58,19 +61,19 @@ uint8_array_insert(UInt8Array *arr, const uint8_t *vals, size_t vals_size)
 
         arr->data = realloc(arr->data, new_size * sizeof(uint8_t));
         arr->capacity = new_size;
-				/* Insert new data */
-				uint8_array_insert(arr, vals, vals_size);
+        /* Insert new data */
+        uint8_array_insert(arr, vals, vals_size);
     }
 }
 
 uint8_t *
 uint8_array_copy(const UInt8Array *arr)
 {
-		uint8_t *copy = malloc(arr->count * sizeof(uint8_t));
+    uint8_t *copy = calloc(arr->count, sizeof(uint8_t));
     if(copy == NULL)
         return NULL;
 
     memcpy(copy, arr->data, arr->count * sizeof(uint8_t));
 
-		return copy;
+    return copy;
 }
