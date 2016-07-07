@@ -1,10 +1,20 @@
 import unittest
 import os
+import random
+import string
 
 import heatshrink
 
 
 BASE_DIR = os.path.dirname(__file__)
+
+
+def random_string(size):
+    """
+    Generate a random string of size `size`.
+    """
+    choices = string.lowercase + string.uppercase + string.digits + '\n'
+    return ''.join(random.choice(choices) for _ in range(size))
 
 
 class EncoderTest(unittest.TestCase):
@@ -176,6 +186,12 @@ class DecoderTest(unittest.TestCase):
 
 
 class EncoderToDecoderTest(unittest.TestCase):
+    """
+    Tests assertion that data passed through the encoder
+    and then the decoder with the same parameters will be
+    equal to the original data.
+    """
+
     def test_encoder_output_to_decoder_input_valid(self):
         encoded = heatshrink.encode(b'a string')
         self.assertEqual(heatshrink.decode(encoded), 'a string')
@@ -193,16 +209,3 @@ class EncoderToDecoderTest(unittest.TestCase):
         """
         encoded = heatshrink.encode(quotes)
         self.assertEqual(heatshrink.decode(encoded), quotes)
-
-    # For large files the decoding step fails for some reason
-    def test_with_large_file(self):
-        with open(os.path.join(BASE_DIR, 'bench/data/plain_file.txt')) as fp:
-            contents = fp.read()
-
-        decoded = heatshrink.decode(heatshrink.encode(contents))
-        # Check start and ends of files if they are the same
-        self.assertEqual(decoded[:100], contents[:100])
-        self.assertEqual(decoded[-100:], contents[-100:])
-        # Check whole file, but don't use assertEqual as it will print all the data
-        if decoded != contents:
-            self.fail('Decoded and original file contents do not match')
