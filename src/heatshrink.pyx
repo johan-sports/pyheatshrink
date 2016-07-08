@@ -1,5 +1,6 @@
 cimport cython
 from cpython cimport array
+import array
 from cpython.mem cimport PyMem_Malloc, PyMem_Free
 from libc.stdint cimport uint8_t
 
@@ -7,6 +8,7 @@ cimport cheatshrink
 
 DEFAULT_WINDOW_SZ2 = 11
 DEFAULT_LOOKAHEAD_SZ2 = 4
+
 
 cdef class Encoder:
     cdef cheatshrink.heatshrink_encoder *_hse
@@ -27,13 +29,14 @@ cdef class Encoder:
         """The maximum allowed size of the output buffer."""
         return 1 << self._hse.window_sz2
 
-    cdef size_t sink(self, uint8_t *in_buf, size_t size):
+    cdef size_t sink(self, array.array in_buf):
         """
         Sink up to `size` bytes in to the encoder.
         """
         cdef size_t input_size
-        res = cheatshrink.heatshrink_encoder_sink(self._hse, in_buf,
-                                                    size, &input_size)
+        res = cheatshrink.heatshrink_encoder_sink(
+            self._hse, <uint8_t *>in_buf.data.as_voidptr,
+            <size_t>len(in_buf), &input_size)
         if res < 0:
             raise RuntimeError("Encoder sink failed.")
         return input_size
@@ -76,17 +79,13 @@ def encode(buf, window_sz2=11, lookahead_sz2=4):
     encoder = Encoder()
 
     cdef array.array byte_buf = array.array('B', buf)
-    cdef size_t in_size = len(byte_buf)
-    cdef uint8_t *in_buf = <uint8_t *>PyMem_Malloc(in_size*cython.sizeof(uint8_t));
-
-    for i in xrange(len(byte_buf)):
-        in_buf[i] = byte_buf[i]
 
     total_sunk_size = 0
     total_encoded = []
+
     while True:
-        if total_sunk_size < in_size:
-            total_sunk_size += encoder.sink(in_buf, <size_t>len(byte_buf))
+        if total_sunk_size < len(byte_buf):
+            total_sunk_size += encoder.sink(byte_buf)
 
         while True:
             try:
@@ -94,16 +93,16 @@ def encode(buf, window_sz2=11, lookahead_sz2=4):
             except StopIteration as e:
                 break
 
-        if total_sunk_size >= in_size:
+        if total_sunk_size >= len(byte_buf):
             try:
                 encoder.finish()
             except StopIteration:
                 break
 
-    PyMem_Free(in_buf)
     print('Sunk {} bytes'.format(total_sunk_size))
     cdef uint8_t[:] ret = array.array('B', total_encoded)
     return ret
+
 
 def decode(buf, window_sz2=11, lookahead_sz2=4):
     pass
