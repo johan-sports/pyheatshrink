@@ -1,24 +1,38 @@
 cimport cython
 from cpython cimport array
 import array
-from cpython.mem cimport PyMem_Malloc, PyMem_Free
 from libc.stdint cimport uint8_t
 
 cimport cheatshrink
 
+MIN_WINDOW_SZ2 = cheatshrink.HEATSHRINK_MIN_WINDOW_BITS
+MAX_WINDOW_SZ2 = cheatshrink.HEATSHRINK_MAX_WINDOW_BITS
 DEFAULT_WINDOW_SZ2 = 11
+
+MIN_LOOKAHEAD_SZ2 = cheatshrink.HEATSHRINK_MIN_LOOKAHEAD_BITS
 DEFAULT_LOOKAHEAD_SZ2 = 4
+
+DEFAULT_INPUT_BUFFER_SIZE = 256
 
 
 cdef class Encoder:
     cdef cheatshrink.heatshrink_encoder *_hse
 
     def __cinit__(self, **kwargs):
-        self._hse = cheatshrink.heatshrink_encoder_alloc(
-            kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2),
-            kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2))
+        window_sz2 = kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2)
+        lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
+
+        if window_sz2 < MIN_WINDOW_SZ2 or window_sz2 > MAX_WINDOW_SZ2:
+            msg = 'Invalid window_sz2 {}. Valid values are between {} and {}.'
+            raise ValueError(msg.format(window_sz2, MIN_WINDOW_SZ2, MAX_WINDOW_SZ2))
+
+        if lookahead_sz2 < MIN_LOOKAHEAD_SZ2 or lookahead_sz2 >= window_sz2:
+            msg = 'Invalid lookahead_sz2 {}. Valid values are between {} and {}.'
+            raise ValueError(msg.format(lookahead_sz2, MIN_LOOKAHEAD_SZ2, window_sz2))
+
+        self._hse = cheatshrink.heatshrink_encoder_alloc(window_sz2, lookahead_sz2)
         if self._hse is NULL:
-            raise MemoryError()
+            raise MemoryError
 
     def __dealloc__(self):
         if self._hse is not NULL:
@@ -35,7 +49,7 @@ cdef class Encoder:
         """
         cdef size_t input_size
         res = cheatshrink.heatshrink_encoder_sink(
-            self._hse, <uint8_t *>in_buf.data.as_voidptr,
+            self._hse, in_buf.data.as_uchars,
             <size_t>len(in_buf), &input_size)
         if res < 0:
             raise RuntimeError("Encoder sink failed.")
@@ -52,8 +66,9 @@ cdef class Encoder:
         # Resize to a decent length
         array.resize(out_buf, self.max_output_size)
 
+        # unsigned char == uint8_t guaranteed
         res = cheatshrink.heatshrink_encoder_poll(
-            self._hse, <uint8_t *>out_buf.data.as_voidptr,
+            self._hse, out_buf.data.as_uchars,
             self.max_output_size, &poll_size)
         if res < 0:
             raise RuntimeError("Encoder poll failed.")
@@ -61,7 +76,6 @@ cdef class Encoder:
         # Resize to drop unused elements
         array.resize(out_buf, poll_size)
 
-        # TODO: For the love of god get rid of me
         done = res == cheatshrink.HSER_POLL_EMPTY
         return (out_buf, done)
 
@@ -75,9 +89,10 @@ cdef class Encoder:
         return res == cheatshrink.HSER_FINISH_DONE
 
 
-def encode(buf, window_sz2=11, lookahead_sz2=4):
-    encoder = Encoder()
+def encode(buf, **kwargs):
+    encoder = Encoder(**kwargs)
 
+    # Convert input to a byte representation
     cdef array.array byte_buf = array.array('B', buf)
 
     cdef int total_sunk_size = 0
@@ -98,6 +113,24 @@ def encode(buf, window_sz2=11, lookahead_sz2=4):
                 break
 
     return encoded
+
+
+
+# TODO: Consider using metaclasses for less duplication
+cdef class Decoder:
+    cdef cheatshrink.heatshrink_decoder *_hsd
+
+    def __cinit__(self, **kwargs):
+        self._hsd = cheatshrink.heatshrink_decoder_alloc(
+            kwargs.get('input_buffer_size', DEFAULT_INPUT_BUFFER_SIZE),
+            kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2),
+            kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2))
+        if self._hsd is NULL:
+            raise MemoryError
+
+    def __dealloc__(self):
+        if self._hsd is not NULL:
+            cheatshrink.heatshrink_decoder_free(self._hsd)
 
 
 def decode(buf, window_sz2=11, lookahead_sz2=4):
