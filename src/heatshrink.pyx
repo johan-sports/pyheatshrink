@@ -46,23 +46,24 @@ cdef class Encoder:
         Poll the output from the encoder.
         This should return an array of bytes.
         """
-        cdef uint8_t *out_buf = <uint8_t *>PyMem_Malloc(self.max_output_size * cython.sizeof(uint8_t))
         cdef size_t poll_size
 
-        res = cheatshrink.heatshrink_encoder_poll(self._hse, out_buf, self.max_output_size,
-                                                  &poll_size)
+        cdef array.array out_buf = array.array('B', [])
+        # Resize to a decent length
+        array.resize(out_buf, self.max_output_size)
+
+        res = cheatshrink.heatshrink_encoder_poll(
+            self._hse, <uint8_t *>out_buf.data.as_voidptr,
+            self.max_output_size, &poll_size)
         if res < 0:
             raise RuntimeError("Encoder poll failed.")
 
-        ret_list = []
-        for i in xrange(poll_size):
-            ret_list.append(out_buf[i])
-        PyMem_Free(out_buf)
+        # Resize to drop unused elements
+        array.resize(out_buf, poll_size)
 
-        if res == cheatshrink.HSER_POLL_EMPTY:
-            raise StopIteration
-
-        return ret_list
+        # TODO: For the love of god get rid of me
+        done = res == cheatshrink.HSER_POLL_EMPTY
+        return (out_buf, done)
 
     cdef finish(self):
         """
@@ -71,8 +72,7 @@ cdef class Encoder:
         res = cheatshrink.heatshrink_encoder_finish(self._hse)
         if res < 0:
             raise RuntimeError("Encoder finish failed.")
-        elif res == cheatshrink.HSER_FINISH_DONE:
-            raise StopIteration
+        return res == cheatshrink.HSER_FINISH_DONE
 
 
 def encode(buf, window_sz2=11, lookahead_sz2=4):
@@ -80,28 +80,24 @@ def encode(buf, window_sz2=11, lookahead_sz2=4):
 
     cdef array.array byte_buf = array.array('B', buf)
 
-    total_sunk_size = 0
-    total_encoded = []
+    cdef int total_sunk_size = 0
+    cdef array.array encoded = array.array('B', [])
 
     while True:
         if total_sunk_size < len(byte_buf):
             total_sunk_size += encoder.sink(byte_buf)
 
         while True:
-            try:
-                total_encoded.extend(encoder.poll())
-            except StopIteration as e:
+            polled, done = encoder.poll()
+            array.extend(encoded, polled)
+            if done:
                 break
 
         if total_sunk_size >= len(byte_buf):
-            try:
-                encoder.finish()
-            except StopIteration:
+            if encoder.finish():
                 break
 
-    print('Sunk {} bytes'.format(total_sunk_size))
-    cdef uint8_t[:] ret = array.array('B', total_encoded)
-    return ret
+    return encoded
 
 
 def decode(buf, window_sz2=11, lookahead_sz2=4):
