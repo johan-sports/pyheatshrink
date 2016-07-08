@@ -2,20 +2,21 @@ from libc.stdint cimport uint8_t
 
 cdef extern from "heatshrink/heatshrink_encoder.h":
     ctypedef struct heatshrink_encoder:
-        pass
+        uint8_t window_sz2
+        uint8_t lookahead_sz2
 
-    cdef enum HSE_sink_res:
+    ctypedef enum HSE_sink_res:
         HSER_SINK_OK,
         HSER_SINK_ERROR_NULL = -1
         HSER_SINK_ERROR_MISUSE = -1
 
-    cdef enum HSE_poll_res:
+    ctypedef enum HSE_poll_res:
         HSER_POLL_EMPTY
         HSER_POLL_MORE
         HSER_POLL_ERROR_NULL = -1
         HSER_POLL_ERROR_MISUSE = -2
 
-    cdef enum HSE_finish_res:
+    ctypedef enum HSE_finish_res:
         HSER_FINISH_DONE
         HSER_FINISH_MORE
         HSER_FINISH_ERROR_NULL = -1
@@ -38,20 +39,20 @@ cdef extern from "heatshrink/heatshrink_decoder.h":
         pass
 
     cdef enum HSD_sink_res:
-        HSER_SINK_OK,
-        HSER_SINK_ERROR_NULL = -1
-        HSER_SINK_ERROR_MISUSE = -1
+        HSD_SINK_OK,
+        HSDR_SINK_ERROR_NULL = -1
+        HSDR_SINK_ERROR_MISUSE = -1
 
     cdef enum HSD_poll_res:
-        HSER_POLL_EMPTY
-        HSER_POLL_MORE
-        HSER_POLL_ERROR_NULL = -1
-        HSER_POLL_ERROR_MISUSE = -2
+        HSDR_POLL_EMPTY
+        HSDR_POLL_MORE
+        HSDR_POLL_ERROR_NULL = -1
+        HSDR_POLL_ERROR_MISUSE = -2
 
     cdef enum HSD_finish_res:
-        HSER_FINISH_DONE
-        HSER_FINISH_MORE
-        HSER_FINISH_ERROR_NULL = -1
+        HSDR_FINISH_DONE
+        HSDR_FINISH_MORE
+        HSDR_FINISH_ERROR_NULL = -1
 
     heatshrink_decoder* heatshrink_decoder_alloc(uint8_t window_sz2, uint8_t lookahead_sz2)
 
