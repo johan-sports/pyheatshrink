@@ -91,7 +91,7 @@ cdef class Encoder:
 
 
 def encode(buf, **kwargs):
-    """Encode iterable `buf`."""
+    """Encode iterable `buf` into an array of byte primitives."""
     encoder = Encoder(**kwargs)
 
     # Convert input to a byte representation
@@ -114,9 +114,11 @@ def encode(buf, **kwargs):
             if encoder.finish():
                 break
 
-    # FIXME: Find a better representation for this data.
-    # FIXME: memoryview vs array
-    return memoryview(encoded.tostring())
+    try:
+        # Python 3
+        return encoded.tobytes()
+    except AttributeError:
+        return encoded.tostring()
 
 
 # TODO: Consider using metaclasses for less duplication
@@ -137,7 +139,7 @@ cdef class Decoder:
             raise ValueError(msg.format(lookahead_sz2, MIN_LOOKAHEAD_SZ2, window_sz2))
 
         self._hsd = cheatshrink.heatshrink_decoder_alloc(
-            window_sz2, lookahead_sz2, input_buffer_size)
+            input_buffer_size, window_sz2, lookahead_sz2)
         if self._hsd is NULL:
             raise MemoryError
 
@@ -157,8 +159,8 @@ cdef class Decoder:
         """
         cdef size_t input_size
         res = cheatshrink.heatshrink_decoder_sink(
-            self._hsd, <uint8_t *>in_buf.buf,
-            <size_t>in_buf.shape[0], &input_size)
+            self._hsd, in_buf.data.as_uchars,
+            <size_t>len(in_buf), &input_size)
         if res < 0:
             raise RuntimeError("Encoder sink failed.")
         return input_size
@@ -197,25 +199,28 @@ cdef class Decoder:
         return res == cheatshrink.HSDR_FINISH_DONE
 
 
-# def decode(view, **kwargs):
-#     decoder = Decoder(**kwargs)
+def decode(buf, **kwargs):
+    decoder = Decoder(**kwargs)
 
-#     cdef int total_sunk_size = 0
-#     cdef array.array decoded = array.array('B', [])
-#     while True:
-#         if total_sunk_size < view.shape[0]:
-#             total_sunk_size += decoder.sink(view)
+    cdef array.array byte_buf = array.array('B', buf)
 
-#         while True:
-#             polled, done = decoder.poll()
-#             array.extend(decoded, polled)
-#             if done:
-#                 break
+    cdef int total_sunk_size = 0
+    cdef array.array decoded = array.array('B', [])
+    while True:
+        if total_sunk_size < len(byte_buf):
+            total_sunk_size += decoder.sink(byte_buf)
 
-#         if total_sunk_size >= view.shape[0]:
-#             if decoder.finish():
-#                 break
+        while True:
+            polled, done = decoder.poll()
+            array.extend(decoded, polled)
+            if done:
+                break
 
-#     # FIXME: Find a better representation for this data.
-#     # FIXME: Considerations include: memoryview, array
-#     return decoded.tostring()
+        if total_sunk_size >= len(byte_buf):
+            if decoder.finish():
+                break
+
+    try:
+        return decoded.tobytes()
+    except AttributeError:
+        return decoded.tostring()

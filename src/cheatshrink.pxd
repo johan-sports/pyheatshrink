@@ -63,7 +63,7 @@ cdef extern from "heatshrink/heatshrink_decoder.h":
         HSDR_FINISH_ERROR_NULL = -1
 
     heatshrink_decoder* heatshrink_decoder_alloc(uint16_t input_buffer_size,
-        uint8_t window_sz2, uint8_t lookahead_sz2)
+        uint8_t expansion_buffer_sz2, uint8_t lookahead_sz2)
 
     void heatshrink_decoder_free(heatshrink_decoder* hse)
 
