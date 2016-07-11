@@ -19,8 +19,8 @@ cdef class Encoder:
     cdef cheatshrink.heatshrink_encoder *_hse
 
     def __cinit__(self, **kwargs):
-        window_sz2 = kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2)
-        lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
+        window_sz2 = int(kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2))
+        lookahead_sz2 = int(kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2))
 
         if window_sz2 < MIN_WINDOW_SZ2 or window_sz2 > MAX_WINDOW_SZ2:
             msg = 'Invalid window_sz2 {}. Valid values are between {} and {}.'
@@ -90,6 +90,7 @@ cdef class Encoder:
 
 
 def encode(buf, **kwargs):
+    """Encode iterable `buf`."""
     encoder = Encoder(**kwargs)
 
     # Convert input to a byte representation
@@ -97,7 +98,6 @@ def encode(buf, **kwargs):
 
     cdef int total_sunk_size = 0
     cdef array.array encoded = array.array('B', [])
-
     while True:
         if total_sunk_size < len(byte_buf):
             total_sunk_size += encoder.sink(byte_buf)
@@ -112,8 +112,9 @@ def encode(buf, **kwargs):
             if encoder.finish():
                 break
 
-    return encoded
-
+    # FIXME: Find a better representation for this data.
+    # FIXME: Considerations include: memoryview, array or struct
+    return memoryview(encoded.tostring())
 
 
 # TODO: Consider using metaclasses for less duplication
