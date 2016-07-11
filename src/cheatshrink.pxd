@@ -46,18 +46,18 @@ cdef extern from "heatshrink/heatshrink_decoder.h":
     ctypedef struct heatshrink_decoder:
         pass
 
-    cdef enum HSD_sink_res:
-        HSD_SINK_OK,
+    ctypedef enum HSD_sink_res:
+        HSDR_SINK_OK,
+        HSDR_SINK_FULL
         HSDR_SINK_ERROR_NULL = -1
-        HSDR_SINK_ERROR_MISUSE = -1
 
-    cdef enum HSD_poll_res:
+    ctypedef enum HSD_poll_res:
         HSDR_POLL_EMPTY
         HSDR_POLL_MORE
         HSDR_POLL_ERROR_NULL = -1
-        HSDR_POLL_ERROR_MISUSE = -2
+        HSDR_POLL_ERROR_UNKNOWN = -2
 
-    cdef enum HSD_finish_res:
+    ctypedef enum HSD_finish_res:
         HSDR_FINISH_DONE
         HSDR_FINISH_MORE
         HSDR_FINISH_ERROR_NULL = -1
