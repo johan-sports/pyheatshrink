@@ -21,7 +21,7 @@ def random_string(size):
 
 class EncoderTest(unittest.TestCase):
     def setUp(self):
-        self.encoded = heatshrink.encode('abcde')
+        self.encoded = heatshrink.encode(b'abcde')
 
     def test_encoded_size(self):
         self.assertEqual(len(self.encoded), 6)
@@ -30,59 +30,65 @@ class EncoderTest(unittest.TestCase):
         self.assertEqual(self.encoded, b'\xb0\xd8\xacvK(')
 
     def test_encode_with_window_sz2(self):
-        encoded = heatshrink.encode('abcde', window_sz2=8)
+        encoded = heatshrink.encode(b'abcde', window_sz2=8)
         # FIXME: Prove that this setting changes output
         self.assertEqual(encoded, b'\xb0\xd8\xacvK(')
 
     def test_encode_checks_window_sz2_type(self):
         with self.assertRaises(TypeError):
-            heatshrink.encode('abcde', window_sz2='a string')
+            heatshrink.encode(b'abcde', window_sz2='a string')
         with self.assertRaises(TypeError):
-            heatshrink.encode('abcde', window_sz2=2.123)
+            heatshrink.encode(b'abcde', window_sz2=2.123)
 
     def test_encode_checks_window_sz2_within_limits(self):
         with self.assertRaises(ValueError):
-            heatshrink.encode('abcde', window_sz2=3)
+            heatshrink.encode(b'abcde', window_sz2=3)
         with self.assertRaises(ValueError):
-            heatshrink.encode('abcde', window_sz2=16)
-        heatshrink.encode('abcde', window_sz2=5)
-        heatshrink.encode('abcde', window_sz2=14)
+            heatshrink.encode(b'abcde', window_sz2=16)
+        heatshrink.encode(b'abcde', window_sz2=5)
+        heatshrink.encode(b'abcde', window_sz2=14)
 
     def test_encode_with_lookahead_sz2(self):
-        encoded = heatshrink.encode('abcde', lookahead_sz2=3)
+        encoded = heatshrink.encode(b'abcde', lookahead_sz2=3)
         self.assertEqual(encoded, b'\xb0\xd8\xacvK(')
 
     def test_encode_checks_lookahead_sz2_type(self):
         with self.assertRaises(TypeError):
-            heatshrink.encode('abcde', lookahead_sz2='a string')
+            heatshrink.encode(b'abcde', lookahead_sz2='a string')
         with self.assertRaises(TypeError):
-            heatshrink.encode('abcde', lookahead_sz2=2.123)
+            heatshrink.encode(b'abcde', lookahead_sz2=2.123)
 
     def test_encode_checks_lookahead_sz2_within_limits(self):
         with self.assertRaises(ValueError):
-            heatshrink.encode('abcde', lookahead_sz2=1)
+            heatshrink.encode(b'abcde', lookahead_sz2=1)
         with self.assertRaises(ValueError):
-            heatshrink.encode('abcde', lookahead_sz2=16)
-        heatshrink.encode('abcde', lookahead_sz2=4)
-        heatshrink.encode('abcde', lookahead_sz2=10)
+            heatshrink.encode(b'abcde', lookahead_sz2=16)
+        heatshrink.encode(b'abcde', lookahead_sz2=4)
+        heatshrink.encode(b'abcde', lookahead_sz2=10)
 
     def test_different_params_yield_different_output(self):
-        string = 'A string with stuff in it'
+        string = b'A string with stuff in it'
         self.assertNotEqual(heatshrink.encode(string, window_sz2=8),
                             heatshrink.encode(string, window_sz2=11))
         self.assertNotEqual(heatshrink.encode(string, lookahead_sz2=4),
                             heatshrink.encode(string, lookahead_sz2=8))
 
     def test_valid_encode_types(self):
-        heatshrink.encode('abcde')
-        heatshrink.encode(bytes('abcde'))
-        heatshrink.encode(unicode('abcde'))
-        heatshrink.encode(memoryview(b'abcde'))
+        heatshrink.encode(b'abcde')
+        heatshrink.encode('abcde'.encode('utf8'))
         heatshrink.encode(bytearray([1, 2, 3]))
         heatshrink.encode(array.array('B', [1, 2, 3]))
+        heatshrink.encode([1, 2, 3])
         with self.assertRaises(TypeError):
-            heatshrink.encode([1, 2, 3])
+            heatshrink.encode(memoryview(b'abcde'))
+        try:
+            with self.assertRaises(TypeError):
+                heatshrink.encode(unicode('abcde'))
+        except NameError:  # Python 3
+            pass
+        with self.assertRaises(TypeError):
             heatshrink.encode(lambda x: x)
+        with self.assertRaises(TypeError):
             heatshrink.encode(True)
 
 # class DecoderTest(unittest.TestCase):

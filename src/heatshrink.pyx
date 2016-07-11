@@ -91,7 +91,15 @@ cdef class Encoder:
 
 
 def encode(buf, **kwargs):
-    """Encode iterable `buf` into an array of byte primitives."""
+    """
+    Encode iterable `buf` into an array of byte primitives.
+    """
+    # HACK: Mitigate python 2 issues with value `Integer is required`
+    # HACK: error messages for some types of objects.
+    if isinstance(buf, unicode) or isinstance(buf, memoryview):
+        msg = "cannot use {.__name__} to initialize an array with typecode 'B'"
+        raise TypeError(msg.format(type(buf)))
+
     encoder = Encoder(**kwargs)
 
     # Convert input to a byte representation
