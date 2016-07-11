@@ -38,14 +38,6 @@ class EncoderTest(unittest.TestCase):
         with self.assertRaises(TypeError):
             heatshrink.encode('abcde', window_sz2=2.123)
 
-    def test_encode_handles_window_sz2_overflow(self):
-        with self.assertRaises(OverflowError):
-            heatshrink.encode('abcde', window_sz2=256)
-        with self.assertRaises(OverflowError):
-            heatshrink.encode('abcde', window_sz2=1000)
-        with self.assertRaises(OverflowError):
-            heatshrink.encode('abcde', window_sz2=-1)
-
     def test_encode_checks_window_sz2_within_limits(self):
         with self.assertRaises(ValueError):
             heatshrink.encode('abcde', window_sz2=3)
@@ -63,14 +55,6 @@ class EncoderTest(unittest.TestCase):
             heatshrink.encode('abcde', lookahead_sz2='a string')
         with self.assertRaises(TypeError):
             heatshrink.encode('abcde', lookahead_sz2=2.123)
-
-    def test_encode_handles_lookahead_sz2_overflow(self):
-        with self.assertRaises(OverflowError):
-            heatshrink.encode('abcde', lookahead_sz2=256)
-        with self.assertRaises(OverflowError):
-            heatshrink.encode('abcde', lookahead_sz2=1000)
-        with self.assertRaises(OverflowError):
-            heatshrink.encode('abcde', lookahead_sz2=-1)
 
     def test_encode_checks_lookahead_sz2_within_limits(self):
         with self.assertRaises(ValueError):
@@ -142,14 +126,6 @@ class DecoderTest(unittest.TestCase):
         with self.assertRaises(TypeError):
             heatshrink.decode('abcde', window_sz2=2.123)
 
-    def test_decode_handles_window_sz2_overflow(self):
-        with self.assertRaises(OverflowError):
-            heatshrink.decode('abcde', window_sz2=256)
-        with self.assertRaises(OverflowError):
-            heatshrink.decode('abcde', window_sz2=1000)
-        with self.assertRaises(OverflowError):
-            heatshrink.decode('abcde', window_sz2=-1)
-
     def test_decode_checks_window_sz2_within_limits(self):
         with self.assertRaises(ValueError):
             heatshrink.decode('abcde', window_sz2=3)
@@ -167,14 +143,6 @@ class DecoderTest(unittest.TestCase):
             heatshrink.decode('abcde', lookahead_sz2='a string')
         with self.assertRaises(TypeError):
             heatshrink.decode('abcde', lookahead_sz2=2.123)
-
-    def test_decode_handles_lookahead_sz2_overflow(self):
-        with self.assertRaises(OverflowError):
-            heatshrink.decode('abcde', lookahead_sz2=256)
-        with self.assertRaises(OverflowError):
-            heatshrink.decode('abcde', lookahead_sz2=1000)
-        with self.assertRaises(OverflowError):
-            heatshrink.decode('abcde', lookahead_sz2=-1)
 
     def test_decode_checks_lookahead_sz2_within_limits(self):
         with self.assertRaises(ValueError):
