@@ -15,5 +15,5 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Performance of encoding/decoding large files
 - Compilation for python 3 (still not fully working)
 
-[Unreleased]: https://github.com/johan-sports/pyheatshrink/compare/0.2.0..HEAD
+[Unreleased]: https://github.com/johan-sports/pyheatshrink/compare/0.2.0...HEAD
 [0.2.0]: https://github.com/johan-sports/pyheatshrink/compare/0.1.2...0.2.0
