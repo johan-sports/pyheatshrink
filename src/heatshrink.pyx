@@ -213,6 +213,12 @@ cdef class Decoder:
 def decode(buf, **kwargs):
     decoder = Decoder(**kwargs)
 
+    # HACK: Mitigate python 2 issues with value `Integer is required`
+    # HACK: error messages for some types of objects.
+    if isinstance(buf, unicode) or isinstance(buf, memoryview):
+        msg = "cannot use {.__name__} to initialize an array with typecode 'B'"
+        raise TypeError(msg.format(type(buf)))
+
     cdef array.array byte_buf = array.array('B', buf)
 
     cdef int total_sunk_size = 0
