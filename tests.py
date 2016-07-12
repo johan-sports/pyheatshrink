@@ -34,10 +34,10 @@ class EncoderTest(unittest.TestCase):
         self.assertEqual(encoded, b'\xb0\xd8\xacvK(')
 
     def test_encode_checks_window_sz2_type(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             heatshrink.encode(b'abcde', window_sz2='a string')
         with self.assertRaises(TypeError):
-            heatshrink.encode(b'abcde', window_sz2=2.123)
+            heatshrink.encode(b'abcde', window_sz2=lambda x: None)
 
     def test_encode_checks_window_sz2_within_limits(self):
         with self.assertRaises(ValueError):
@@ -52,10 +52,10 @@ class EncoderTest(unittest.TestCase):
         self.assertEqual(encoded, b'\xb0\xd8\xacvK(')
 
     def test_encode_checks_lookahead_sz2_type(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             heatshrink.encode(b'abcde', lookahead_sz2='a string')
         with self.assertRaises(TypeError):
-            heatshrink.encode(b'abcde', lookahead_sz2=2.123)
+            heatshrink.encode(b'abcde', lookahead_sz2=lambda x: None)
 
     def test_encode_checks_lookahead_sz2_within_limits(self):
         with self.assertRaises(ValueError):
@@ -90,6 +90,7 @@ class EncoderTest(unittest.TestCase):
         with self.assertRaises(TypeError):
             heatshrink.encode(True)
 
+
 class DecoderTest(unittest.TestCase):
     def test_returns_string(self):
         self.assertIsInstance(heatshrink.decode('abcde'), str)
@@ -116,10 +117,10 @@ class DecoderTest(unittest.TestCase):
         self.assertEqual(decoded, 'abcde')
 
     def test_decode_checks_window_sz2_type(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             heatshrink.decode('abcde', window_sz2='a string')
         with self.assertRaises(TypeError):
-            heatshrink.decode('abcde', window_sz2=2.123)
+            heatshrink.decode('abcde', window_sz2=lambda x: None)
 
     def test_decode_checks_window_sz2_within_limits(self):
         with self.assertRaises(ValueError):
@@ -134,10 +135,10 @@ class DecoderTest(unittest.TestCase):
         self.assertEqual(decoded, 'abcde')
 
     def test_decode_checks_lookahead_sz2_type(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             heatshrink.decode('abcde', lookahead_sz2='a string')
         with self.assertRaises(TypeError):
-            heatshrink.decode('abcde', lookahead_sz2=2.123)
+            heatshrink.decode('abcde', lookahead_sz2=lambda x: None)
 
     def test_decode_checks_lookahead_sz2_within_limits(self):
         with self.assertRaises(ValueError):
