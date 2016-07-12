@@ -163,14 +163,14 @@ cdef class Decoder:
         """The maximum allowed size of the output buffer."""
         return 1 << self._hsd.window_sz2
 
-    cdef size_t sink(self, array.array in_buf):
+    cdef size_t sink(self, array.array in_buf, size_t offset=0):
         """
         Sink up to `size` bytes in to the encoder.
         """
         cdef size_t input_size
         res = cheatshrink.heatshrink_decoder_sink(
-            self._hsd, in_buf.data.as_uchars,
-            <size_t>len(in_buf), &input_size)
+            self._hsd, &in_buf.data.as_uchars[offset],
+            <size_t>len(in_buf) - offset, &input_size)
         if res < 0:
             raise RuntimeError("Encoder sink failed.")
         return input_size
@@ -184,6 +184,7 @@ cdef class Decoder:
 
         cdef array.array out_buf = array.array('B', [])
         # Resize to a decent length
+        # TODO: Avoid double resizing for each call
         array.resize(out_buf, self.max_output_size)
 
         # unsigned char == uint8_t guaranteed
@@ -219,7 +220,7 @@ def decode(buf, **kwargs):
     while True:
         if total_sunk_size < len(byte_buf):
             # FIXME: byte_buf should be consumed as we sink
-            total_sunk_size += decoder.sink(byte_buf[total_sunk_size:])
+            total_sunk_size += decoder.sink(byte_buf, total_sunk_size)
 
         while True:
             polled, done = decoder.poll()
