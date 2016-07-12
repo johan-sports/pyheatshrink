@@ -1,5 +1,6 @@
-from setuptools import setup, Extension
+from setuptools import setup
 from Cython.Build import cythonize
+from Cython.Distutils import Extension
 from os import path
 from codecs import open
 
@@ -54,4 +55,4 @@ setup(name='Heatshrink',
       test_suite="tests",
       install_requires=['cython==0.24'],
       zip_safe=False,
-      ext_modules=cythonize([heatshrink_module]))
+      ext_modules=cythonize([heatshrink_module], gdb_debug=True))
