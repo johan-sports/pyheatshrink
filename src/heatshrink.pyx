@@ -70,7 +70,7 @@ cdef class Encoder:
         # unsigned char == uint8_t guaranteed
         res = cheatshrink.heatshrink_encoder_poll(
             self._hse, out_buf.data.as_uchars,
-            self.max_output_size, &poll_size)
+            <size_t>len(out_buf), &poll_size)
         if res < 0:
             raise RuntimeError("Encoder poll failed.")
 
@@ -110,7 +110,11 @@ def encode(buf, **kwargs):
     # TODO: Clean up this logic
     while True:
         if total_sunk_size < len(byte_buf):
-            total_sunk_size += encoder.sink(byte_buf)
+            # FIXME: byte_buf should be consumed as we sink
+            sunk_size = encoder.sink(byte_buf)
+            # Skip inserted data
+            byte_buf = byte_buf[sunk_size:]
+            total_sunk_size += sunk_size
 
         while True:
             polled, done = encoder.poll()
@@ -158,8 +162,7 @@ cdef class Decoder:
     @property
     def max_output_size(self):
         """The maximum allowed size of the output buffer."""
-        # return 1 << self._hsd.window_sz2
-        return 2048
+        return 1 << self._hsd.window_sz2
 
     cdef size_t sink(self, array.array in_buf):
         """
@@ -171,6 +174,7 @@ cdef class Decoder:
             <size_t>len(in_buf), &input_size)
         if res < 0:
             raise RuntimeError("Encoder sink failed.")
+        print('Input size: {}'.format(int(input_size)))
         return input_size
 
     cdef poll(self):
@@ -187,9 +191,10 @@ cdef class Decoder:
         # unsigned char == uint8_t guaranteed
         res = cheatshrink.heatshrink_decoder_poll(
             self._hsd, out_buf.data.as_uchars,
-            self.max_output_size, &poll_size)
+            <size_t>len(out_buf), &poll_size)
         if res < 0:
             raise RuntimeError("Encoder poll failed.")
+        print('Poll size: {}'.format(int(poll_size)))
 
         # Resize to drop unused elements
         array.resize(out_buf, poll_size)
@@ -211,12 +216,16 @@ def decode(buf, **kwargs):
     decoder = Decoder(**kwargs)
 
     cdef array.array byte_buf = array.array('B', buf)
+    cdef int buf_len = len(byte_buf)
 
     cdef int total_sunk_size = 0
     cdef array.array decoded = array.array('B', [])
     while True:
-        if total_sunk_size < len(byte_buf):
-            total_sunk_size += decoder.sink(byte_buf)
+        if total_sunk_size < buf_len:
+            # FIXME: byte_buf should be consumed as we sink
+            sunk_size = decoder.sink(byte_buf)
+            byte_buf = byte_buf[sunk_size:]
+            total_sunk_size += sunk_size
 
         while True:
             polled, done = decoder.poll()
@@ -224,7 +233,7 @@ def decode(buf, **kwargs):
             if done:
                 break
 
-        if total_sunk_size >= len(byte_buf):
+        if total_sunk_size >= buf_len:
             if decoder.finish():
                 break
 

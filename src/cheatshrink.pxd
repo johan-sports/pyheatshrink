@@ -44,7 +44,8 @@ cdef extern from "heatshrink/heatshrink_encoder.h":
 
 cdef extern from "heatshrink/heatshrink_decoder.h":
     ctypedef struct heatshrink_decoder:
-        pass
+        uint8_t window_sz2
+        uint8_t lookahead_sz2
 
     ctypedef enum HSD_sink_res:
         HSDR_SINK_OK,
