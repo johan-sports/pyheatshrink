@@ -21,7 +21,8 @@ cdef validate_bounds(val, name, min=None, max=None):
     Ensure that `val` is larger than `min` and smaller than
     `max`. Throws `ValueError` if those constraints are not met.
 
-    Will throw `ValueError` if both `min` and `max` are None.
+    Throws `ValueError` if both `min` and `max` are None.
+    Also throws `TypeError` if `val` is not a number.
     """
     if min is None and max is None:
         raise ValueError("Expecting either a min or max parameter")
