@@ -16,7 +16,7 @@ DEFAULT_LOOKAHEAD_SZ2 = 4
 DEFAULT_INPUT_BUFFER_SIZE = 2048
 
 
-def validate_bounds(val, name, min=None, max=None):
+cdef validate_bounds(val, name, min=None, max=None):
     """
     Ensure that `val` is larger than `min` and smaller than
     `max`. Throws `ValueError` if those constraints are not met.
