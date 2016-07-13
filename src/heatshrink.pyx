@@ -235,8 +235,3 @@ def decode(buf, **kwargs):
                      encode_params['window_sz2'],
                      encode_params['lookahead_sz2'])
     return encode_impl(decoder, buf)
-
-def empty_array(size):
-    arr = array.array('B', [])
-    array.resize(arr, size)
-    return arr
