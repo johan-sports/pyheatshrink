@@ -28,7 +28,7 @@ cdef validate_bounds(val, name, min=None, max=None):
 
     if not isinstance(val, numbers.Number):
         msg = 'Expected number, got {}'
-        raise TypeError(msg.format(msg.__class__.__name__))
+        raise TypeError(msg.format(val.__class__.__name__))
 
     if min and val < min:
         msg = "{} must be > {}".format(name, min)
