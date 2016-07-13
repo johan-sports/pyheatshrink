@@ -1,4 +1,5 @@
 import array
+import numbers
 cimport cython
 from cpython cimport array
 from libc.stdint cimport uint8_t
@@ -15,14 +16,45 @@ DEFAULT_LOOKAHEAD_SZ2 = 4
 DEFAULT_INPUT_BUFFER_SIZE = 2048
 
 
+def validate_bounds(val, name, min=None, max=None):
+    """
+    Ensure that `val` is larger than `min` and smaller than
+    `max`. Throws `ValueError` if those constraints are not met.
+
+    Will throw `ValueError` if both `min` and `max` are None.
+    """
+    if min is None and max is None:
+        raise ValueError("Expecting either a min or max parameter")
+
+    if not isinstance(val, numbers.Number):
+        msg = 'Expected number, got {}'
+        raise TypeError(msg.format(msg.__class__.__name__))
+
+    if min and val < min:
+        msg = "{} must be > {}".format(name, min)
+    elif max and val > max:
+        msg = "{} must be < {}".format(name, max)
+    else:
+        msg = ''
+
+    if msg:
+        raise ValueError(msg)
+    return val
+
+
 cdef class Writer:
     """Thin wrapper around heatshrink_encoder"""
     cdef cheatshrink.heatshrink_encoder *_hse
 
     def __cinit__(self, window_sz2, lookahead_sz2):
+        validate_bounds(window_sz2, name='window_sz2',
+                        min=MIN_WINDOW_SZ2, max=MAX_WINDOW_SZ2)
+        validate_bounds(lookahead_sz2, name='lookahead_sz2',
+                        min=MIN_LOOKAHEAD_SZ2, max=window_sz2)
+
         self._hse = cheatshrink.heatshrink_encoder_alloc(window_sz2, lookahead_sz2)
         if self._hse is NULL:
-            raise MemoryError('Insufficient memory.')
+            raise MemoryError
 
     def __dealloc__(self):
         if self._hse is not NULL:
@@ -56,10 +88,16 @@ cdef class Reader:
     cdef cheatshrink.heatshrink_decoder *_hsd
 
     def __cinit__(self, input_buffer_size, window_sz2, lookahead_sz2):
+        validate_bounds(input_buffer_size, name='input_buffer_size', min=0)
+        validate_bounds(window_sz2, name='window_sz2',
+                        min=MIN_WINDOW_SZ2, max=MAX_WINDOW_SZ2)
+        validate_bounds(lookahead_sz2, name='lookahead_sz2',
+                        min=MIN_LOOKAHEAD_SZ2, max=window_sz2)
+
         self._hsd = cheatshrink.heatshrink_decoder_alloc(
             input_buffer_size, window_sz2, lookahead_sz2)
         if self._hsd is NULL:
-            raise MemoryError('Insufficient memory.')
+            raise MemoryError
 
     def __dealloc__(self):
         if self._hsd is not NULL:
@@ -103,7 +141,6 @@ cdef size_t sink(Encoder obj, array.array in_buf, size_t offset=0):
     if res < 0:
         raise RuntimeError('Sink failed.')
 
-    print('Sunk {} of {}'.format(sink_size, len(in_buf)))
     return sink_size
 
 
@@ -119,7 +156,6 @@ cdef poll(Encoder obj):
     if res < 0:
         raise RuntimeError('Polling failed.')
 
-    print('Polled {} of {}'.format(poll_size, len(out_buf)))
     # Resize to drop unused elements
     array.resize(out_buf, poll_size)
 
@@ -150,11 +186,9 @@ cdef encode_impl(Encoder obj, buf):
     cdef size_t total_sunk_size = 0
     cdef array.array encoded = array.array('B', [])
     # TODO: Clean up this logic
-    print('*** Running encoding loop with: %s' % obj.__class__.__name__)
     while True:
         if total_sunk_size < len(byte_buf):
             total_sunk_size += sink(obj, byte_buf, total_sunk_size)
-            print('Total sunk size: %s' % total_sunk_size)
 
         # TODO: Make poll an iterator|generator. Run until done
         # for polled in obj.poll():
@@ -176,6 +210,7 @@ cdef encode_impl(Encoder obj, buf):
         return encoded.tostring()
 
 
+
 def encode(buf, **kwargs):
     encode_params = {
         'window_sz2': DEFAULT_WINDOW_SZ2,
@@ -189,7 +224,16 @@ def encode(buf, **kwargs):
 
 
 def decode(buf, **kwargs):
-    decoder = Reader(254, 11, 4)
+    encode_params = {
+        'input_buffer_size': DEFAULT_INPUT_BUFFER_SIZE,
+        'window_sz2': DEFAULT_WINDOW_SZ2,
+        'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,
+    }
+    encode_params.update(kwargs)
+
+    decoder = Reader(encode_params['input_buffer_size'],
+                     encode_params['window_sz2'],
+                     encode_params['lookahead_sz2'])
     return encode_impl(decoder, buf)
 
 def empty_array(size):
