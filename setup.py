@@ -1,13 +1,12 @@
-from setuptools import setup, Extension
+from setuptools import setup
+from Cython.Build import cythonize
+from Cython.Distutils import Extension
 from os import path
 from codecs import open
 
 heatshrink_module = Extension('heatshrink',
-                              include_dirs=['.', './src'],
-                              undef_macros=['NDEBUG'],
-                              extra_compile_args=['--std=c99'],
-                              sources=['src/heatshrink.c',
-                                       'src/dynamic_arrays.c',
+                              include_dirs=['.'],
+                              sources=['src/heatshrink.pyx',
                                        'heatshrink/heatshrink_encoder.c',
                                        'heatshrink/heatshrink_decoder.c'])
 
@@ -53,6 +52,7 @@ setup(name='Heatshrink',
       ],
 
       keywords='compression bindings heatshrink LZSS',
-      test_suite="pytests",
+      test_suite="tests",
+      install_requires=['cython==0.24'],
       zip_safe=False,
-      ext_modules=[heatshrink_module])
+      ext_modules=cythonize([heatshrink_module], gdb_debug=True))
