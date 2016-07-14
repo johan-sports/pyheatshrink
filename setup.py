@@ -18,7 +18,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(name='Heatshrink',
       version='0.2.1',
       # Author details
-      author='JOHAN Sports',
+      author='Antonis Kalou @ JOHAN Sports',
       author_email='antonis@johan-sports.com',
       # Project details
       description='Python bindings to the heatshrink library',
