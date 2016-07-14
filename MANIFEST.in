@@ -1,4 +1,7 @@
 include LICENSE
+include requirements.txt
+include tests.py
+include src/*
 
 # Headers. For some reason, setuptools doesn't support this.
 include heatshrink/heatshrink_common.h
