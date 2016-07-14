@@ -61,11 +61,9 @@ cdef class Writer:
         if self._hse is not NULL:
             cheatshrink.heatshrink_encoder_free(self._hse)
 
-    # Sinkable protocol
     cdef sink(self, uint8_t *in_buf, size_t size, size_t *input_size):
         return cheatshrink.heatshrink_encoder_sink(self._hse, in_buf, size, input_size)
 
-    # Pollable protocol
     @property
     def max_output_size(self):
         return 1 << self._hse.window_sz2
@@ -76,7 +74,6 @@ cdef class Writer:
     cdef is_poll_empty(self, cheatshrink.HSE_poll_res res):
         return res == cheatshrink.HSER_POLL_EMPTY
 
-    # Finishable protocol
     cdef finish(self):
         return cheatshrink.heatshrink_encoder_finish(self._hse)
 
