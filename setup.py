@@ -16,7 +16,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='Heatshrink',
-      version='0.2.0',
+      version='0.2.1',
       # Author details
       author='JOHAN Sports',
       author_email='antonis@johan-sports.com',
@@ -53,5 +53,4 @@ setup(name='Heatshrink',
 
       keywords='compression bindings heatshrink LZSS',
       test_suite="tests",
-      zip_safe=False,
       ext_modules=cythonize([heatshrink_module]))
