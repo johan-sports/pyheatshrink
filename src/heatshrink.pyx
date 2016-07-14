@@ -18,11 +18,11 @@ DEFAULT_INPUT_BUFFER_SIZE = 2048
 
 cdef validate_bounds(val, name, min=None, max=None):
     """
-    Ensure that `val` is larger than `min` and smaller than
-    `max`. Throws `ValueError` if those constraints are not met.
+    Ensure that `val` is larger than `min` and smaller than `max`.
 
-    Throws `ValueError` if both `min` and `max` are None.
-    Also throws `TypeError` if `val` is not a number.
+    Throws `ValueError` if constraints are not met or
+    if both `min` and `max` are None.
+    Throws `TypeError` if `val` is not a number.
     """
     if min is None and max is None:
         raise ValueError("Expecting either a min or max parameter")
@@ -133,7 +133,7 @@ ctypedef fused Encoder:
 
 cdef size_t sink(Encoder obj, array.array in_buf, size_t offset=0):
     """
-    Sink input in to the encoder, with an optional N byte `offset`.
+    Sink input in to the encoder with an optional N byte `offset`.
     """
     cdef size_t sink_size
 
@@ -146,7 +146,12 @@ cdef size_t sink(Encoder obj, array.array in_buf, size_t offset=0):
 
 
 cdef poll(Encoder obj):
-    """Poll output from an encoder/decoder."""
+    """
+    Poll output from an encoder/decoder.
+
+    Returns a tuple containing the poll output buffer
+    and a boolean indicating if polling is finished.
+    """
     cdef size_t poll_size
 
     cdef array.array out_buf = array.array('B', [])
@@ -165,6 +170,12 @@ cdef poll(Encoder obj):
 
 
 cdef finish(Encoder obj):
+    """
+    Notifies the encoder that the input stream is finished.
+
+    Returns `False` if there is more ouput to be processed,
+    meaning that poll should be called again.
+    """
     res = obj.finish()
     if res < 0:
         raise RuntimeError("Finish failed.")
@@ -172,9 +183,7 @@ cdef finish(Encoder obj):
 
 
 cdef encode_impl(Encoder obj, buf):
-    """
-    Encode iterable `buf` into an array of byte primitives.
-    """
+    """Encode iterable `buf` into an array of bytes."""
     # HACK: Mitigate python 2 issues with value `Integer is required`
     # HACK: error messages for some types of objects.
     if isinstance(buf, unicode) or isinstance(buf, memoryview):
@@ -212,6 +221,8 @@ cdef encode_impl(Encoder obj, buf):
 
 
 def encode(buf, **kwargs):
+    """Encode iterable `buf` in to a byte string."""
+
     encode_params = {
         'window_sz2': DEFAULT_WINDOW_SZ2,
         'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,
@@ -224,6 +235,7 @@ def encode(buf, **kwargs):
 
 
 def decode(buf, **kwargs):
+    """Decode iterable `buf` in to a byte string."""
     encode_params = {
         'input_buffer_size': DEFAULT_INPUT_BUFFER_SIZE,
         'window_sz2': DEFAULT_WINDOW_SZ2,
