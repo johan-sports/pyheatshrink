@@ -179,7 +179,7 @@ cdef encode_impl(Encoder obj, buf):
     # HACK: error messages for some types of objects.
     if isinstance(buf, unicode) or isinstance(buf, memoryview):
         msg = "cannot use {.__name__} to initialize an array with typecode 'B'"
-        raise TypeError(msg.format(type(buf)))
+        raise TypeError(msg.format(buf.__class__))
 
     # Convert input to a byte representation
     cdef array.array byte_buf = array.array('B', buf)
