@@ -193,6 +193,7 @@ cdef encode_impl(Encoder obj, buf):
 
         while True:
             polled, done = poll(obj)
+            # TODO: Optimize this
             encoded.extend(polled)
             if done:
                 break
