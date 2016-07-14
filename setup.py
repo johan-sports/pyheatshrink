@@ -53,6 +53,5 @@ setup(name='Heatshrink',
 
       keywords='compression bindings heatshrink LZSS',
       test_suite="tests",
-      install_requires=['cython==0.24'],
       zip_safe=False,
-      ext_modules=cythonize([heatshrink_module], gdb_debug=True))
+      ext_modules=cythonize([heatshrink_module]))

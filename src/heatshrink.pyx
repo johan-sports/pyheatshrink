@@ -186,14 +186,11 @@ cdef encode_impl(Encoder obj, buf):
 
     cdef size_t total_sunk_size = 0
     cdef array.array encoded = array.array('B', [])
-    # TODO: Clean up this logic
+
     while True:
         if total_sunk_size < len(byte_buf):
             total_sunk_size += sink(obj, byte_buf, total_sunk_size)
 
-        # TODO: Make poll an iterator|generator. Run until done
-        # for polled in obj.poll():
-        #     encoded.extend(polled)
         while True:
             polled, done = poll(obj)
             encoded.extend(polled)
@@ -201,6 +198,7 @@ cdef encode_impl(Encoder obj, buf):
                 break
 
         if total_sunk_size >= len(byte_buf):
+            # If the encoder isn't finished we need to re-poll
             if finish(obj):
                 break
 
