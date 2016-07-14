@@ -221,7 +221,30 @@ cdef encode_impl(Encoder obj, buf):
 
 
 def encode(buf, **kwargs):
-    """Encode iterable `buf` in to a byte string."""
+    """
+    Encode iterable `buf` in to a byte string.
+
+    Keyword arguments:
+        window_sz2 (int): Determines how far back in the input can be
+            searched for repeated patterns. Defaults to `DEFAULT_WINDOW_SZ2`.
+            Allowed values are between. `MIN_WINDOW_SZ2` and `MAX_WINDOW_SZ2`.
+        lookahead_sz2 (int): Determines the max length for repeated
+            patterns that are found. Defaults to `DEFAULT_LOOKAHEAD_SZ2`.
+            Allowed values are between `MIN_LOOKAHEAD_SZ2` and the
+            value set for `window_sz2`.
+
+    Returns:
+        str or bytes: A byte string of encoded contents.
+            str is used for Python 2 and bytes for Python 3.
+
+    Raises:
+        ValueError: If `window_sz2` or `lookahead_sz2` are outside their
+            defined ranges.
+        TypeError: If `window_sz2`, `lookahead_sz2` are not valid numbers and
+            if `buf` is not a valid iterable.
+        RuntimeError: Thrown if internal polling or sinking of the
+            encoder/decoder fails.
+    """
 
     encode_params = {
         'window_sz2': DEFAULT_WINDOW_SZ2,
@@ -235,7 +258,33 @@ def encode(buf, **kwargs):
 
 
 def decode(buf, **kwargs):
-    """Decode iterable `buf` in to a byte string."""
+    """
+    Decode iterable `buf` in to a byte string.
+
+    Keyword arguments:
+        input_buffer_size (int): How large an input buffer to use for the decoder.
+            This impacts how much work the decoder can do in a single step,
+            a larger buffer will use more memory.
+        window_sz2 (int): Determines how far back in the input can be
+            searched for repeated patterns. Defaults to `DEFAULT_WINDOW_SZ2`.
+            Allowed values are between. `MIN_WINDOW_SZ2` and `MAX_WINDOW_SZ2`.
+        lookahead_sz2 (int): Determines the max length for repeated
+            patterns that are found. Defaults to `DEFAULT_LOOKAHEAD_SZ2`.
+            Allowed values are between `MIN_LOOKAHEAD_SZ2` and the
+            value set for `window_sz2`.
+
+    Returns:
+        str or bytes: A byte string of decoded contents.
+            str is used for Python 2 and bytes for Python 3.
+
+    Raises:
+        ValueError: If `input_buffer_size`, `window_sz2` or `lookahead_sz2` are
+            outside their defined ranges.
+        TypeError: If `input_buffer_size`, `window_sz2` or `lookahead_sz2` are
+            not valid numbers and if `buf` is not a valid iterable.
+        RuntimeError: Thrown if internal polling or sinking of the
+            encoder/decoder fails.
+    """
     encode_params = {
         'input_buffer_size': DEFAULT_INPUT_BUFFER_SIZE,
         'window_sz2': DEFAULT_WINDOW_SZ2,
