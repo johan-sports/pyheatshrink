@@ -6,6 +6,7 @@ from codecs import open
 
 heatshrink_module = Extension('heatshrink',
                               include_dirs=['.'],
+                              extra_compile_args=['-std=c99'],
                               sources=['src/heatshrink.pyx',
                                        'heatshrink/heatshrink_encoder.c',
                                        'heatshrink/heatshrink_decoder.c'])
