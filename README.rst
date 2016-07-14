@@ -12,6 +12,13 @@ library <https://github.com/atomicobject/heatshrink>`__.
 Installation
 ------------
 
+From PyPI:
+::
+
+   $ easy_install heatshrink
+   $ pip install heatshrink
+
+Manual installation:
 ::
 
     $ python setup.py install
@@ -55,7 +62,7 @@ Both the encoder and decoder allow providing :code:`window_sz2` and :code:`looka
 Check out the `heatshrink configuration page <https://github.com/atomicobject/heatshrink#configuration>`__ for more details.
 
 
-For more use cases, please refer to `pytests.py <pytests.py>`__.
+For more use cases, please refer to `pytests.py <https://github.com/johan-sports/pyheatshrink/blob/master/tests.py>`__.
 
 Benchmarks
 ----------

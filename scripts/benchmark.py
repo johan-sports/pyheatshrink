@@ -3,7 +3,6 @@ import time
 
 import heatshrink
 
-
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
 PLAIN_FILE_PATH = os.path.join(DATA_DIR, 'plain_file.txt')

@@ -1,12 +1,12 @@
-from setuptools import setup, Extension
+from setuptools import setup
+from Cython.Build import cythonize
+from Cython.Distutils import Extension
 from os import path
 from codecs import open
 
 heatshrink_module = Extension('heatshrink',
-                              include_dirs=['.', './src'],
-                              extra_compile_args=['--std=c99'],
-                              sources=['src/heatshrink.c',
-                                       'src/dynamic_arrays.c',
+                              include_dirs=['.'],
+                              sources=['src/heatshrink.pyx',
                                        'heatshrink/heatshrink_encoder.c',
                                        'heatshrink/heatshrink_decoder.c'])
 
@@ -16,9 +16,9 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='Heatshrink',
-      version='0.2.0',
+      version='0.2.1',
       # Author details
-      author='JOHAN Sports',
+      author='Antonis Kalou @ JOHAN Sports',
       author_email='antonis@johan-sports.com',
       # Project details
       description='Python bindings to the heatshrink library',
@@ -52,6 +52,5 @@ setup(name='Heatshrink',
       ],
 
       keywords='compression bindings heatshrink LZSS',
-      test_suite="pytests",
-      zip_safe=False,
-      ext_modules=[heatshrink_module])
+      test_suite="tests",
+      ext_modules=cythonize([heatshrink_module]))
