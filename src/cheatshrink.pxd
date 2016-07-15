@@ -34,10 +34,10 @@ cdef extern from "heatshrink/heatshrink_encoder.h":
     void heatshrink_encoder_free(heatshrink_encoder *hse)
 
     HSE_sink_res heatshrink_encoder_sink(heatshrink_encoder *hse, uint8_t *in_buf,
-                                         size_t size, size_t *input_size)
+                                         size_t size, size_t *input_size) nogil
 
     HSE_poll_res heatshrink_encoder_poll(heatshrink_encoder *hse, uint8_t *out_buf,
-                                         size_t out_buf_size, size_t *output_size)
+                                         size_t out_buf_size, size_t *output_size) nogil
 
     HSE_finish_res heatshrink_encoder_finish(heatshrink_encoder *hse)
 
@@ -70,9 +70,9 @@ cdef extern from "heatshrink/heatshrink_decoder.h":
     void heatshrink_decoder_free(heatshrink_decoder *hsd)
 
     HSD_sink_res heatshrink_decoder_sink(heatshrink_decoder *hsd, uint8_t *in_buf,
-                                         size_t size, size_t *input_size)
+                                         size_t size, size_t *input_size) nogil
 
     HSD_poll_res heatshrink_decoder_poll(heatshrink_decoder *hsd, uint8_t *out_buf,
-                                         size_t out_buf_size, size_t *output_size)
+                                         size_t out_buf_size, size_t *output_size) nogil
 
-    HSD_finish_res heatshrink_decoder_finish(heatshrink_decoder *hsd)
+    HSD_finish_res heatshrink_decoder_finish(heatshrink_decoder *hsd) nogil

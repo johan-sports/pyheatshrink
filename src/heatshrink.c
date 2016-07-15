@@ -581,8 +581,8 @@ struct __pyx_obj_10heatshrink_Reader {
  */
 
 struct __pyx_vtabstruct_10heatshrink_Writer {
-  PyObject *(*sink)(struct __pyx_obj_10heatshrink_Writer *, uint8_t *, size_t, size_t *);
-  PyObject *(*poll)(struct __pyx_obj_10heatshrink_Writer *, uint8_t *, size_t, size_t *);
+  HSE_sink_res (*sink)(struct __pyx_obj_10heatshrink_Writer *, uint8_t *, size_t, size_t *);
+  HSE_poll_res (*poll)(struct __pyx_obj_10heatshrink_Writer *, uint8_t *, size_t, size_t *);
   PyObject *(*is_poll_empty)(struct __pyx_obj_10heatshrink_Writer *, HSE_poll_res);
   PyObject *(*finish)(struct __pyx_obj_10heatshrink_Writer *);
   PyObject *(*is_finished)(struct __pyx_obj_10heatshrink_Writer *, HSE_finish_res);
@@ -599,8 +599,8 @@ static struct __pyx_vtabstruct_10heatshrink_Writer *__pyx_vtabptr_10heatshrink_W
  */
 
 struct __pyx_vtabstruct_10heatshrink_Reader {
-  PyObject *(*sink)(struct __pyx_obj_10heatshrink_Reader *, uint8_t *, size_t, size_t *);
-  PyObject *(*poll)(struct __pyx_obj_10heatshrink_Reader *, uint8_t *, size_t, size_t *);
+  HSD_sink_res (*sink)(struct __pyx_obj_10heatshrink_Reader *, uint8_t *, size_t, size_t *);
+  HSD_poll_res (*poll)(struct __pyx_obj_10heatshrink_Reader *, uint8_t *, size_t, size_t *);
   PyObject *(*is_poll_empty)(struct __pyx_obj_10heatshrink_Reader *, HSD_poll_res);
   PyObject *(*finish)(struct __pyx_obj_10heatshrink_Reader *);
   PyObject *(*is_finished)(struct __pyx_obj_10heatshrink_Reader *, HSD_finish_res);
@@ -959,22 +959,10 @@ static CYTHON_INLINE int resize_smart(arrayobject *self, Py_ssize_t n) {
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 /* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_HSE_sink_res(HSE_sink_res value);
-
-/* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_HSE_poll_res(HSE_poll_res value);
-
-/* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_HSE_finish_res(HSE_finish_res value);
-
-/* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_HSD_sink_res(HSD_sink_res value);
-
-/* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_HSD_poll_res(HSD_poll_res value);
 
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_HSD_finish_res(HSD_finish_res value);
@@ -984,12 +972,6 @@ static CYTHON_INLINE uint8_t __Pyx_PyInt_As_uint8_t(PyObject *);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE uint16_t __Pyx_PyInt_As_uint16_t(PyObject *);
-
-/* CIntFromPy.proto */
-static CYTHON_INLINE HSD_poll_res __Pyx_PyInt_As_HSD_poll_res(PyObject *);
-
-/* CIntFromPy.proto */
-static CYTHON_INLINE HSE_poll_res __Pyx_PyInt_As_HSE_poll_res(PyObject *);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE HSD_finish_res __Pyx_PyInt_As_HSD_finish_res(PyObject *);
@@ -1024,13 +1006,13 @@ static PyTypeObject *__Pyx_ImportType(const char *module_name, const char *class
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static PyObject *__pyx_f_10heatshrink_6Writer_sink(struct __pyx_obj_10heatshrink_Writer *__pyx_v_self, uint8_t *__pyx_v_in_buf, size_t __pyx_v_size, size_t *__pyx_v_input_size); /* proto*/
-static PyObject *__pyx_f_10heatshrink_6Writer_poll(struct __pyx_obj_10heatshrink_Writer *__pyx_v_self, uint8_t *__pyx_v_out_buf, size_t __pyx_v_out_buf_size, size_t *__pyx_v_output_size); /* proto*/
+static HSE_sink_res __pyx_f_10heatshrink_6Writer_sink(struct __pyx_obj_10heatshrink_Writer *__pyx_v_self, uint8_t *__pyx_v_in_buf, size_t __pyx_v_size, size_t *__pyx_v_input_size); /* proto*/
+static HSE_poll_res __pyx_f_10heatshrink_6Writer_poll(struct __pyx_obj_10heatshrink_Writer *__pyx_v_self, uint8_t *__pyx_v_out_buf, size_t __pyx_v_out_buf_size, size_t *__pyx_v_output_size); /* proto*/
 static PyObject *__pyx_f_10heatshrink_6Writer_is_poll_empty(CYTHON_UNUSED struct __pyx_obj_10heatshrink_Writer *__pyx_v_self, HSE_poll_res __pyx_v_res); /* proto*/
 static PyObject *__pyx_f_10heatshrink_6Writer_finish(struct __pyx_obj_10heatshrink_Writer *__pyx_v_self); /* proto*/
 static PyObject *__pyx_f_10heatshrink_6Writer_is_finished(CYTHON_UNUSED struct __pyx_obj_10heatshrink_Writer *__pyx_v_self, HSE_finish_res __pyx_v_res); /* proto*/
-static PyObject *__pyx_f_10heatshrink_6Reader_sink(struct __pyx_obj_10heatshrink_Reader *__pyx_v_self, uint8_t *__pyx_v_in_buf, size_t __pyx_v_size, size_t *__pyx_v_input_size); /* proto*/
-static PyObject *__pyx_f_10heatshrink_6Reader_poll(struct __pyx_obj_10heatshrink_Reader *__pyx_v_self, uint8_t *__pyx_v_out_buf, size_t __pyx_v_out_buf_size, size_t *__pyx_v_output_size); /* proto*/
+static HSD_sink_res __pyx_f_10heatshrink_6Reader_sink(struct __pyx_obj_10heatshrink_Reader *__pyx_v_self, uint8_t *__pyx_v_in_buf, size_t __pyx_v_size, size_t *__pyx_v_input_size); /* proto*/
+static HSD_poll_res __pyx_f_10heatshrink_6Reader_poll(struct __pyx_obj_10heatshrink_Reader *__pyx_v_self, uint8_t *__pyx_v_out_buf, size_t __pyx_v_out_buf_size, size_t *__pyx_v_output_size); /* proto*/
 static PyObject *__pyx_f_10heatshrink_6Reader_is_poll_empty(CYTHON_UNUSED struct __pyx_obj_10heatshrink_Reader *__pyx_v_self, HSD_poll_res __pyx_v_res); /* proto*/
 static PyObject *__pyx_f_10heatshrink_6Reader_finish(struct __pyx_obj_10heatshrink_Reader *__pyx_v_self); /* proto*/
 static PyObject *__pyx_f_10heatshrink_6Reader_is_finished(CYTHON_UNUSED struct __pyx_obj_10heatshrink_Reader *__pyx_v_self, HSD_finish_res __pyx_v_res); /* proto*/
@@ -1899,7 +1881,7 @@ static void __pyx_pf_10heatshrink_6Writer_2__dealloc__(struct __pyx_obj_10heatsh
  *         if self._hse is not NULL:
  *             cheatshrink.heatshrink_encoder_free(self._hse)             # <<<<<<<<<<<<<<
  * 
- *     cdef sink(self, uint8_t *in_buf, size_t size, size_t *input_size):
+ *     cdef cheatshrink.HSE_sink_res sink(self, uint8_t *in_buf, size_t size, size_t *input_size) nogil:
  */
     heatshrink_encoder_free(__pyx_v_self->_hse);
 
@@ -1927,47 +1909,34 @@ static void __pyx_pf_10heatshrink_6Writer_2__dealloc__(struct __pyx_obj_10heatsh
 /* "heatshrink.pyx":64
  *             cheatshrink.heatshrink_encoder_free(self._hse)
  * 
- *     cdef sink(self, uint8_t *in_buf, size_t size, size_t *input_size):             # <<<<<<<<<<<<<<
+ *     cdef cheatshrink.HSE_sink_res sink(self, uint8_t *in_buf, size_t size, size_t *input_size) nogil:             # <<<<<<<<<<<<<<
  *         return cheatshrink.heatshrink_encoder_sink(self._hse, in_buf, size, input_size)
  * 
  */
 
-static PyObject *__pyx_f_10heatshrink_6Writer_sink(struct __pyx_obj_10heatshrink_Writer *__pyx_v_self, uint8_t *__pyx_v_in_buf, size_t __pyx_v_size, size_t *__pyx_v_input_size) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  __Pyx_RefNannySetupContext("sink", 0);
+static HSE_sink_res __pyx_f_10heatshrink_6Writer_sink(struct __pyx_obj_10heatshrink_Writer *__pyx_v_self, uint8_t *__pyx_v_in_buf, size_t __pyx_v_size, size_t *__pyx_v_input_size) {
+  HSE_sink_res __pyx_r;
 
   /* "heatshrink.pyx":65
  * 
- *     cdef sink(self, uint8_t *in_buf, size_t size, size_t *input_size):
+ *     cdef cheatshrink.HSE_sink_res sink(self, uint8_t *in_buf, size_t size, size_t *input_size) nogil:
  *         return cheatshrink.heatshrink_encoder_sink(self._hse, in_buf, size, input_size)             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_HSE_sink_res(heatshrink_encoder_sink(__pyx_v_self->_hse, __pyx_v_in_buf, __pyx_v_size, __pyx_v_input_size)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_r = heatshrink_encoder_sink(__pyx_v_self->_hse, __pyx_v_in_buf, __pyx_v_size, __pyx_v_input_size);
   goto __pyx_L0;
 
   /* "heatshrink.pyx":64
  *             cheatshrink.heatshrink_encoder_free(self._hse)
  * 
- *     cdef sink(self, uint8_t *in_buf, size_t size, size_t *input_size):             # <<<<<<<<<<<<<<
+ *     cdef cheatshrink.HSE_sink_res sink(self, uint8_t *in_buf, size_t size, size_t *input_size) nogil:             # <<<<<<<<<<<<<<
  *         return cheatshrink.heatshrink_encoder_sink(self._hse, in_buf, size, input_size)
  * 
  */
 
   /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("heatshrink.Writer.sink", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
@@ -2003,7 +1972,7 @@ static PyObject *__pyx_pf_10heatshrink_6Writer_15max_output_size___get__(struct 
  *     def max_output_size(self):
  *         return 1 << self._hse.window_sz2             # <<<<<<<<<<<<<<
  * 
- *     cdef poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size):
+ *     cdef cheatshrink.HSE_poll_res poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size) nogil:
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyInt_From_long((1 << __pyx_v_self->_hse->window_sz2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
@@ -2034,47 +2003,34 @@ static PyObject *__pyx_pf_10heatshrink_6Writer_15max_output_size___get__(struct 
 /* "heatshrink.pyx":71
  *         return 1 << self._hse.window_sz2
  * 
- *     cdef poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size):             # <<<<<<<<<<<<<<
+ *     cdef cheatshrink.HSE_poll_res poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size) nogil:             # <<<<<<<<<<<<<<
  *         return cheatshrink.heatshrink_encoder_poll(self._hse, out_buf, out_buf_size, output_size)
  * 
  */
 
-static PyObject *__pyx_f_10heatshrink_6Writer_poll(struct __pyx_obj_10heatshrink_Writer *__pyx_v_self, uint8_t *__pyx_v_out_buf, size_t __pyx_v_out_buf_size, size_t *__pyx_v_output_size) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  __Pyx_RefNannySetupContext("poll", 0);
+static HSE_poll_res __pyx_f_10heatshrink_6Writer_poll(struct __pyx_obj_10heatshrink_Writer *__pyx_v_self, uint8_t *__pyx_v_out_buf, size_t __pyx_v_out_buf_size, size_t *__pyx_v_output_size) {
+  HSE_poll_res __pyx_r;
 
   /* "heatshrink.pyx":72
  * 
- *     cdef poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size):
+ *     cdef cheatshrink.HSE_poll_res poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size) nogil:
  *         return cheatshrink.heatshrink_encoder_poll(self._hse, out_buf, out_buf_size, output_size)             # <<<<<<<<<<<<<<
  * 
  *     cdef is_poll_empty(self, cheatshrink.HSE_poll_res res):
  */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_HSE_poll_res(heatshrink_encoder_poll(__pyx_v_self->_hse, __pyx_v_out_buf, __pyx_v_out_buf_size, __pyx_v_output_size)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_r = heatshrink_encoder_poll(__pyx_v_self->_hse, __pyx_v_out_buf, __pyx_v_out_buf_size, __pyx_v_output_size);
   goto __pyx_L0;
 
   /* "heatshrink.pyx":71
  *         return 1 << self._hse.window_sz2
  * 
- *     cdef poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size):             # <<<<<<<<<<<<<<
+ *     cdef cheatshrink.HSE_poll_res poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size) nogil:             # <<<<<<<<<<<<<<
  *         return cheatshrink.heatshrink_encoder_poll(self._hse, out_buf, out_buf_size, output_size)
  * 
  */
 
   /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("heatshrink.Writer.poll", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
@@ -2482,7 +2438,7 @@ static void __pyx_pf_10heatshrink_6Reader_2__dealloc__(struct __pyx_obj_10heatsh
  *         if self._hsd is not NULL:
  *             cheatshrink.heatshrink_decoder_free(self._hsd)             # <<<<<<<<<<<<<<
  * 
- *     cdef sink(self, uint8_t *in_buf, size_t size, size_t *input_size):
+ *     cdef cheatshrink.HSD_sink_res sink(self, uint8_t *in_buf, size_t size, size_t *input_size) nogil:
  */
     heatshrink_decoder_free(__pyx_v_self->_hsd);
 
@@ -2510,47 +2466,34 @@ static void __pyx_pf_10heatshrink_6Reader_2__dealloc__(struct __pyx_obj_10heatsh
 /* "heatshrink.pyx":104
  *             cheatshrink.heatshrink_decoder_free(self._hsd)
  * 
- *     cdef sink(self, uint8_t *in_buf, size_t size, size_t *input_size):             # <<<<<<<<<<<<<<
+ *     cdef cheatshrink.HSD_sink_res sink(self, uint8_t *in_buf, size_t size, size_t *input_size) nogil:             # <<<<<<<<<<<<<<
  *         return cheatshrink.heatshrink_decoder_sink(self._hsd, in_buf, size, input_size)
  * 
  */
 
-static PyObject *__pyx_f_10heatshrink_6Reader_sink(struct __pyx_obj_10heatshrink_Reader *__pyx_v_self, uint8_t *__pyx_v_in_buf, size_t __pyx_v_size, size_t *__pyx_v_input_size) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  __Pyx_RefNannySetupContext("sink", 0);
+static HSD_sink_res __pyx_f_10heatshrink_6Reader_sink(struct __pyx_obj_10heatshrink_Reader *__pyx_v_self, uint8_t *__pyx_v_in_buf, size_t __pyx_v_size, size_t *__pyx_v_input_size) {
+  HSD_sink_res __pyx_r;
 
   /* "heatshrink.pyx":105
  * 
- *     cdef sink(self, uint8_t *in_buf, size_t size, size_t *input_size):
+ *     cdef cheatshrink.HSD_sink_res sink(self, uint8_t *in_buf, size_t size, size_t *input_size) nogil:
  *         return cheatshrink.heatshrink_decoder_sink(self._hsd, in_buf, size, input_size)             # <<<<<<<<<<<<<<
  * 
  *     @property
  */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_HSD_sink_res(heatshrink_decoder_sink(__pyx_v_self->_hsd, __pyx_v_in_buf, __pyx_v_size, __pyx_v_input_size)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_r = heatshrink_decoder_sink(__pyx_v_self->_hsd, __pyx_v_in_buf, __pyx_v_size, __pyx_v_input_size);
   goto __pyx_L0;
 
   /* "heatshrink.pyx":104
  *             cheatshrink.heatshrink_decoder_free(self._hsd)
  * 
- *     cdef sink(self, uint8_t *in_buf, size_t size, size_t *input_size):             # <<<<<<<<<<<<<<
+ *     cdef cheatshrink.HSD_sink_res sink(self, uint8_t *in_buf, size_t size, size_t *input_size) nogil:             # <<<<<<<<<<<<<<
  *         return cheatshrink.heatshrink_decoder_sink(self._hsd, in_buf, size, input_size)
  * 
  */
 
   /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("heatshrink.Reader.sink", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
@@ -2586,7 +2529,7 @@ static PyObject *__pyx_pf_10heatshrink_6Reader_15max_output_size___get__(struct 
  *     def max_output_size(self):
  *         return 1 << self._hsd.window_sz2             # <<<<<<<<<<<<<<
  * 
- *     cdef poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size):
+ *     cdef cheatshrink.HSD_poll_res poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size) nogil:
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyInt_From_long((1 << __pyx_v_self->_hsd->window_sz2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
@@ -2617,47 +2560,34 @@ static PyObject *__pyx_pf_10heatshrink_6Reader_15max_output_size___get__(struct 
 /* "heatshrink.pyx":111
  *         return 1 << self._hsd.window_sz2
  * 
- *     cdef poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size):             # <<<<<<<<<<<<<<
+ *     cdef cheatshrink.HSD_poll_res poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size) nogil:             # <<<<<<<<<<<<<<
  *         return cheatshrink.heatshrink_decoder_poll(self._hsd, out_buf, out_buf_size, output_size)
  * 
  */
 
-static PyObject *__pyx_f_10heatshrink_6Reader_poll(struct __pyx_obj_10heatshrink_Reader *__pyx_v_self, uint8_t *__pyx_v_out_buf, size_t __pyx_v_out_buf_size, size_t *__pyx_v_output_size) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  __Pyx_RefNannySetupContext("poll", 0);
+static HSD_poll_res __pyx_f_10heatshrink_6Reader_poll(struct __pyx_obj_10heatshrink_Reader *__pyx_v_self, uint8_t *__pyx_v_out_buf, size_t __pyx_v_out_buf_size, size_t *__pyx_v_output_size) {
+  HSD_poll_res __pyx_r;
 
   /* "heatshrink.pyx":112
  * 
- *     cdef poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size):
+ *     cdef cheatshrink.HSD_poll_res poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size) nogil:
  *         return cheatshrink.heatshrink_decoder_poll(self._hsd, out_buf, out_buf_size, output_size)             # <<<<<<<<<<<<<<
  * 
  *     cdef is_poll_empty(self, cheatshrink.HSD_poll_res res):
  */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_HSD_poll_res(heatshrink_decoder_poll(__pyx_v_self->_hsd, __pyx_v_out_buf, __pyx_v_out_buf_size, __pyx_v_output_size)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_r = heatshrink_decoder_poll(__pyx_v_self->_hsd, __pyx_v_out_buf, __pyx_v_out_buf_size, __pyx_v_output_size);
   goto __pyx_L0;
 
   /* "heatshrink.pyx":111
  *         return 1 << self._hsd.window_sz2
  * 
- *     cdef poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size):             # <<<<<<<<<<<<<<
+ *     cdef cheatshrink.HSD_poll_res poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size) nogil:             # <<<<<<<<<<<<<<
  *         return cheatshrink.heatshrink_decoder_poll(self._hsd, out_buf, out_buf_size, output_size)
  * 
  */
 
   /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("heatshrink.Reader.poll", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
@@ -2813,12 +2743,12 @@ static PyObject *__pyx_f_10heatshrink_6Reader_is_finished(CYTHON_UNUSED struct _
 static size_t __pyx_fuse_0__pyx_f_10heatshrink_sink(struct __pyx_obj_10heatshrink_Reader *__pyx_v_obj, arrayobject *__pyx_v_in_buf, struct __pyx_fuse_0__pyx_opt_args_10heatshrink_sink *__pyx_optional_args) {
   size_t __pyx_v_offset = __pyx_k__3;
   size_t __pyx_v_sink_size;
-  PyObject *__pyx_v_res = NULL;
+  HSD_sink_res __pyx_v_res;
   size_t __pyx_r;
   __Pyx_RefNannyDeclarations
   Py_ssize_t __pyx_t_1;
-  PyObject *__pyx_t_2 = NULL;
-  int __pyx_t_3;
+  int __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0sink", 0);
   if (__pyx_optional_args) {
     if (__pyx_optional_args->__pyx_n > 0) {
@@ -2846,10 +2776,7 @@ static size_t __pyx_fuse_0__pyx_f_10heatshrink_sink(struct __pyx_obj_10heatshrin
  *                    len(in_buf) - offset, &sink_size)
  *     if res < 0:
  */
-  __pyx_t_2 = ((struct __pyx_vtabstruct_10heatshrink_Reader *)__pyx_v_obj->__pyx_vtab)->sink(__pyx_v_obj, (&(__pyx_v_in_buf->data.as_uchars[__pyx_v_offset])), (__pyx_t_1 - __pyx_v_offset), (&__pyx_v_sink_size)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_v_res = __pyx_t_2;
-  __pyx_t_2 = 0;
+  __pyx_v_res = ((struct __pyx_vtabstruct_10heatshrink_Reader *)__pyx_v_obj->__pyx_vtab)->sink(__pyx_v_obj, (&(__pyx_v_in_buf->data.as_uchars[__pyx_v_offset])), (__pyx_t_1 - __pyx_v_offset), (&__pyx_v_sink_size));
 
   /* "heatshrink.pyx":139
  *     res = obj.sink(&in_buf.data.as_uchars[offset],
@@ -2858,10 +2785,8 @@ static size_t __pyx_fuse_0__pyx_f_10heatshrink_sink(struct __pyx_obj_10heatshrin
  *         raise RuntimeError('Sink failed.')
  * 
  */
-  __pyx_t_2 = PyObject_RichCompare(__pyx_v_res, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 139, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__pyx_t_3) {
+  __pyx_t_2 = ((__pyx_v_res < 0) != 0);
+  if (__pyx_t_2) {
 
     /* "heatshrink.pyx":140
  *                    len(in_buf) - offset, &sink_size)
@@ -2870,10 +2795,10 @@ static size_t __pyx_fuse_0__pyx_f_10heatshrink_sink(struct __pyx_obj_10heatshrin
  * 
  *     return sink_size
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 140, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_Raise(__pyx_t_2, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(0, 140, __pyx_L1_error)
 
     /* "heatshrink.pyx":139
@@ -2905,11 +2830,10 @@ static size_t __pyx_fuse_0__pyx_f_10heatshrink_sink(struct __pyx_obj_10heatshrin
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_WriteUnraisable("heatshrink.sink", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_res);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -2917,12 +2841,12 @@ static size_t __pyx_fuse_0__pyx_f_10heatshrink_sink(struct __pyx_obj_10heatshrin
 static size_t __pyx_fuse_1__pyx_f_10heatshrink_sink(struct __pyx_obj_10heatshrink_Writer *__pyx_v_obj, arrayobject *__pyx_v_in_buf, struct __pyx_fuse_1__pyx_opt_args_10heatshrink_sink *__pyx_optional_args) {
   size_t __pyx_v_offset = __pyx_k__5;
   size_t __pyx_v_sink_size;
-  PyObject *__pyx_v_res = NULL;
+  HSE_sink_res __pyx_v_res;
   size_t __pyx_r;
   __Pyx_RefNannyDeclarations
   Py_ssize_t __pyx_t_1;
-  PyObject *__pyx_t_2 = NULL;
-  int __pyx_t_3;
+  int __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1sink", 0);
   if (__pyx_optional_args) {
     if (__pyx_optional_args->__pyx_n > 0) {
@@ -2950,10 +2874,7 @@ static size_t __pyx_fuse_1__pyx_f_10heatshrink_sink(struct __pyx_obj_10heatshrin
  *                    len(in_buf) - offset, &sink_size)
  *     if res < 0:
  */
-  __pyx_t_2 = ((struct __pyx_vtabstruct_10heatshrink_Writer *)__pyx_v_obj->__pyx_vtab)->sink(__pyx_v_obj, (&(__pyx_v_in_buf->data.as_uchars[__pyx_v_offset])), (__pyx_t_1 - __pyx_v_offset), (&__pyx_v_sink_size)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 137, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_v_res = __pyx_t_2;
-  __pyx_t_2 = 0;
+  __pyx_v_res = ((struct __pyx_vtabstruct_10heatshrink_Writer *)__pyx_v_obj->__pyx_vtab)->sink(__pyx_v_obj, (&(__pyx_v_in_buf->data.as_uchars[__pyx_v_offset])), (__pyx_t_1 - __pyx_v_offset), (&__pyx_v_sink_size));
 
   /* "heatshrink.pyx":139
  *     res = obj.sink(&in_buf.data.as_uchars[offset],
@@ -2962,10 +2883,8 @@ static size_t __pyx_fuse_1__pyx_f_10heatshrink_sink(struct __pyx_obj_10heatshrin
  *         raise RuntimeError('Sink failed.')
  * 
  */
-  __pyx_t_2 = PyObject_RichCompare(__pyx_v_res, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 139, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__pyx_t_3) {
+  __pyx_t_2 = ((__pyx_v_res < 0) != 0);
+  if (__pyx_t_2) {
 
     /* "heatshrink.pyx":140
  *                    len(in_buf) - offset, &sink_size)
@@ -2974,10 +2893,10 @@ static size_t __pyx_fuse_1__pyx_f_10heatshrink_sink(struct __pyx_obj_10heatshrin
  * 
  *     return sink_size
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 140, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_Raise(__pyx_t_2, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(0, 140, __pyx_L1_error)
 
     /* "heatshrink.pyx":139
@@ -3009,11 +2928,10 @@ static size_t __pyx_fuse_1__pyx_f_10heatshrink_sink(struct __pyx_obj_10heatshrin
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_WriteUnraisable("heatshrink.sink", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_res);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3029,7 +2947,7 @@ static size_t __pyx_fuse_1__pyx_f_10heatshrink_sink(struct __pyx_obj_10heatshrin
 static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatshrink_Reader *__pyx_v_obj) {
   size_t __pyx_v_poll_size;
   arrayobject *__pyx_v_out_buf = 0;
-  PyObject *__pyx_v_res = NULL;
+  HSD_poll_res __pyx_v_res;
   PyObject *__pyx_v_done = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -3038,7 +2956,6 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatsh
   Py_ssize_t __pyx_t_3;
   int __pyx_t_4;
   int __pyx_t_5;
-  HSD_poll_res __pyx_t_6;
   __Pyx_RefNannySetupContext("__pyx_fuse_0poll", 0);
 
   /* "heatshrink.pyx":154
@@ -3085,10 +3002,7 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatsh
  *         raise RuntimeError('Polling failed.')
  */
   __pyx_t_3 = Py_SIZE(((PyObject *)__pyx_v_out_buf)); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 158, __pyx_L1_error)
-  __pyx_t_1 = ((struct __pyx_vtabstruct_10heatshrink_Reader *)__pyx_v_obj->__pyx_vtab)->poll(__pyx_v_obj, __pyx_v_out_buf->data.as_uchars, __pyx_t_3, (&__pyx_v_poll_size)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_res = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_v_res = ((struct __pyx_vtabstruct_10heatshrink_Reader *)__pyx_v_obj->__pyx_vtab)->poll(__pyx_v_obj, __pyx_v_out_buf->data.as_uchars, __pyx_t_3, (&__pyx_v_poll_size));
 
   /* "heatshrink.pyx":159
  * 
@@ -3097,9 +3011,7 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatsh
  *         raise RuntimeError('Polling failed.')
  * 
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_res, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 159, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_5 = ((__pyx_v_res < 0) != 0);
   if (__pyx_t_5) {
 
     /* "heatshrink.pyx":160
@@ -3140,8 +3052,7 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatsh
  *     return (out_buf, done)
  * 
  */
-  __pyx_t_6 = ((HSD_poll_res)__Pyx_PyInt_As_HSD_poll_res(__pyx_v_res)); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 165, __pyx_L1_error)
-  __pyx_t_1 = ((struct __pyx_vtabstruct_10heatshrink_Reader *)__pyx_v_obj->__pyx_vtab)->is_poll_empty(__pyx_v_obj, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_10heatshrink_Reader *)__pyx_v_obj->__pyx_vtab)->is_poll_empty(__pyx_v_obj, __pyx_v_res); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_done = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3182,7 +3093,6 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatsh
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_out_buf);
-  __Pyx_XDECREF(__pyx_v_res);
   __Pyx_XDECREF(__pyx_v_done);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -3192,7 +3102,7 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatsh
 static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatshrink_Writer *__pyx_v_obj) {
   size_t __pyx_v_poll_size;
   arrayobject *__pyx_v_out_buf = 0;
-  PyObject *__pyx_v_res = NULL;
+  HSE_poll_res __pyx_v_res;
   PyObject *__pyx_v_done = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -3201,7 +3111,6 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatsh
   Py_ssize_t __pyx_t_3;
   int __pyx_t_4;
   int __pyx_t_5;
-  HSE_poll_res __pyx_t_6;
   __Pyx_RefNannySetupContext("__pyx_fuse_1poll", 0);
 
   /* "heatshrink.pyx":154
@@ -3248,10 +3157,7 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatsh
  *         raise RuntimeError('Polling failed.')
  */
   __pyx_t_3 = Py_SIZE(((PyObject *)__pyx_v_out_buf)); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 158, __pyx_L1_error)
-  __pyx_t_1 = ((struct __pyx_vtabstruct_10heatshrink_Writer *)__pyx_v_obj->__pyx_vtab)->poll(__pyx_v_obj, __pyx_v_out_buf->data.as_uchars, __pyx_t_3, (&__pyx_v_poll_size)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_res = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_v_res = ((struct __pyx_vtabstruct_10heatshrink_Writer *)__pyx_v_obj->__pyx_vtab)->poll(__pyx_v_obj, __pyx_v_out_buf->data.as_uchars, __pyx_t_3, (&__pyx_v_poll_size));
 
   /* "heatshrink.pyx":159
  * 
@@ -3260,9 +3166,7 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatsh
  *         raise RuntimeError('Polling failed.')
  * 
  */
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_res, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 159, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_5 = ((__pyx_v_res < 0) != 0);
   if (__pyx_t_5) {
 
     /* "heatshrink.pyx":160
@@ -3303,8 +3207,7 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatsh
  *     return (out_buf, done)
  * 
  */
-  __pyx_t_6 = ((HSE_poll_res)__Pyx_PyInt_As_HSE_poll_res(__pyx_v_res)); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 165, __pyx_L1_error)
-  __pyx_t_1 = ((struct __pyx_vtabstruct_10heatshrink_Writer *)__pyx_v_obj->__pyx_vtab)->is_poll_empty(__pyx_v_obj, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
+  __pyx_t_1 = ((struct __pyx_vtabstruct_10heatshrink_Writer *)__pyx_v_obj->__pyx_vtab)->is_poll_empty(__pyx_v_obj, __pyx_v_res); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_done = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3345,7 +3248,6 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_poll(struct __pyx_obj_10heatsh
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_out_buf);
-  __Pyx_XDECREF(__pyx_v_res);
   __Pyx_XDECREF(__pyx_v_done);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -6275,8 +6177,8 @@ PyMODINIT_FUNC PyInit_heatshrink(void)
   /*--- Function export code ---*/
   /*--- Type init code ---*/
   __pyx_vtabptr_10heatshrink_Writer = &__pyx_vtable_10heatshrink_Writer;
-  __pyx_vtable_10heatshrink_Writer.sink = (PyObject *(*)(struct __pyx_obj_10heatshrink_Writer *, uint8_t *, size_t, size_t *))__pyx_f_10heatshrink_6Writer_sink;
-  __pyx_vtable_10heatshrink_Writer.poll = (PyObject *(*)(struct __pyx_obj_10heatshrink_Writer *, uint8_t *, size_t, size_t *))__pyx_f_10heatshrink_6Writer_poll;
+  __pyx_vtable_10heatshrink_Writer.sink = (HSE_sink_res (*)(struct __pyx_obj_10heatshrink_Writer *, uint8_t *, size_t, size_t *))__pyx_f_10heatshrink_6Writer_sink;
+  __pyx_vtable_10heatshrink_Writer.poll = (HSE_poll_res (*)(struct __pyx_obj_10heatshrink_Writer *, uint8_t *, size_t, size_t *))__pyx_f_10heatshrink_6Writer_poll;
   __pyx_vtable_10heatshrink_Writer.is_poll_empty = (PyObject *(*)(struct __pyx_obj_10heatshrink_Writer *, HSE_poll_res))__pyx_f_10heatshrink_6Writer_is_poll_empty;
   __pyx_vtable_10heatshrink_Writer.finish = (PyObject *(*)(struct __pyx_obj_10heatshrink_Writer *))__pyx_f_10heatshrink_6Writer_finish;
   __pyx_vtable_10heatshrink_Writer.is_finished = (PyObject *(*)(struct __pyx_obj_10heatshrink_Writer *, HSE_finish_res))__pyx_f_10heatshrink_6Writer_is_finished;
@@ -6286,8 +6188,8 @@ PyMODINIT_FUNC PyInit_heatshrink(void)
   if (PyObject_SetAttrString(__pyx_m, "Writer", (PyObject *)&__pyx_type_10heatshrink_Writer) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   __pyx_ptype_10heatshrink_Writer = &__pyx_type_10heatshrink_Writer;
   __pyx_vtabptr_10heatshrink_Reader = &__pyx_vtable_10heatshrink_Reader;
-  __pyx_vtable_10heatshrink_Reader.sink = (PyObject *(*)(struct __pyx_obj_10heatshrink_Reader *, uint8_t *, size_t, size_t *))__pyx_f_10heatshrink_6Reader_sink;
-  __pyx_vtable_10heatshrink_Reader.poll = (PyObject *(*)(struct __pyx_obj_10heatshrink_Reader *, uint8_t *, size_t, size_t *))__pyx_f_10heatshrink_6Reader_poll;
+  __pyx_vtable_10heatshrink_Reader.sink = (HSD_sink_res (*)(struct __pyx_obj_10heatshrink_Reader *, uint8_t *, size_t, size_t *))__pyx_f_10heatshrink_6Reader_sink;
+  __pyx_vtable_10heatshrink_Reader.poll = (HSD_poll_res (*)(struct __pyx_obj_10heatshrink_Reader *, uint8_t *, size_t, size_t *))__pyx_f_10heatshrink_6Reader_poll;
   __pyx_vtable_10heatshrink_Reader.is_poll_empty = (PyObject *(*)(struct __pyx_obj_10heatshrink_Reader *, HSD_poll_res))__pyx_f_10heatshrink_6Reader_is_poll_empty;
   __pyx_vtable_10heatshrink_Reader.finish = (PyObject *(*)(struct __pyx_obj_10heatshrink_Reader *))__pyx_f_10heatshrink_6Reader_finish;
   __pyx_vtable_10heatshrink_Reader.is_finished = (PyObject *(*)(struct __pyx_obj_10heatshrink_Reader *, HSD_finish_res))__pyx_f_10heatshrink_6Reader_is_finished;
@@ -7442,33 +7344,6 @@ bad:
     }
 
 /* CIntToPy */
-          static CYTHON_INLINE PyObject* __Pyx_PyInt_From_HSE_sink_res(HSE_sink_res value) {
-    const HSE_sink_res neg_one = (HSE_sink_res) -1, const_zero = (HSE_sink_res) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(HSE_sink_res) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(HSE_sink_res) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-        } else if (sizeof(HSE_sink_res) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-        }
-    } else {
-        if (sizeof(HSE_sink_res) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(HSE_sink_res) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(HSE_sink_res),
-                                     little, !is_unsigned);
-    }
-}
-
-/* CIntToPy */
           static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
     const long neg_one = (long) -1, const_zero = (long) 0;
     const int is_unsigned = neg_one > const_zero;
@@ -7496,33 +7371,6 @@ bad:
 }
 
 /* CIntToPy */
-          static CYTHON_INLINE PyObject* __Pyx_PyInt_From_HSE_poll_res(HSE_poll_res value) {
-    const HSE_poll_res neg_one = (HSE_poll_res) -1, const_zero = (HSE_poll_res) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(HSE_poll_res) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(HSE_poll_res) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-        } else if (sizeof(HSE_poll_res) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-        }
-    } else {
-        if (sizeof(HSE_poll_res) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(HSE_poll_res) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(HSE_poll_res),
-                                     little, !is_unsigned);
-    }
-}
-
-/* CIntToPy */
           static CYTHON_INLINE PyObject* __Pyx_PyInt_From_HSE_finish_res(HSE_finish_res value) {
     const HSE_finish_res neg_one = (HSE_finish_res) -1, const_zero = (HSE_finish_res) 0;
     const int is_unsigned = neg_one > const_zero;
@@ -7545,60 +7393,6 @@ bad:
         int one = 1; int little = (int)*(unsigned char *)&one;
         unsigned char *bytes = (unsigned char *)&value;
         return _PyLong_FromByteArray(bytes, sizeof(HSE_finish_res),
-                                     little, !is_unsigned);
-    }
-}
-
-/* CIntToPy */
-          static CYTHON_INLINE PyObject* __Pyx_PyInt_From_HSD_sink_res(HSD_sink_res value) {
-    const HSD_sink_res neg_one = (HSD_sink_res) -1, const_zero = (HSD_sink_res) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(HSD_sink_res) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(HSD_sink_res) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-        } else if (sizeof(HSD_sink_res) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-        }
-    } else {
-        if (sizeof(HSD_sink_res) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(HSD_sink_res) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(HSD_sink_res),
-                                     little, !is_unsigned);
-    }
-}
-
-/* CIntToPy */
-          static CYTHON_INLINE PyObject* __Pyx_PyInt_From_HSD_poll_res(HSD_poll_res value) {
-    const HSD_poll_res neg_one = (HSD_poll_res) -1, const_zero = (HSD_poll_res) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(HSD_poll_res) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(HSD_poll_res) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-        } else if (sizeof(HSD_poll_res) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-        }
-    } else {
-        if (sizeof(HSD_poll_res) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(HSD_poll_res) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(HSD_poll_res),
                                      little, !is_unsigned);
     }
 }
@@ -7998,376 +7792,6 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to uint16_t");
     return (uint16_t) -1;
-}
-
-/* CIntFromPy */
-          static CYTHON_INLINE HSD_poll_res __Pyx_PyInt_As_HSD_poll_res(PyObject *x) {
-    const HSD_poll_res neg_one = (HSD_poll_res) -1, const_zero = (HSD_poll_res) 0;
-    const int is_unsigned = neg_one > const_zero;
-#if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_Check(x))) {
-        if (sizeof(HSD_poll_res) < sizeof(long)) {
-            __PYX_VERIFY_RETURN_INT(HSD_poll_res, long, PyInt_AS_LONG(x))
-        } else {
-            long val = PyInt_AS_LONG(x);
-            if (is_unsigned && unlikely(val < 0)) {
-                goto raise_neg_overflow;
-            }
-            return (HSD_poll_res) val;
-        }
-    } else
-#endif
-    if (likely(PyLong_Check(x))) {
-        if (is_unsigned) {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (HSD_poll_res) 0;
-                case  1: __PYX_VERIFY_RETURN_INT(HSD_poll_res, digit, digits[0])
-                case 2:
-                    if (8 * sizeof(HSD_poll_res) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSD_poll_res, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSD_poll_res) >= 2 * PyLong_SHIFT) {
-                            return (HSD_poll_res) (((((HSD_poll_res)digits[1]) << PyLong_SHIFT) | (HSD_poll_res)digits[0]));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(HSD_poll_res) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSD_poll_res, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSD_poll_res) >= 3 * PyLong_SHIFT) {
-                            return (HSD_poll_res) (((((((HSD_poll_res)digits[2]) << PyLong_SHIFT) | (HSD_poll_res)digits[1]) << PyLong_SHIFT) | (HSD_poll_res)digits[0]));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(HSD_poll_res) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSD_poll_res, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSD_poll_res) >= 4 * PyLong_SHIFT) {
-                            return (HSD_poll_res) (((((((((HSD_poll_res)digits[3]) << PyLong_SHIFT) | (HSD_poll_res)digits[2]) << PyLong_SHIFT) | (HSD_poll_res)digits[1]) << PyLong_SHIFT) | (HSD_poll_res)digits[0]));
-                        }
-                    }
-                    break;
-            }
-#endif
-#if CYTHON_COMPILING_IN_CPYTHON
-            if (unlikely(Py_SIZE(x) < 0)) {
-                goto raise_neg_overflow;
-            }
-#else
-            {
-                int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
-                if (unlikely(result < 0))
-                    return (HSD_poll_res) -1;
-                if (unlikely(result == 1))
-                    goto raise_neg_overflow;
-            }
-#endif
-            if (sizeof(HSD_poll_res) <= sizeof(unsigned long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(HSD_poll_res, unsigned long, PyLong_AsUnsignedLong(x))
-            } else if (sizeof(HSD_poll_res) <= sizeof(unsigned PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(HSD_poll_res, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
-            }
-        } else {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (HSD_poll_res) 0;
-                case -1: __PYX_VERIFY_RETURN_INT(HSD_poll_res, sdigit, (sdigit) (-(sdigit)digits[0]))
-                case  1: __PYX_VERIFY_RETURN_INT(HSD_poll_res,  digit, +digits[0])
-                case -2:
-                    if (8 * sizeof(HSD_poll_res) - 1 > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSD_poll_res, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSD_poll_res) - 1 > 2 * PyLong_SHIFT) {
-                            return (HSD_poll_res) (((HSD_poll_res)-1)*(((((HSD_poll_res)digits[1]) << PyLong_SHIFT) | (HSD_poll_res)digits[0])));
-                        }
-                    }
-                    break;
-                case 2:
-                    if (8 * sizeof(HSD_poll_res) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSD_poll_res, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSD_poll_res) - 1 > 2 * PyLong_SHIFT) {
-                            return (HSD_poll_res) ((((((HSD_poll_res)digits[1]) << PyLong_SHIFT) | (HSD_poll_res)digits[0])));
-                        }
-                    }
-                    break;
-                case -3:
-                    if (8 * sizeof(HSD_poll_res) - 1 > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSD_poll_res, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSD_poll_res) - 1 > 3 * PyLong_SHIFT) {
-                            return (HSD_poll_res) (((HSD_poll_res)-1)*(((((((HSD_poll_res)digits[2]) << PyLong_SHIFT) | (HSD_poll_res)digits[1]) << PyLong_SHIFT) | (HSD_poll_res)digits[0])));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(HSD_poll_res) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSD_poll_res, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSD_poll_res) - 1 > 3 * PyLong_SHIFT) {
-                            return (HSD_poll_res) ((((((((HSD_poll_res)digits[2]) << PyLong_SHIFT) | (HSD_poll_res)digits[1]) << PyLong_SHIFT) | (HSD_poll_res)digits[0])));
-                        }
-                    }
-                    break;
-                case -4:
-                    if (8 * sizeof(HSD_poll_res) - 1 > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSD_poll_res, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSD_poll_res) - 1 > 4 * PyLong_SHIFT) {
-                            return (HSD_poll_res) (((HSD_poll_res)-1)*(((((((((HSD_poll_res)digits[3]) << PyLong_SHIFT) | (HSD_poll_res)digits[2]) << PyLong_SHIFT) | (HSD_poll_res)digits[1]) << PyLong_SHIFT) | (HSD_poll_res)digits[0])));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(HSD_poll_res) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSD_poll_res, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSD_poll_res) - 1 > 4 * PyLong_SHIFT) {
-                            return (HSD_poll_res) ((((((((((HSD_poll_res)digits[3]) << PyLong_SHIFT) | (HSD_poll_res)digits[2]) << PyLong_SHIFT) | (HSD_poll_res)digits[1]) << PyLong_SHIFT) | (HSD_poll_res)digits[0])));
-                        }
-                    }
-                    break;
-            }
-#endif
-            if (sizeof(HSD_poll_res) <= sizeof(long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(HSD_poll_res, long, PyLong_AsLong(x))
-            } else if (sizeof(HSD_poll_res) <= sizeof(PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(HSD_poll_res, PY_LONG_LONG, PyLong_AsLongLong(x))
-            }
-        }
-        {
-#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
-            PyErr_SetString(PyExc_RuntimeError,
-                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
-#else
-            HSD_poll_res val;
-            PyObject *v = __Pyx_PyNumber_IntOrLong(x);
- #if PY_MAJOR_VERSION < 3
-            if (likely(v) && !PyLong_Check(v)) {
-                PyObject *tmp = v;
-                v = PyNumber_Long(tmp);
-                Py_DECREF(tmp);
-            }
- #endif
-            if (likely(v)) {
-                int one = 1; int is_little = (int)*(unsigned char *)&one;
-                unsigned char *bytes = (unsigned char *)&val;
-                int ret = _PyLong_AsByteArray((PyLongObject *)v,
-                                              bytes, sizeof(val),
-                                              is_little, !is_unsigned);
-                Py_DECREF(v);
-                if (likely(!ret))
-                    return val;
-            }
-#endif
-            return (HSD_poll_res) -1;
-        }
-    } else {
-        HSD_poll_res val;
-        PyObject *tmp = __Pyx_PyNumber_IntOrLong(x);
-        if (!tmp) return (HSD_poll_res) -1;
-        val = __Pyx_PyInt_As_HSD_poll_res(tmp);
-        Py_DECREF(tmp);
-        return val;
-    }
-raise_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "value too large to convert to HSD_poll_res");
-    return (HSD_poll_res) -1;
-raise_neg_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "can't convert negative value to HSD_poll_res");
-    return (HSD_poll_res) -1;
-}
-
-/* CIntFromPy */
-          static CYTHON_INLINE HSE_poll_res __Pyx_PyInt_As_HSE_poll_res(PyObject *x) {
-    const HSE_poll_res neg_one = (HSE_poll_res) -1, const_zero = (HSE_poll_res) 0;
-    const int is_unsigned = neg_one > const_zero;
-#if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_Check(x))) {
-        if (sizeof(HSE_poll_res) < sizeof(long)) {
-            __PYX_VERIFY_RETURN_INT(HSE_poll_res, long, PyInt_AS_LONG(x))
-        } else {
-            long val = PyInt_AS_LONG(x);
-            if (is_unsigned && unlikely(val < 0)) {
-                goto raise_neg_overflow;
-            }
-            return (HSE_poll_res) val;
-        }
-    } else
-#endif
-    if (likely(PyLong_Check(x))) {
-        if (is_unsigned) {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (HSE_poll_res) 0;
-                case  1: __PYX_VERIFY_RETURN_INT(HSE_poll_res, digit, digits[0])
-                case 2:
-                    if (8 * sizeof(HSE_poll_res) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSE_poll_res, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSE_poll_res) >= 2 * PyLong_SHIFT) {
-                            return (HSE_poll_res) (((((HSE_poll_res)digits[1]) << PyLong_SHIFT) | (HSE_poll_res)digits[0]));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(HSE_poll_res) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSE_poll_res, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSE_poll_res) >= 3 * PyLong_SHIFT) {
-                            return (HSE_poll_res) (((((((HSE_poll_res)digits[2]) << PyLong_SHIFT) | (HSE_poll_res)digits[1]) << PyLong_SHIFT) | (HSE_poll_res)digits[0]));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(HSE_poll_res) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSE_poll_res, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSE_poll_res) >= 4 * PyLong_SHIFT) {
-                            return (HSE_poll_res) (((((((((HSE_poll_res)digits[3]) << PyLong_SHIFT) | (HSE_poll_res)digits[2]) << PyLong_SHIFT) | (HSE_poll_res)digits[1]) << PyLong_SHIFT) | (HSE_poll_res)digits[0]));
-                        }
-                    }
-                    break;
-            }
-#endif
-#if CYTHON_COMPILING_IN_CPYTHON
-            if (unlikely(Py_SIZE(x) < 0)) {
-                goto raise_neg_overflow;
-            }
-#else
-            {
-                int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
-                if (unlikely(result < 0))
-                    return (HSE_poll_res) -1;
-                if (unlikely(result == 1))
-                    goto raise_neg_overflow;
-            }
-#endif
-            if (sizeof(HSE_poll_res) <= sizeof(unsigned long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(HSE_poll_res, unsigned long, PyLong_AsUnsignedLong(x))
-            } else if (sizeof(HSE_poll_res) <= sizeof(unsigned PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(HSE_poll_res, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
-            }
-        } else {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (HSE_poll_res) 0;
-                case -1: __PYX_VERIFY_RETURN_INT(HSE_poll_res, sdigit, (sdigit) (-(sdigit)digits[0]))
-                case  1: __PYX_VERIFY_RETURN_INT(HSE_poll_res,  digit, +digits[0])
-                case -2:
-                    if (8 * sizeof(HSE_poll_res) - 1 > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSE_poll_res, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSE_poll_res) - 1 > 2 * PyLong_SHIFT) {
-                            return (HSE_poll_res) (((HSE_poll_res)-1)*(((((HSE_poll_res)digits[1]) << PyLong_SHIFT) | (HSE_poll_res)digits[0])));
-                        }
-                    }
-                    break;
-                case 2:
-                    if (8 * sizeof(HSE_poll_res) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSE_poll_res, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSE_poll_res) - 1 > 2 * PyLong_SHIFT) {
-                            return (HSE_poll_res) ((((((HSE_poll_res)digits[1]) << PyLong_SHIFT) | (HSE_poll_res)digits[0])));
-                        }
-                    }
-                    break;
-                case -3:
-                    if (8 * sizeof(HSE_poll_res) - 1 > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSE_poll_res, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSE_poll_res) - 1 > 3 * PyLong_SHIFT) {
-                            return (HSE_poll_res) (((HSE_poll_res)-1)*(((((((HSE_poll_res)digits[2]) << PyLong_SHIFT) | (HSE_poll_res)digits[1]) << PyLong_SHIFT) | (HSE_poll_res)digits[0])));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(HSE_poll_res) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSE_poll_res, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSE_poll_res) - 1 > 3 * PyLong_SHIFT) {
-                            return (HSE_poll_res) ((((((((HSE_poll_res)digits[2]) << PyLong_SHIFT) | (HSE_poll_res)digits[1]) << PyLong_SHIFT) | (HSE_poll_res)digits[0])));
-                        }
-                    }
-                    break;
-                case -4:
-                    if (8 * sizeof(HSE_poll_res) - 1 > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSE_poll_res, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSE_poll_res) - 1 > 4 * PyLong_SHIFT) {
-                            return (HSE_poll_res) (((HSE_poll_res)-1)*(((((((((HSE_poll_res)digits[3]) << PyLong_SHIFT) | (HSE_poll_res)digits[2]) << PyLong_SHIFT) | (HSE_poll_res)digits[1]) << PyLong_SHIFT) | (HSE_poll_res)digits[0])));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(HSE_poll_res) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(HSE_poll_res, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(HSE_poll_res) - 1 > 4 * PyLong_SHIFT) {
-                            return (HSE_poll_res) ((((((((((HSE_poll_res)digits[3]) << PyLong_SHIFT) | (HSE_poll_res)digits[2]) << PyLong_SHIFT) | (HSE_poll_res)digits[1]) << PyLong_SHIFT) | (HSE_poll_res)digits[0])));
-                        }
-                    }
-                    break;
-            }
-#endif
-            if (sizeof(HSE_poll_res) <= sizeof(long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(HSE_poll_res, long, PyLong_AsLong(x))
-            } else if (sizeof(HSE_poll_res) <= sizeof(PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(HSE_poll_res, PY_LONG_LONG, PyLong_AsLongLong(x))
-            }
-        }
-        {
-#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
-            PyErr_SetString(PyExc_RuntimeError,
-                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
-#else
-            HSE_poll_res val;
-            PyObject *v = __Pyx_PyNumber_IntOrLong(x);
- #if PY_MAJOR_VERSION < 3
-            if (likely(v) && !PyLong_Check(v)) {
-                PyObject *tmp = v;
-                v = PyNumber_Long(tmp);
-                Py_DECREF(tmp);
-            }
- #endif
-            if (likely(v)) {
-                int one = 1; int is_little = (int)*(unsigned char *)&one;
-                unsigned char *bytes = (unsigned char *)&val;
-                int ret = _PyLong_AsByteArray((PyLongObject *)v,
-                                              bytes, sizeof(val),
-                                              is_little, !is_unsigned);
-                Py_DECREF(v);
-                if (likely(!ret))
-                    return val;
-            }
-#endif
-            return (HSE_poll_res) -1;
-        }
-    } else {
-        HSE_poll_res val;
-        PyObject *tmp = __Pyx_PyNumber_IntOrLong(x);
-        if (!tmp) return (HSE_poll_res) -1;
-        val = __Pyx_PyInt_As_HSE_poll_res(tmp);
-        Py_DECREF(tmp);
-        return val;
-    }
-raise_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "value too large to convert to HSE_poll_res");
-    return (HSE_poll_res) -1;
-raise_neg_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "can't convert negative value to HSE_poll_res");
-    return (HSE_poll_res) -1;
 }
 
 /* CIntFromPy */

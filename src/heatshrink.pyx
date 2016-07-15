@@ -61,14 +61,14 @@ cdef class Writer:
         if self._hse is not NULL:
             cheatshrink.heatshrink_encoder_free(self._hse)
 
-    cdef sink(self, uint8_t *in_buf, size_t size, size_t *input_size):
+    cdef cheatshrink.HSE_sink_res sink(self, uint8_t *in_buf, size_t size, size_t *input_size) nogil:
         return cheatshrink.heatshrink_encoder_sink(self._hse, in_buf, size, input_size)
 
     @property
     def max_output_size(self):
         return 1 << self._hse.window_sz2
 
-    cdef poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size):
+    cdef cheatshrink.HSE_poll_res poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size) nogil:
         return cheatshrink.heatshrink_encoder_poll(self._hse, out_buf, out_buf_size, output_size)
 
     cdef is_poll_empty(self, cheatshrink.HSE_poll_res res):
@@ -101,14 +101,14 @@ cdef class Reader:
         if self._hsd is not NULL:
             cheatshrink.heatshrink_decoder_free(self._hsd)
 
-    cdef sink(self, uint8_t *in_buf, size_t size, size_t *input_size):
+    cdef cheatshrink.HSD_sink_res sink(self, uint8_t *in_buf, size_t size, size_t *input_size) nogil:
         return cheatshrink.heatshrink_decoder_sink(self._hsd, in_buf, size, input_size)
 
     @property
     def max_output_size(self):
         return 1 << self._hsd.window_sz2
 
-    cdef poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size):
+    cdef cheatshrink.HSD_poll_res poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size) nogil:
         return cheatshrink.heatshrink_decoder_poll(self._hsd, out_buf, out_buf_size, output_size)
 
     cdef is_poll_empty(self, cheatshrink.HSD_poll_res res):
