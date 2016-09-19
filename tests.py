@@ -174,11 +174,8 @@ class EncoderToDecoderTest(unittest.TestCase):
         encoded = heatshrink.encode(quotes)
         self.assertEqual(heatshrink.decode(encoded), quotes)
 
-    # # For large files the decoding step fails for some reason
     def test_with_large_strings(self):
         test_sizes = [1000, 10000, 100000]
-
-        # FIXME: Fails at exactly 275 bytes. Has to do with the decoding algorithm
 
         for size in test_sizes:
             contents = random_string(size)
