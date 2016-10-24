@@ -1180,7 +1180,7 @@ static const char __pyx_k_DEFAULT_WINDOW_SZ2[] = "DEFAULT_WINDOW_SZ2";
 static const char __pyx_k_Expected_number_got[] = "Expected number, got {}";
 static const char __pyx_k_DEFAULT_LOOKAHEAD_SZ2[] = "DEFAULT_LOOKAHEAD_SZ2";
 static const char __pyx_k_DEFAULT_INPUT_BUFFER_SIZE[] = "DEFAULT_INPUT_BUFFER_SIZE";
-static const char __pyx_k_Users_slacker_Programming_johan[] = "/Users/slacker/Programming/johan/pyheatshrink/src/heatshrink.pyx";
+static const char __pyx_k_home_slacker_Programming_johan[] = "/home/slacker/Programming/johan/pyheatshrink/src/heatshrink.pyx";
 static const char __pyx_k_Expecting_either_a_min_or_max_pa[] = "Expecting either a min or max parameter";
 static const char __pyx_k_cannot_use___name___to_initializ[] = "cannot use {.__name__} to initialize an array with typecode 'B'";
 static PyObject *__pyx_n_s_AttributeError;
@@ -1200,7 +1200,6 @@ static PyObject *__pyx_kp_s_Polling_failed;
 static PyObject *__pyx_n_s_RuntimeError;
 static PyObject *__pyx_kp_s_Sink_failed;
 static PyObject *__pyx_n_s_TypeError;
-static PyObject *__pyx_kp_s_Users_slacker_Programming_johan;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_kp_s__2;
 static PyObject *__pyx_n_s_array;
@@ -1215,6 +1214,7 @@ static PyObject *__pyx_n_s_encoder;
 static PyObject *__pyx_n_s_extend;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_heatshrink;
+static PyObject *__pyx_kp_s_home_slacker_Programming_johan;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_input_buffer_size;
 static PyObject *__pyx_n_s_kwargs;
@@ -5948,7 +5948,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_RuntimeError, __pyx_k_RuntimeError, sizeof(__pyx_k_RuntimeError), 0, 0, 1, 1},
   {&__pyx_kp_s_Sink_failed, __pyx_k_Sink_failed, sizeof(__pyx_k_Sink_failed), 0, 0, 1, 0},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
-  {&__pyx_kp_s_Users_slacker_Programming_johan, __pyx_k_Users_slacker_Programming_johan, sizeof(__pyx_k_Users_slacker_Programming_johan), 0, 0, 1, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_kp_s__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 0, 1, 0},
   {&__pyx_n_s_array, __pyx_k_array, sizeof(__pyx_k_array), 0, 0, 1, 1},
@@ -5963,6 +5962,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_extend, __pyx_k_extend, sizeof(__pyx_k_extend), 0, 0, 1, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_heatshrink, __pyx_k_heatshrink, sizeof(__pyx_k_heatshrink), 0, 0, 1, 1},
+  {&__pyx_kp_s_home_slacker_Programming_johan, __pyx_k_home_slacker_Programming_johan, sizeof(__pyx_k_home_slacker_Programming_johan), 0, 0, 1, 0},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_input_buffer_size, __pyx_k_input_buffer_size, sizeof(__pyx_k_input_buffer_size), 0, 0, 1, 1},
   {&__pyx_n_s_kwargs, __pyx_k_kwargs, sizeof(__pyx_k_kwargs), 0, 0, 1, 1},
@@ -6061,7 +6061,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__11 = PyTuple_Pack(4, __pyx_n_s_buf, __pyx_n_s_kwargs, __pyx_n_s_encode_params, __pyx_n_s_encoder); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_slacker_Programming_johan, __pyx_n_s_encode, 220, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_slacker_Programming_johan, __pyx_n_s_encode, 220, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 220, __pyx_L1_error)
 
   /* "heatshrink.pyx":257
  * 
@@ -6073,7 +6073,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__13 = PyTuple_Pack(4, __pyx_n_s_buf, __pyx_n_s_kwargs, __pyx_n_s_encode_params, __pyx_n_s_decoder); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 257, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_slacker_Programming_johan, __pyx_n_s_decode, 257, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 257, __pyx_L1_error)
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_slacker_Programming_johan, __pyx_n_s_decode, 257, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 257, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;

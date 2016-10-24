@@ -4,10 +4,14 @@ PyHeatshrink
 Python binding to the `heatshrink LZSS compression
 library <https://github.com/atomicobject/heatshrink>`__.
 
-| *Supported versions:*
-| Python >= 2.6
-
-| Note: Python 3 support is experimental.
+| **Supported versions:**
+| Python >= 2.6 -- Full
+| Python 3 -- Experimental
+| 
+| **Tested platforms:**
+| * OS X > 10.10
+| * Debian 8
+| * FreeBSD 10
 
 Installation
 ------------

@@ -1,15 +1,31 @@
-from setuptools import setup
-from Cython.Build import cythonize
-from Cython.Distutils import Extension
 from os import path
 from codecs import open
+from setuptools import setup, Extension
+
+try:
+    from Cython.Build import cythonize
+except ImportError:
+    USE_CYTHON = False
+else:
+    USE_CYTHON = True
+
+
+# Compiled file extension to use. If we're not using Cython,
+# just use the plain C file.
+EXT = '.pyx' if USE_CYTHON else '.c'
 
 heatshrink_module = Extension('heatshrink',
                               include_dirs=['.'],
                               extra_compile_args=['-std=c99'],
-                              sources=['src/heatshrink.pyx',
+                              sources=['src/heatshrink' + EXT,
                                        'heatshrink/heatshrink_encoder.c',
                                        'heatshrink/heatshrink_decoder.c'])
+
+if USE_CYTHON:
+    extensions = cythonize([heatshrink_module])
+else:
+    extensions = [heatshrink_module]
+
 
 here = path.abspath(path.dirname(__file__))
 
@@ -17,7 +33,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='Heatshrink',
-      version='0.2.3',
+      version='0.2.4',
       # Author details
       author='Antonis Kalou @ JOHAN Sports',
       author_email='antonis@johan-sports.com',
@@ -54,4 +70,4 @@ setup(name='Heatshrink',
 
       keywords='compression bindings heatshrink LZSS',
       test_suite="tests",
-      ext_modules=cythonize([heatshrink_module]))
+      ext_modules=extensions)

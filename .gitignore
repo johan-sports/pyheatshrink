@@ -4,5 +4,6 @@ dist/
 cython_debug/
 
 *.so
+*.egg
 *.egg-info
 *.pyc
