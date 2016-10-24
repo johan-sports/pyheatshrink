@@ -9,6 +9,13 @@ library <https://github.com/atomicobject/heatshrink>`__.
 
 | Note: Python 3 support is experimental.
 
+PyHeatshrink has been tested on:
+
+* OS X > 10.10
+* Debian 8
+* FreeBSD 10
+
+
 Installation
 ------------
 
