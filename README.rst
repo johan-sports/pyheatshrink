@@ -7,7 +7,7 @@ library <https://github.com/atomicobject/heatshrink>`__.
 | **Supported versions:**
 | Python >= 2.6 -- Full
 | Python 3 -- Experimental
-
+| 
 | **Tested platforms:**
 | * OS X > 10.10
 | * Debian 8
