@@ -299,17 +299,9 @@ def decode(buf, **kwargs):
     return encode_impl(decoder, buf)
 
 
-READ, WRITE = 1, 2
 
-
-def open(filename, mode='rb', **kwargs):
-    if isinstance(filename, (str, unicode)):
-        binary_file = EncodedFile(filename, mode, **kwargs)
-    elif hasattr(filename, "read") or hasattr(filename, "write"):
-        binary_file = EncodedFile(None, mode, fileobj=filename, **kwargs)
-    else:
-        raise TypeError('filename must be a str or unicode object, or a file')
-    return binary_file
+_MODE_READ = 1
+_MODE_WRITE = 2
 
 
 class EncodedFile(io.BufferedIOBase):
@@ -324,10 +316,6 @@ class EncodedFile(io.BufferedIOBase):
     def __init__(self, filename=None, mode=None,
                  fileobj=None, **compress_options):
         self.compress_options = compress_options
-        # Make sure we don't inadvertently enable universal newlines on the
-        # underlying file object - in read mode, this causes data corruption.
-        if mode:
-            mode = mode.replace('U', '')
         # guarantee that the file is opened in binary mode on platforms
         # that care about that kind of thing.
         if mode and 'b' not in mode:
@@ -346,7 +334,7 @@ class EncodedFile(io.BufferedIOBase):
                 mode = 'rb'
 
         if mode[0:1] == 'r':
-            self.mode = READ
+            self.mode = _MODE_READ
             # Set flag indicating the start of a new member
             self._new_member = True
             # Buffer data from file.
@@ -360,7 +348,7 @@ class EncodedFile(io.BufferedIOBase):
             # Starts small, scales exponentially
             self.min_readsize = 100
         elif mode[0:1] == 'w' or mode[0:1] == 'a':
-            self.mode = WRITE
+            self.mode = _MODE_WRITE
             self._init_write(filename)
         else:
             msg = 'Mode {} not supported'
@@ -394,7 +382,7 @@ class EncodedFile(io.BufferedIOBase):
 
     def write(self, data):
         self._check_not_closed()
-        if self.mode != WRITE:
+        if self.mode != _MODE_WRITE:
             import errno
             raise IOError(errno.EBADF, 'write() on read-only EncodedFile object')
 
@@ -414,7 +402,7 @@ class EncodedFile(io.BufferedIOBase):
 
     def read(self, size=-1):
         self._check_not_closed()
-        if self.mode != READ:
+        if self.mode != _MODE_READ:
             import errno
             raise IOError(errno.EBADF, 'read() on write-only EncodedFile object')
 
@@ -457,8 +445,8 @@ class EncodedFile(io.BufferedIOBase):
             raise EOFError('Reached EOF')
 
         if self._new_member:
-            pos = self.fileobj.tell()
-            self.fileobj.seek(0, 2)
+            pos = self.fileobj.tell()  # Save current position
+            self.fileobj.seek(0, 2)    # Seek to end of file
             if pos == self.fileobj.tell():
                 raise EOFError('Reached EOF')
             else:
@@ -496,14 +484,17 @@ class EncodedFile(io.BufferedIOBase):
 
     def flush(self):
         self._check_not_closed()
-        if self.mode == WRITE:
+        if self.mode == _MODE_WRITE:
             self.fileobj.flush()
 
     def fileno(self):
         return self.fileobj.fileno()
 
     def rewind(self):
-        if self.mode != READ:
+        """
+        Reset file back to the beginning.
+        """
+        if self.mode != _MODE_READ:
             raise IOError("Can't rewind in write mode")
         self.fileobj.seek(0)
         self._new_member = True
@@ -513,10 +504,16 @@ class EncodedFile(io.BufferedIOBase):
         self.offset = 0
 
     def readable(self):
-        return self.mode == READ
+        """
+        Returns true if the file can be read from.
+        """
+        return self.mode == _MODE_READ
 
     def writeable(self):
-        return self.mode == WRITE
+        """
+        Returns true if the file can be written to.
+        """
+        return self.mode == _MODE_WRITE
 
     def seekable(self):
         return True
@@ -527,21 +524,21 @@ class EncodedFile(io.BufferedIOBase):
                 offset = self.offset + offset
             else:
                 raise ValueError('Seek from end not supported')
-        if self.mode == WRITE:
+        if self.mode == _MODE_WRITE:
             if offset < self.offset:
                 raise IOError('Negative seek in write mode')
             count = offset - self.offset
-            # for i in xrange(count // 1024):
-            #     self.write(1024 * '\0')
-            # self.write((count % 1024) * '\0')
-        elif self.mode == READ:
+            for i in xrange(count // 1024):
+                self.write(1024 * '\0')
+            self.write((count % 1024) * '\0')
+        elif self.mode == _MODE_READ:
             if offset < self.offset:
                 # for negative seek, rewind and do positive seek
                 self.rewind()
             count = offset - self.offset
-            # for i in xrange(count // 1024):
-            #     self.read(1024)
-            # self.read(count % 1024)
+            for i in xrange(count // 1024):
+                self.read(1024)
+            self.read(count % 1024)
 
         return self.offset
 
@@ -584,3 +581,12 @@ class EncodedFile(io.BufferedIOBase):
             self.min_readsize = min(readsize, self.min_readsize * 2, 512)
         return ''.join(bufs)
 
+
+def open(filename, mode='rb', **kwargs):
+    if isinstance(filename, (str, unicode)):
+        binary_file = EncodedFile(filename, mode, **kwargs)
+    elif hasattr(filename, "read") or hasattr(filename, "write"):
+        binary_file = EncodedFile(None, mode, fileobj=filename, **kwargs)
+    else:
+        raise TypeError('filename must be a str or unicode object, or a file')
+    return binary_file
