@@ -1,3 +1,7 @@
+import io
+import sys
+import __builtin__
+
 import array
 import numbers
 cimport cython
@@ -293,3 +297,290 @@ def decode(buf, **kwargs):
                      encode_params['window_sz2'],
                      encode_params['lookahead_sz2'])
     return encode_impl(decoder, buf)
+
+
+READ, WRITE = 1, 2
+
+
+def open(filename, mode='rb', **kwargs):
+    if isinstance(filename, (str, unicode)):
+        binary_file = EncodedFile(filename, mode, **kwargs)
+    elif hasattr(filename, "read") or hasattr(filename, "write"):
+        binary_file = EncodedFile(None, mode, fileobj=filename, **kwargs)
+    else:
+        raise TypeError('filename must be a str or unicode object, or a file')
+    return binary_file
+
+
+class EncodedFile(io.BufferedIOBase):
+    """
+    The EncodedFile class simulates most of the methods of a file object with
+    the exception of the readinto() and truncate() methods.
+    """
+
+    fileobj = None
+    max_read_chunk = 5 * 1024 * 1024  # 5Mb
+
+    def __init__(self, filename=None, mode=None,
+                 fileobj=None, **compress_options):
+        self.compress_options = compress_options
+        # Make sure we don't inadvertently enable universal newlines on the
+        # underlying file object - in read mode, this causes data corruption.
+        if mode:
+            mode = mode.replace('U', '')
+        # guarantee that the file is opened in binary mode on platforms
+        # that care about that kind of thing.
+        if mode and 'b' not in mode:
+            mode += 'b'
+        if fileobj is None:
+            fileobj = __builtin__.open(filename, mode or 'rb')
+        if filename is None:
+            if hasattr(fileobj, 'name') and fileobj.name != '<fdopen>':
+                filename = fileobj.name
+            else:
+                filename = ''
+        if mode is None:
+            if hasattr(fileobj, 'mode'):
+                mode = fileobj.mode
+            else:
+                mode = 'rb'
+
+        if mode[0:1] == 'r':
+            self.mode = READ
+            # Set flag indicating the start of a new member
+            self._new_member = True
+            # Buffer data from file.
+            self.extrabuf = ''
+            # Number of bytes remaining in buffer from current
+            # stream position.
+            self.extrasize = 0
+            # Offset in stream where buffer starts.
+            self.extrastart = 0
+            self.name = filename
+            # Starts small, scales exponentially
+            self.min_readsize = 100
+        elif mode[0:1] == 'w' or mode[0:1] == 'a':
+            self.mode = WRITE
+            self._init_write(filename)
+        else:
+            msg = 'Mode {} not supported'
+            raise IOError(msg.format(mode))
+
+        self.fileobj = fileobj
+        self.offset = 0
+
+    def __repr__(self):
+        s = repr(self.fileobj)
+        return '<EncodedFile ' + s[1:-1] + '>'
+
+    def _check_not_closed(self):
+        """
+        Raises a ValueError if the underlying file object has been closed.
+        """
+        if self.closed:
+            raise ValueError('I/O operation on closed file.')
+
+    def _init_write(self, filename):
+        """
+        Prepare EncodedFile for writing to a file.
+        """
+        self.name = filename
+        self.size = 0
+        self.writebuf = []
+        self.bufsize = 0
+
+    def _init_read(self):
+        self.size = 0
+
+    def write(self, data):
+        self._check_not_closed()
+        if self.mode != WRITE:
+            import errno
+            raise IOError(errno.EBADF, 'write() on read-only EncodedFile object')
+
+        if self.fileobj is None:
+            raise ValueError('write() on closed EncodedFile object')
+
+        # Convert data type if called by io.BufferedWriter
+        if isinstance(data, memoryview):
+            data = data.tobytes()
+
+        if len(data) > 0:
+            self.fileobj.write(encode(data, **self.compress_options))
+            self.size += len(data)
+            self.offset += len(data)
+
+        return len(data)
+
+    def read(self, size=-1):
+        self._check_not_closed()
+        if self.mode != READ:
+            import errno
+            raise IOError(errno.EBADF, 'read() on write-only EncodedFile object')
+
+        if self.extrasize <= 0 and self.fileobj is None:
+            return ''
+
+        readsize = 1024
+        if size < 0:  # get the whole thing
+            try:
+                while True:
+                    self._read(readsize)
+                    readsize = min(self.max_read_chunk, readsize * 2)
+            except EOFError:
+                size = self.extrasize
+        else:  # just get some more of it
+            try:
+                while size > self.extrasize:
+                    self._read(readsize)
+                    readsize = min(self.max_read_chunk, readsize * 2)
+            except EOFError:
+                if size > self.extrasize:
+                    size = self.extrasize
+
+        offset = self.offset - self.extrastart
+        chunk = self.extrabuf[offset: offset + size]
+        self.extrasize -= size
+
+        self.offset += size
+        return chunk
+
+    def _unread(self, buf):
+        """
+        Revert reading the given buffer.
+        """
+        self.extrasize += len(buf)
+        self.offset -= len(buf)
+
+    def _read(self, size=1024):
+        if self.fileobj is None:
+            raise EOFError('Reached EOF')
+
+        if self._new_member:
+            pos = self.fileobj.tell()
+            self.fileobj.seek(0, 2)
+            if pos == self.fileobj.tell():
+                raise EOFError('Reached EOF')
+            else:
+                self.fileobj.seek(pos)  # Return to original position
+
+            self._init_read()
+            self._new_member = False
+
+        # Read chunk of data from the file
+        buf = self.fileobj.read(size)
+
+        if buf == '':
+            raise EOFError('Reached EOF')
+
+        uncompress = decode(buf, **self.compress_options)
+        self._add_read_data(uncompress)
+
+    def _add_read_data(self, data):
+        offset = self.offset - self.extrastart
+        self.extrabuf = self.extrabuf[offset:] + data
+        self.extrasize += len(data)
+        self.extrastart = self.offset
+        self.size += len(data)
+
+    @property
+    def closed(self):
+        return self.fileobj is None
+
+    def close(self):
+        fileobj = self.fileobj
+        if fileobj is None:
+            return
+        self.fileobj = None
+        fileobj.close()
+
+    def flush(self):
+        self._check_not_closed()
+        if self.mode == WRITE:
+            self.fileobj.flush()
+
+    def fileno(self):
+        return self.fileobj.fileno()
+
+    def rewind(self):
+        if self.mode != READ:
+            raise IOError("Can't rewind in write mode")
+        self.fileobj.seek(0)
+        self._new_member = True
+        self.extrabuf = ''
+        self.extrasize = 0
+        self.extrastart = 0
+        self.offset = 0
+
+    def readable(self):
+        return self.mode == READ
+
+    def writeable(self):
+        return self.mode == WRITE
+
+    def seekable(self):
+        return True
+
+    def seek(self, offset, whence=0):
+        if whence:
+            if whence == 1:
+                offset = self.offset + offset
+            else:
+                raise ValueError('Seek from end not supported')
+        if self.mode == WRITE:
+            if offset < self.offset:
+                raise IOError('Negative seek in write mode')
+            count = offset - self.offset
+            # for i in xrange(count // 1024):
+            #     self.write(1024 * '\0')
+            # self.write((count % 1024) * '\0')
+        elif self.mode == READ:
+            if offset < self.offset:
+                # for negative seek, rewind and do positive seek
+                self.rewind()
+            count = offset - self.offset
+            # for i in xrange(count // 1024):
+            #     self.read(1024)
+            # self.read(count % 1024)
+
+        return self.offset
+
+    def readline(self, size=-1):
+        if size < 0:
+            # Shortcut common case - newline found in buffer
+            offset = self.offset - self.extrastart
+            i = self.extrabuf.find('\n', offset) + 1
+            if i > 0:
+                self.extrasize -= i - offset
+                self.offset += i - offset
+                return self.extrabuf[offset:i]
+
+            size = sys.maxint
+            readsize = self.min_readsize
+        else:
+            readsize = size
+        bufs = []
+        while size != 0:
+            c = self.read(readsize)
+            i = c.find('\n')
+            # We set i=size to break out of the loop under two
+            # conditions: 1) there's no newline, and the chunk is
+            # larger than size, or 2) there is a newline, but the
+            # resulting line would be longer than 'size'.
+            if (size <= i) or (i == -1 and len(c) > size):
+                i = size - 1
+
+            if i >= 0 or c == '':
+                bufs.append(c[:i + 1])  # Add portion of last chunk
+
+                self._unread(c[i + 1:])  # Push back rest of chunk
+                break
+
+            # Append chunk to list, decrease size
+            bufs.append(c)
+            size -= len(c)
+            readsize = min(size, readsize * 2)
+        if readsize > self.min_readsize:
+            self.min_readsize = min(readsize, self.min_readsize * 2, 512)
+        return ''.join(bufs)
+

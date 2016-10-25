@@ -7,6 +7,21 @@ import array
 import heatshrink
 
 
+LARGE_PARAGRAPH = """I know this from my own experience, as a high school kid
+writing programs in Basic. That language didn't even support recursion. It's
+hard to imagine writing programs without using recursion, but I didn't miss it
+at the time. I thought in Basic. And I was a whiz at it.
+Master of all I surveyed. - Paul Graham
+
+A programming language is for thinking about programs, not for expressing
+programs you've already thought of. It should be a pencil, not a pen.
+- Paul Graham
+
+A recursive definition does not necessarily lead to a recursive process.
+- Gerald Jay Sussman
+"""
+
+
 BASE_DIR = os.path.dirname(__file__)
 
 
@@ -156,23 +171,13 @@ class EncoderToDecoderTest(unittest.TestCase):
     equal to the original data.
     """
 
-    def test_encoder_output_to_decoder_input_valid(self):
+    def test_round_robin(self):
         encoded = heatshrink.encode(b'a string')
         self.assertEqual(heatshrink.decode(encoded), 'a string')
 
     def test_with_a_paragraph(self):
-        quotes = """I know this from my own experience, as a high school kid writing programs in Basic.
-        That language didn't even support recursion. It's hard to imagine writing programs
-        without using recursion, but I didn't miss it at the time. I thought in Basic.
-        And I was a whiz at it. Master of all I surveyed. - Paul Graham
-
-        A programming language is for thinking about programs, not for expressing programs you've
-        already thought of. It should be a pencil, not a pen. - Paul Graham
-
-        A recursive definition does not necessarily lead to a recursive process. - Gerald Jay Sussman
-        """
-        encoded = heatshrink.encode(quotes)
-        self.assertEqual(heatshrink.decode(encoded), quotes)
+        encoded = heatshrink.encode(LARGE_PARAGRAPH)
+        self.assertEqual(heatshrink.decode(encoded), LARGE_PARAGRAPH)
 
     def test_with_large_strings(self):
         test_sizes = [1000, 10000, 100000]
@@ -186,3 +191,28 @@ class EncoderToDecoderTest(unittest.TestCase):
                 msg = ('Decoded and original file contents '
                        'do not match for size: {}')
                 self.fail(msg.format(size))
+
+
+class EncodedFileTest(unittest.TestCase):
+    def test_round_robin(self):
+        filename = 'test.bin'
+        write_str = 'Testing\nAnd Stuff'
+
+        with open(filename, 'wb') as fp:
+            fp.write(write_str)
+
+        with open(filename, 'rb') as fp:
+            self.assertEqual(write_str, fp.read())
+
+        os.unlink(filename)
+
+    def test_large_file(self):
+        filename = 'test.bin'
+
+        with open(filename, 'wb') as fp:
+            fp.write(LARGE_PARAGRAPH)
+
+        with open(filename, 'rb') as fp:
+            self.assertEqual(LARGE_PARAGRAPH, fp.read())
+
+        os.unlink(filename)
