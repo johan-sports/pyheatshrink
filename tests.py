@@ -1,8 +1,8 @@
-import unittest
+import array
 import os
 import random
 import string
-import array
+import unittest
 
 import heatshrink
 
@@ -222,7 +222,7 @@ class EncodedFileTest(unittest.TestCase):
 
     def test_with_large_files(self):
         filename = 'test.bin'
-        test_sizes = [910, 911, 912]
+        test_sizes = [1000, 10000, 100000]
 
         for size in test_sizes:
             contents = random_string(size)
