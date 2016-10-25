@@ -17,9 +17,9 @@ EXT = '.pyx' if USE_CYTHON else '.c'
 heatshrink_module = Extension('heatshrink',
                               include_dirs=['.'],
                               extra_compile_args=['-std=c99'],
-                              sources=['src/heatshrink' + EXT,
-                                       'heatshrink/heatshrink_encoder.c',
-                                       'heatshrink/heatshrink_decoder.c'])
+                              sources=['heatshrink/heatshrink' + EXT,
+                                       'heatshrink_impl/heatshrink_encoder.c',
+                                       'heatshrink_impl/heatshrink_decoder.c'])
 
 if USE_CYTHON:
     extensions = cythonize([heatshrink_module])
