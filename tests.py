@@ -198,21 +198,40 @@ class EncodedFileTest(unittest.TestCase):
         filename = 'test.bin'
         write_str = 'Testing\nAnd Stuff'
 
-        with open(filename, 'wb') as fp:
+        # TODO: Consider using EncodedFile with StringIO
+        with heatshrink.open(filename, 'wb') as fp:
             fp.write(write_str)
 
-        with open(filename, 'rb') as fp:
-            self.assertEqual(write_str, fp.read())
+        with heatshrink.open(filename, 'rb') as fp:
+            read_str = fp.read()
 
         os.unlink(filename)
+        self.assertEqual(write_str, read_str)
 
     def test_large_file(self):
         filename = 'test.bin'
 
-        with open(filename, 'wb') as fp:
+        with heatshrink.open(filename, 'wb') as fp:
             fp.write(LARGE_PARAGRAPH)
 
-        with open(filename, 'rb') as fp:
-            self.assertEqual(LARGE_PARAGRAPH, fp.read())
+        with heatshrink.open(filename, 'rb') as fp:
+            read_str = fp.read()
 
         os.unlink(filename)
+        self.assertEqual(LARGE_PARAGRAPH, read_str)
+
+    def test_with_large_files(self):
+        filename = 'test.bin'
+        test_sizes = [1000, 10000, 100000]
+
+        for size in test_sizes:
+            contents = random_string(size)
+
+            with heatshrink.open(filename, 'wb') as fp:
+                fp.write(contents)
+
+            with heatshrink.open(filename, 'rb') as fp:
+                read_str = fp.read()
+
+            os.unlink(filename)
+            self.assertEqual(contents, read_str)
