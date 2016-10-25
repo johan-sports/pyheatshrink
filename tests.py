@@ -222,7 +222,7 @@ class EncodedFileTest(unittest.TestCase):
 
     def test_with_large_files(self):
         filename = 'test.bin'
-        test_sizes = [1000, 10000, 100000]
+        test_sizes = [910, 911, 912]
 
         for size in test_sizes:
             contents = random_string(size)
@@ -234,4 +234,21 @@ class EncodedFileTest(unittest.TestCase):
                 read_str = fp.read()
 
             os.unlink(filename)
-            self.assertEqual(contents, read_str)
+            if read_str != contents:
+                msg = ('Decoded and original file contents '
+                       'do not match for size: {}')
+                self.fail(msg.format(size))
+
+    def test_read_lines(self):
+        filename = 'test.bin'
+        lines = ['Line one', 'Line two', 'All the lines']
+
+        with heatshrink.open(filename, 'wb') as fp:
+            fp.write('\n'.join(lines))
+
+        with heatshrink.open(filename, 'rb') as fp:
+            # String contents already contains the newlines
+            read_str = ''.join([line for line in fp])
+
+        os.unlink(filename)
+        self.assertEqual('\n'.join(lines), read_str)
