@@ -7,6 +7,13 @@
             "heatshrink/_heatshrink/heatshrink_common.h", 
             "heatshrink/_heatshrink/heatshrink_decoder.h", 
             "heatshrink/_heatshrink/heatshrink_encoder.h"
+        ], 
+        "extra_compile_args": [
+            "-std=c99"
+        ], 
+        "include_dirs": [
+            ".", 
+            "./heatshrink/_heatshrink"
         ]
     }, 
     "module_name": "heatshrink.core"
@@ -3632,10 +3639,10 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
   PyObject *__pyx_v_done = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
+  PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
   int __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   PyObject *__pyx_t_7 = NULL;
@@ -3654,26 +3661,30 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
   /* "heatshrink/core.pyx":186
  *     # HACK: Mitigate python 2 issues with value `Integer is required`
  *     # HACK: error messages for some types of objects.
- *     if isinstance(buf, unicode) or isinstance(buf, memoryview):             # <<<<<<<<<<<<<<
+ *     if isinstance(buf, (unicode, memoryview)):             # <<<<<<<<<<<<<<
  *         msg = "cannot use {.__name__} to initialize an array with typecode 'B'"
  *         raise TypeError(msg.format(buf.__class__))
  */
-  __pyx_t_2 = PyUnicode_Check(__pyx_v_buf); 
-  __pyx_t_3 = (__pyx_t_2 != 0);
-  if (!__pyx_t_3) {
+  __Pyx_INCREF(__pyx_builtin_memoryview);
+  __pyx_t_1 = __pyx_builtin_memoryview;
+  __pyx_t_3 = PyUnicode_Check(__pyx_v_buf); 
+  __pyx_t_4 = (__pyx_t_3 != 0);
+  if (!__pyx_t_4) {
   } else {
-    __pyx_t_1 = __pyx_t_3;
+    __pyx_t_2 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = PyObject_IsInstance(__pyx_v_buf, __pyx_builtin_memoryview); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 186, __pyx_L1_error)
-  __pyx_t_2 = (__pyx_t_3 != 0);
-  __pyx_t_1 = __pyx_t_2;
+  __pyx_t_4 = PyObject_IsInstance(__pyx_v_buf, __pyx_t_1); 
+  __pyx_t_3 = (__pyx_t_4 != 0);
+  __pyx_t_2 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
-  if (__pyx_t_1) {
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = (__pyx_t_2 != 0);
+  if (__pyx_t_3) {
 
     /* "heatshrink/core.pyx":187
  *     # HACK: error messages for some types of objects.
- *     if isinstance(buf, unicode) or isinstance(buf, memoryview):
+ *     if isinstance(buf, (unicode, memoryview)):
  *         msg = "cannot use {.__name__} to initialize an array with typecode 'B'"             # <<<<<<<<<<<<<<
  *         raise TypeError(msg.format(buf.__class__))
  * 
@@ -3682,7 +3693,7 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
     __pyx_v_msg = __pyx_kp_s_cannot_use___name___to_initializ;
 
     /* "heatshrink/core.pyx":188
- *     if isinstance(buf, unicode) or isinstance(buf, memoryview):
+ *     if isinstance(buf, (unicode, memoryview)):
  *         msg = "cannot use {.__name__} to initialize an array with typecode 'B'"
  *         raise TypeError(msg.format(buf.__class__))             # <<<<<<<<<<<<<<
  * 
@@ -3703,9 +3714,9 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
       }
     }
     if (!__pyx_t_7) {
-      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 188, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_GOTREF(__pyx_t_1);
     } else {
       __pyx_t_8 = PyTuple_New(1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 188, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
@@ -3713,27 +3724,27 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
       __Pyx_GIVEREF(__pyx_t_6);
       PyTuple_SET_ITEM(__pyx_t_8, 0+1, __pyx_t_6);
       __pyx_t_6 = 0;
-      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 188, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 188, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
-    __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_GIVEREF(__pyx_t_1);
+    PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_1);
+    __pyx_t_1 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 188, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_Raise(__pyx_t_4, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __PYX_ERR(0, 188, __pyx_L1_error)
 
     /* "heatshrink/core.pyx":186
  *     # HACK: Mitigate python 2 issues with value `Integer is required`
  *     # HACK: error messages for some types of objects.
- *     if isinstance(buf, unicode) or isinstance(buf, memoryview):             # <<<<<<<<<<<<<<
+ *     if isinstance(buf, (unicode, memoryview)):             # <<<<<<<<<<<<<<
  *         msg = "cannot use {.__name__} to initialize an array with typecode 'B'"
  *         raise TypeError(msg.format(buf.__class__))
  */
@@ -3746,17 +3757,17 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  * 
  *     cdef size_t total_sunk_size = 0
  */
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 191, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_B);
   __Pyx_GIVEREF(__pyx_n_s_B);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_n_s_B);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_B);
   __Pyx_INCREF(__pyx_v_buf);
   __Pyx_GIVEREF(__pyx_v_buf);
-  PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_v_buf);
-  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 191, __pyx_L1_error)
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_buf);
+  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_1, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_byte_buf = ((arrayobject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
@@ -3778,17 +3789,17 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  */
   __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 194, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_B);
   __Pyx_GIVEREF(__pyx_n_s_B);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_n_s_B);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_B);
   __Pyx_GIVEREF(__pyx_t_5);
-  PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_1, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_encoded = ((arrayobject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
@@ -3809,8 +3820,8 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  * 
  */
     __pyx_t_9 = Py_SIZE(((PyObject *)__pyx_v_byte_buf)); if (unlikely(__pyx_t_9 == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
-    __pyx_t_1 = ((__pyx_v_total_sunk_size < __pyx_t_9) != 0);
-    if (__pyx_t_1) {
+    __pyx_t_3 = ((__pyx_v_total_sunk_size < __pyx_t_9) != 0);
+    if (__pyx_t_3) {
 
       /* "heatshrink/core.pyx":198
  *     while True:
@@ -3865,17 +3876,17 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
         }
         #if CYTHON_COMPILING_IN_CPYTHON
         if (likely(PyTuple_CheckExact(sequence))) {
-          __pyx_t_4 = PyTuple_GET_ITEM(sequence, 0); 
+          __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0); 
           __pyx_t_8 = PyTuple_GET_ITEM(sequence, 1); 
         } else {
-          __pyx_t_4 = PyList_GET_ITEM(sequence, 0); 
+          __pyx_t_1 = PyList_GET_ITEM(sequence, 0); 
           __pyx_t_8 = PyList_GET_ITEM(sequence, 1); 
         }
-        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(__pyx_t_1);
         __Pyx_INCREF(__pyx_t_8);
         #else
-        __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 201, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
         __pyx_t_8 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 201, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         #endif
@@ -3886,8 +3897,8 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __pyx_t_12 = Py_TYPE(__pyx_t_6)->tp_iternext;
-        index = 0; __pyx_t_4 = __pyx_t_12(__pyx_t_6); if (unlikely(!__pyx_t_4)) goto __pyx_L11_unpacking_failed;
-        __Pyx_GOTREF(__pyx_t_4);
+        index = 0; __pyx_t_1 = __pyx_t_12(__pyx_t_6); if (unlikely(!__pyx_t_1)) goto __pyx_L11_unpacking_failed;
+        __Pyx_GOTREF(__pyx_t_1);
         index = 1; __pyx_t_8 = __pyx_t_12(__pyx_t_6); if (unlikely(!__pyx_t_8)) goto __pyx_L11_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_8);
         if (__Pyx_IternextUnpackEndCheck(__pyx_t_12(__pyx_t_6), 2) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
@@ -3901,8 +3912,8 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
         __PYX_ERR(0, 201, __pyx_L1_error)
         __pyx_L12_unpacking_done:;
       }
-      __Pyx_XDECREF_SET(__pyx_v_polled, __pyx_t_4);
-      __pyx_t_4 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_polled, __pyx_t_1);
+      __pyx_t_1 = 0;
       __Pyx_XDECREF_SET(__pyx_v_done, __pyx_t_8);
       __pyx_t_8 = 0;
 
@@ -3915,23 +3926,23 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  */
       __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_encoded), __pyx_n_s_extend); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 203, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_4 = NULL;
+      __pyx_t_1 = NULL;
       if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_8))) {
-        __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_8);
-        if (likely(__pyx_t_4)) {
+        __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_8);
+        if (likely(__pyx_t_1)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
-          __Pyx_INCREF(__pyx_t_4);
+          __Pyx_INCREF(__pyx_t_1);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_8, function);
         }
       }
-      if (!__pyx_t_4) {
+      if (!__pyx_t_1) {
         __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_polled); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 203, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
       } else {
         __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 203, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
+        __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_1); __pyx_t_1 = NULL;
         __Pyx_INCREF(__pyx_v_polled);
         __Pyx_GIVEREF(__pyx_v_polled);
         PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_v_polled);
@@ -3949,8 +3960,8 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  *                 break
  * 
  */
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_done); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 204, __pyx_L1_error)
-      if (__pyx_t_1) {
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_done); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 204, __pyx_L1_error)
+      if (__pyx_t_3) {
 
         /* "heatshrink/core.pyx":205
  *             encoded.extend(polled)
@@ -3980,8 +3991,8 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  *             if finish(obj):
  */
     __pyx_t_9 = Py_SIZE(((PyObject *)__pyx_v_byte_buf)); if (unlikely(__pyx_t_9 == -1)) __PYX_ERR(0, 207, __pyx_L1_error)
-    __pyx_t_1 = ((__pyx_v_total_sunk_size >= __pyx_t_9) != 0);
-    if (__pyx_t_1) {
+    __pyx_t_3 = ((__pyx_v_total_sunk_size >= __pyx_t_9) != 0);
+    if (__pyx_t_3) {
 
       /* "heatshrink/core.pyx":209
  *         if total_sunk_size >= len(byte_buf):
@@ -3992,9 +4003,9 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  */
       __pyx_t_5 = __pyx_fuse_0__pyx_f_10heatshrink_4core_finish(__pyx_v_obj); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 209, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 209, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (__pyx_t_1) {
+      if (__pyx_t_3) {
 
         /* "heatshrink/core.pyx":210
  *             # If the encoder isn't finished we need to re-poll
@@ -4084,7 +4095,7 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
     __pyx_L16_error:;
     __Pyx_PyThreadState_assign
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -4125,15 +4136,15 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
         }
       }
       if (__pyx_t_17) {
-        __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_17); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 216, __pyx_L18_except_error)
+        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_17); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 216, __pyx_L18_except_error)
         __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
       } else {
-        __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 216, __pyx_L18_except_error)
+        __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 216, __pyx_L18_except_error)
       }
-      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_r = __pyx_t_4;
-      __pyx_t_4 = 0;
+      __pyx_r = __pyx_t_1;
+      __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -4181,7 +4192,7 @@ static PyObject *__pyx_fuse_0__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
@@ -4209,10 +4220,10 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
   PyObject *__pyx_v_done = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
+  PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
   int __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   PyObject *__pyx_t_7 = NULL;
@@ -4231,26 +4242,30 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
   /* "heatshrink/core.pyx":186
  *     # HACK: Mitigate python 2 issues with value `Integer is required`
  *     # HACK: error messages for some types of objects.
- *     if isinstance(buf, unicode) or isinstance(buf, memoryview):             # <<<<<<<<<<<<<<
+ *     if isinstance(buf, (unicode, memoryview)):             # <<<<<<<<<<<<<<
  *         msg = "cannot use {.__name__} to initialize an array with typecode 'B'"
  *         raise TypeError(msg.format(buf.__class__))
  */
-  __pyx_t_2 = PyUnicode_Check(__pyx_v_buf); 
-  __pyx_t_3 = (__pyx_t_2 != 0);
-  if (!__pyx_t_3) {
+  __Pyx_INCREF(__pyx_builtin_memoryview);
+  __pyx_t_1 = __pyx_builtin_memoryview;
+  __pyx_t_3 = PyUnicode_Check(__pyx_v_buf); 
+  __pyx_t_4 = (__pyx_t_3 != 0);
+  if (!__pyx_t_4) {
   } else {
-    __pyx_t_1 = __pyx_t_3;
+    __pyx_t_2 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = PyObject_IsInstance(__pyx_v_buf, __pyx_builtin_memoryview); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 186, __pyx_L1_error)
-  __pyx_t_2 = (__pyx_t_3 != 0);
-  __pyx_t_1 = __pyx_t_2;
+  __pyx_t_4 = PyObject_IsInstance(__pyx_v_buf, __pyx_t_1); 
+  __pyx_t_3 = (__pyx_t_4 != 0);
+  __pyx_t_2 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
-  if (__pyx_t_1) {
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_3 = (__pyx_t_2 != 0);
+  if (__pyx_t_3) {
 
     /* "heatshrink/core.pyx":187
  *     # HACK: error messages for some types of objects.
- *     if isinstance(buf, unicode) or isinstance(buf, memoryview):
+ *     if isinstance(buf, (unicode, memoryview)):
  *         msg = "cannot use {.__name__} to initialize an array with typecode 'B'"             # <<<<<<<<<<<<<<
  *         raise TypeError(msg.format(buf.__class__))
  * 
@@ -4259,7 +4274,7 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
     __pyx_v_msg = __pyx_kp_s_cannot_use___name___to_initializ;
 
     /* "heatshrink/core.pyx":188
- *     if isinstance(buf, unicode) or isinstance(buf, memoryview):
+ *     if isinstance(buf, (unicode, memoryview)):
  *         msg = "cannot use {.__name__} to initialize an array with typecode 'B'"
  *         raise TypeError(msg.format(buf.__class__))             # <<<<<<<<<<<<<<
  * 
@@ -4280,9 +4295,9 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
       }
     }
     if (!__pyx_t_7) {
-      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 188, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_GOTREF(__pyx_t_1);
     } else {
       __pyx_t_8 = PyTuple_New(1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 188, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
@@ -4290,27 +4305,27 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
       __Pyx_GIVEREF(__pyx_t_6);
       PyTuple_SET_ITEM(__pyx_t_8, 0+1, __pyx_t_6);
       __pyx_t_6 = 0;
-      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 188, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 188, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
-    __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_GIVEREF(__pyx_t_1);
+    PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_1);
+    __pyx_t_1 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 188, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_Raise(__pyx_t_4, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __PYX_ERR(0, 188, __pyx_L1_error)
 
     /* "heatshrink/core.pyx":186
  *     # HACK: Mitigate python 2 issues with value `Integer is required`
  *     # HACK: error messages for some types of objects.
- *     if isinstance(buf, unicode) or isinstance(buf, memoryview):             # <<<<<<<<<<<<<<
+ *     if isinstance(buf, (unicode, memoryview)):             # <<<<<<<<<<<<<<
  *         msg = "cannot use {.__name__} to initialize an array with typecode 'B'"
  *         raise TypeError(msg.format(buf.__class__))
  */
@@ -4323,17 +4338,17 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  * 
  *     cdef size_t total_sunk_size = 0
  */
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 191, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_B);
   __Pyx_GIVEREF(__pyx_n_s_B);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_n_s_B);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_B);
   __Pyx_INCREF(__pyx_v_buf);
   __Pyx_GIVEREF(__pyx_v_buf);
-  PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_v_buf);
-  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 191, __pyx_L1_error)
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_buf);
+  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_1, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_byte_buf = ((arrayobject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
@@ -4355,17 +4370,17 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  */
   __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 194, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_B);
   __Pyx_GIVEREF(__pyx_n_s_B);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_n_s_B);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_B);
   __Pyx_GIVEREF(__pyx_t_5);
-  PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_1, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 194, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_encoded = ((arrayobject *)__pyx_t_5);
   __pyx_t_5 = 0;
 
@@ -4386,8 +4401,8 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  * 
  */
     __pyx_t_9 = Py_SIZE(((PyObject *)__pyx_v_byte_buf)); if (unlikely(__pyx_t_9 == -1)) __PYX_ERR(0, 197, __pyx_L1_error)
-    __pyx_t_1 = ((__pyx_v_total_sunk_size < __pyx_t_9) != 0);
-    if (__pyx_t_1) {
+    __pyx_t_3 = ((__pyx_v_total_sunk_size < __pyx_t_9) != 0);
+    if (__pyx_t_3) {
 
       /* "heatshrink/core.pyx":198
  *     while True:
@@ -4442,17 +4457,17 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
         }
         #if CYTHON_COMPILING_IN_CPYTHON
         if (likely(PyTuple_CheckExact(sequence))) {
-          __pyx_t_4 = PyTuple_GET_ITEM(sequence, 0); 
+          __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0); 
           __pyx_t_8 = PyTuple_GET_ITEM(sequence, 1); 
         } else {
-          __pyx_t_4 = PyList_GET_ITEM(sequence, 0); 
+          __pyx_t_1 = PyList_GET_ITEM(sequence, 0); 
           __pyx_t_8 = PyList_GET_ITEM(sequence, 1); 
         }
-        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(__pyx_t_1);
         __Pyx_INCREF(__pyx_t_8);
         #else
-        __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 201, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
         __pyx_t_8 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 201, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         #endif
@@ -4463,8 +4478,8 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __pyx_t_12 = Py_TYPE(__pyx_t_6)->tp_iternext;
-        index = 0; __pyx_t_4 = __pyx_t_12(__pyx_t_6); if (unlikely(!__pyx_t_4)) goto __pyx_L11_unpacking_failed;
-        __Pyx_GOTREF(__pyx_t_4);
+        index = 0; __pyx_t_1 = __pyx_t_12(__pyx_t_6); if (unlikely(!__pyx_t_1)) goto __pyx_L11_unpacking_failed;
+        __Pyx_GOTREF(__pyx_t_1);
         index = 1; __pyx_t_8 = __pyx_t_12(__pyx_t_6); if (unlikely(!__pyx_t_8)) goto __pyx_L11_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_8);
         if (__Pyx_IternextUnpackEndCheck(__pyx_t_12(__pyx_t_6), 2) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
@@ -4478,8 +4493,8 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
         __PYX_ERR(0, 201, __pyx_L1_error)
         __pyx_L12_unpacking_done:;
       }
-      __Pyx_XDECREF_SET(__pyx_v_polled, __pyx_t_4);
-      __pyx_t_4 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_polled, __pyx_t_1);
+      __pyx_t_1 = 0;
       __Pyx_XDECREF_SET(__pyx_v_done, __pyx_t_8);
       __pyx_t_8 = 0;
 
@@ -4492,23 +4507,23 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  */
       __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_encoded), __pyx_n_s_extend); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 203, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_4 = NULL;
+      __pyx_t_1 = NULL;
       if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_8))) {
-        __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_8);
-        if (likely(__pyx_t_4)) {
+        __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_8);
+        if (likely(__pyx_t_1)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
-          __Pyx_INCREF(__pyx_t_4);
+          __Pyx_INCREF(__pyx_t_1);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_8, function);
         }
       }
-      if (!__pyx_t_4) {
+      if (!__pyx_t_1) {
         __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_polled); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 203, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
       } else {
         __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 203, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
+        __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_1); __pyx_t_1 = NULL;
         __Pyx_INCREF(__pyx_v_polled);
         __Pyx_GIVEREF(__pyx_v_polled);
         PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_v_polled);
@@ -4526,8 +4541,8 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  *                 break
  * 
  */
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_done); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 204, __pyx_L1_error)
-      if (__pyx_t_1) {
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_v_done); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 204, __pyx_L1_error)
+      if (__pyx_t_3) {
 
         /* "heatshrink/core.pyx":205
  *             encoded.extend(polled)
@@ -4557,8 +4572,8 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  *             if finish(obj):
  */
     __pyx_t_9 = Py_SIZE(((PyObject *)__pyx_v_byte_buf)); if (unlikely(__pyx_t_9 == -1)) __PYX_ERR(0, 207, __pyx_L1_error)
-    __pyx_t_1 = ((__pyx_v_total_sunk_size >= __pyx_t_9) != 0);
-    if (__pyx_t_1) {
+    __pyx_t_3 = ((__pyx_v_total_sunk_size >= __pyx_t_9) != 0);
+    if (__pyx_t_3) {
 
       /* "heatshrink/core.pyx":209
  *         if total_sunk_size >= len(byte_buf):
@@ -4569,9 +4584,9 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
  */
       __pyx_t_5 = __pyx_fuse_1__pyx_f_10heatshrink_4core_finish(__pyx_v_obj); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 209, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 209, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (__pyx_t_1) {
+      if (__pyx_t_3) {
 
         /* "heatshrink/core.pyx":210
  *             # If the encoder isn't finished we need to re-poll
@@ -4661,7 +4676,7 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
     __pyx_L16_error:;
     __Pyx_PyThreadState_assign
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -4702,15 +4717,15 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
         }
       }
       if (__pyx_t_17) {
-        __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_17); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 216, __pyx_L18_except_error)
+        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_17); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 216, __pyx_L18_except_error)
         __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
       } else {
-        __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 216, __pyx_L18_except_error)
+        __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 216, __pyx_L18_except_error)
       }
-      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_r = __pyx_t_4;
-      __pyx_t_4 = 0;
+      __pyx_r = __pyx_t_1;
+      __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -4758,7 +4773,7 @@ static PyObject *__pyx_fuse_1__pyx_f_10heatshrink_4core_encode_impl(struct __pyx
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
