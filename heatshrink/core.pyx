@@ -183,7 +183,7 @@ cdef encode_impl(Encoder obj, buf):
     """Encode iterable `buf` into an array of bytes."""
     # HACK: Mitigate python 2 issues with value `Integer is required`
     # HACK: error messages for some types of objects.
-    if isinstance(buf, unicode) or isinstance(buf, memoryview):
+    if isinstance(buf, (unicode, memoryview)):
         msg = "cannot use {.__name__} to initialize an array with typecode 'B'"
         raise TypeError(msg.format(buf.__class__))
 

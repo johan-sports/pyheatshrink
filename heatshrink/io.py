@@ -4,4 +4,11 @@ import core
 
 
 class EncodedFile(io.BufferedIOBase):
-    pass
+    def __init__(self, filename=None, mode=None,
+                 fileobj=None, **compress_options):
+        pass
+
+
+def open(filename, mode='rb', **kwargs):
+    if isinstance(filename, (unicode, str)):
+        pass
