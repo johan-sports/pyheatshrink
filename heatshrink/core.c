@@ -4,18 +4,12 @@
 {
     "distutils": {
         "depends": [
-            "heatshrink_impl/heatshrink_common.h", 
-            "heatshrink_impl/heatshrink_decoder.h", 
-            "heatshrink_impl/heatshrink_encoder.h"
-        ], 
-        "extra_compile_args": [
-            "-std=c99"
-        ], 
-        "include_dirs": [
-            "."
+            "heatshrink/_heatshrink/heatshrink_common.h", 
+            "heatshrink/_heatshrink/heatshrink_decoder.h", 
+            "heatshrink/_heatshrink/heatshrink_encoder.h"
         ]
     }, 
-    "module_name": "heatshrink"
+    "module_name": "heatshrink.core"
 }
 END: Cython Metadata */
 
@@ -291,9 +285,9 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include "stdio.h"
 #include "pythread.h"
 #include "stdint.h"
-#include "heatshrink_impl/heatshrink_common.h"
-#include "heatshrink_impl/heatshrink_encoder.h"
-#include "heatshrink_impl/heatshrink_decoder.h"
+#include "_heatshrink/heatshrink_common.h"
+#include "_heatshrink/heatshrink_encoder.h"
+#include "_heatshrink/heatshrink_decoder.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */

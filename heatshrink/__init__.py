@@ -1,3 +1,3 @@
-import core
+from core import encode, decode
 
-__all__ = ['core']
+__all__ = ['encode', 'decode']
