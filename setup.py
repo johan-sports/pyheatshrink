@@ -1,31 +1,19 @@
 from os import path
 from codecs import open
-from setuptools import setup, Extension
+from setuptools import setup  # , Extension
 
-try:
-    from Cython.Build import cythonize
-except ImportError:
-    USE_CYTHON = False
-else:
-    USE_CYTHON = True
-
+from Cython.Build import cythonize
 
 # Compiled file extension to use. If we're not using Cython,
 # just use the plain C file.
-EXT = '.pyx' if USE_CYTHON else '.c'
+# EXT = '.pyx' if USE_CYTHON else '.c'
 
-heatshrink_module = Extension('heatshrink',
-                              include_dirs=['.'],
-                              extra_compile_args=['-std=c99'],
-                              sources=['heatshrink/heatshrink' + EXT,
-                                       'heatshrink_impl/heatshrink_encoder.c',
-                                       'heatshrink_impl/heatshrink_decoder.c'])
-
-if USE_CYTHON:
-    extensions = cythonize([heatshrink_module])
-else:
-    extensions = [heatshrink_module]
-
+# heatshrink_module = Extension('core',
+#                               include_dirs=['.'],
+#                               extra_compile_args=['-std=c99'],
+#                               sources=['heatshrink/core' + EXT,
+#                                        'heatshrink_impl/heatshrink_encoder.c',
+#                                        'heatshrink_impl/heatshrink_decoder.c'])
 
 here = path.abspath(path.dirname(__file__))
 
@@ -70,4 +58,6 @@ setup(name='Heatshrink',
 
       keywords='compression bindings heatshrink LZSS',
       test_suite="tests",
-      ext_modules=extensions)
+      packages=['heatshrink'],
+      # FIXME: This will break without cython installed
+      ext_modules=cythonize('**/*.pyx'))
