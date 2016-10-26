@@ -104,7 +104,7 @@ class EncodedFile(io.BufferedIOBase):
         self._mode = _MODE_CLOSED
 
         if filename:
-            self._fp = open(filename, mode)
+            self._fp = __builtins__.open(filename, mode)
         elif _fp:
             self._fp = _fp
         else:
