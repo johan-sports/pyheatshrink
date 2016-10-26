@@ -1,9 +1,8 @@
-from threading import RLock
 import io
+from threading import RLock
+from __builtin__ import open as builtin_open
 
 import core
-
-BUFFER_SIZE = io.DEFAULT_BUFFER_SIZE
 
 
 class DecompressReader(io.RawIOBase):
@@ -102,9 +101,10 @@ class EncodedFile(io.BufferedIOBase):
                  _fp=None, **compress_options):
         self._lock = RLock()
         self._mode = _MODE_CLOSED
+        self._compress_options = compress_options
 
         if filename:
-            self._fp = __builtins__.open(filename, mode)
+            self._fp = builtin_open(filename, mode)
         elif _fp:
             self._fp = _fp
         else:
@@ -114,7 +114,7 @@ class EncodedFile(io.BufferedIOBase):
             mode = 'rb'
             self._mode = _MODE_READ
             self._buffer = DecompressReader(self._fp, core.decode,
-                                            **compress_options)
+                                            **self._compress_options)
         elif mode in ('w', 'wb'):
             mode = 'wb'
             self._mode = _MODE_WRITE
