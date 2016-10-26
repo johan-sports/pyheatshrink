@@ -59,18 +59,18 @@ class DecompressReader(io.RawIOBase):
         self._pos = 0
 
     def seek(self, offset, whence=io.SEEK_SET):
-        if whence == io.SEEK_SET:
-            pass
-        elif whence == io.SEEK_CUR:
-            offset += self._pos
-        elif whence == io.SEEK_END:
-            if self._size < 0:
-                # Finish reading the file
-                while self.read(io.DEFAULT_BUFFER_SIZE):
-                    pass
-            offset += self._size
-        else:
-            raise ValueError('Invalid value for whence: {}'.format(whence))
+        # if whence == io.SEEK_SET:
+        #     pass
+        # elif whence == io.SEEK_CUR:
+        #     offset += self._pos
+        # elif whence == io.SEEK_END:
+        #     if self._size < 0:
+        #         # Finish reading the file
+        #         while self.read(io.DEFAULT_BUFFER_SIZE):
+        #             pass
+        #     offset += self._size
+        # else:
+        #     raise ValueError('Invalid value for whence: {}'.format(whence))
 
         # Make it so that offset is the number of bytes to skip forward.
         if offset < self._pos:
@@ -79,12 +79,12 @@ class DecompressReader(io.RawIOBase):
             offset -= self._pos
 
         # Read and discard data until we reach the desired position
-        while offset > 0:
-            data = self.read(min(io.DEFAULT_BUFFER_SIZE, offset))
-            if not data:
-                break
-            offset -= len(data)
-
+        # while offset > 0:
+        #     data = self.read(min(io.DEFAULT_BUFFER_SIZE, offset))
+        #     if not data:
+        #         break
+        #     offset -= len(data)
+        self._fp.seek(offset, whence)
         return self._pos
 
     def tell(self):
@@ -98,15 +98,15 @@ _MODE_WRITE = 2
 
 class EncodedFile(io.BufferedIOBase):
     def __init__(self, filename=None, mode=None,
-                 _fp=None, **compress_options):
+                 fileobj=None, **compress_options):
         self._lock = RLock()
         self._mode = _MODE_CLOSED
         self._compress_options = compress_options
 
         if filename:
             self._fp = builtin_open(filename, mode)
-        elif _fp:
-            self._fp = _fp
+        elif fileobj:
+            self._fp = fileobj
         else:
             raise ValueError('No filename or file object provided')
 
@@ -162,7 +162,7 @@ class EncodedFile(io.BufferedIOBase):
         Returns b'' if the file is already at EOF.
         """
         with self._lock:
-            self._buffer.read(size)
+            return self._buffer.read(size)
 
     def read1(self, size=-1):
         """Read up to size uncompressed bytes, while trying to avoid
