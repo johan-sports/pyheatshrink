@@ -1,14 +1,14 @@
 from libc.stdint cimport uint8_t, uint16_t
 
 
-cdef extern from "heatshrink_impl/heatshrink_common.h":
+cdef extern from "_heatshrink/heatshrink_common.h":
     cdef int HEATSHRINK_MIN_WINDOW_BITS
     cdef int HEATSHRINK_MAX_WINDOW_BITS
 
     cdef int HEATSHRINK_MIN_LOOKAHEAD_BITS
 
 
-cdef extern from "heatshrink_impl/heatshrink_encoder.h":
+cdef extern from "_heatshrink/heatshrink_encoder.h":
     ctypedef struct heatshrink_encoder:
         uint8_t window_sz2
         uint8_t lookahead_sz2
@@ -42,7 +42,7 @@ cdef extern from "heatshrink_impl/heatshrink_encoder.h":
     HSE_finish_res heatshrink_encoder_finish(heatshrink_encoder *hse)
 
 
-cdef extern from "heatshrink_impl/heatshrink_decoder.h":
+cdef extern from "_heatshrink/heatshrink_decoder.h":
     ctypedef struct heatshrink_decoder:
         uint8_t window_sz2
         uint8_t lookahead_sz2
