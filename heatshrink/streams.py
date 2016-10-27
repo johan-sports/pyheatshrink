@@ -6,6 +6,12 @@ import core
 
 
 class DecompressReader(io.RawIOBase):
+    """Adapts the decompressor API to a RawIOBase reader API.
+
+    This class is similar to the one found in the internal python
+    decompression modules. See github for more details:
+    https://github.com/python/cpython/blob/3.6/Lib/_compression.py#L33
+    """
     def __init__(self, fp, decomp_fn, **decomp_args):
         self._fp = fp
         self._eof = False
@@ -84,7 +90,6 @@ class DecompressReader(io.RawIOBase):
         #     if not data:
         #         break
         #     offset -= len(data)
-        self._fp.seek(offset, whence)
         return self._pos
 
     def tell(self):
@@ -98,15 +103,15 @@ _MODE_WRITE = 2
 
 class EncodedFile(io.BufferedIOBase):
     def __init__(self, filename=None, mode=None,
-                 fileobj=None, **compress_options):
+                 file=None, **compress_options):
         self._lock = RLock()
         self._mode = _MODE_CLOSED
         self._compress_options = compress_options
 
         if filename:
             self._fp = builtin_open(filename, mode)
-        elif fileobj:
-            self._fp = fileobj
+        elif file:
+            self._fp = file
         else:
             raise ValueError('No filename or file object provided')
 
@@ -153,7 +158,11 @@ class EncodedFile(io.BufferedIOBase):
         return self._mode == _MODE_READ
 
     def writeable(self):
+        """Return whether the file was opened for writing."""
         return self._mode == _MODE_WRITE
+
+    def peek(self, size=-1):
+        return self._buffer.peek(size)
 
     def read(self, size=-1):
         """Read up to size uncompressed bytes from the file.
@@ -261,7 +270,7 @@ def open(file, mode='rb', **kwargs):
         binary_file = EncodedFile(file, mode)
     # Implements the file protocol
     elif hasattr(file, 'read') or hasattr(file, 'write'):
-        binary_file = EncodedFile(_fp=file, mode=mode, **kwargs)
+        binary_file = EncodedFile(file=file, mode=mode, **kwargs)
     else:
         raise TypeError('file must be an str, unicode or file-like object')
     return binary_file
