@@ -341,5 +341,5 @@ def decode(buf, **kwargs):
     """
     decoder = Reader(**kwargs)
     data = decoder.decode()
-    data += decoder.flush()
+    data += decoder.finish()
     return data
