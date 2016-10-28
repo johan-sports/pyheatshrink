@@ -124,154 +124,96 @@ cdef class _Reader:
 
 # When used as a function parameter it will generate on C
 # function for each type defined.
-ctypedef fused Encoder:
+ctypedef fused _Encoder:
     _Reader
     _Writer
 
 
-cdef size_t sink(Encoder encoder, array.array in_buf, size_t offset=0):
-    """
-    Sink input in to the encoder with an optional N byte `offset`.
-    """
-    cdef size_t sink_size
+# TODO: Use a better name
+class Encoder(object):
+    def __init__(self, encoder):
+        self._encoder = encoder
 
-    res = encoder.sink(&in_buf.data.as_uchars[offset],
-                       len(in_buf) - offset, &sink_size)
-    if res < 0:
-        raise RuntimeError('Encoder sink failed.')
-
-    return sink_size
-
-
-cdef poll(Encoder encoder):
-    """
-    Poll output from an encoder/decoder.
-
-    Returns a tuple containing the poll output buffer
-    and a boolean indicating if polling is finished.
-    """
-    cdef size_t poll_size
-
-    cdef array.array out_buf = array.array('B', [])
-    # Resize to a decent length
-    array.resize(out_buf, obj.max_output_size)
-
-    res = encoder.poll(out_buf.data.as_uchars, len(out_buf), &poll_size)
-    if res < 0:
-        raise RuntimeError('Encoder polling failed.')
-
-    # Resize to drop unused elements
-    array.resize(out_buf, poll_size)
-
-    done = obj.is_poll_empty(res)
-    return out_buf, done
-
-
-cdef finish(Encoder encoder):
-    """
-    Notifies the encoder that the input stream is finished.
-
-    Returns `False` if there is more ouput to be processed,
-    meaning that poll should be called again.
-    """
-    res = encoder.finish()
-    if res < 0:
-        raise RuntimeError("Encoder finish failed.")
-    return obj.is_finished(res)
-
-
-class Reader(object):
-    def __init__(self, **kwargs):
-        encode_params = {
-            'input_buffer_size': DEFAULT_INPUT_BUFFER_SIZE,
-            'window_sz2': DEFAULT_WINDOW_SZ2,
-            'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,
-        }
-        encode_params.update(kwargs)
-
-        self._encoder = _Reader(encode_params['input_buffer_size'],
-                                encode_params['window_sz2'],
-                                encode_params['lookahead_sz2'])
-
-    def _drain(self):
-        """Empty the encoder state machine."""
-        while True:
-            polled, done = poll(self._encoder)
-            yield polled
-            if done:
-                raise StopIteration
-
-    def decode(self, buf):
+    def fill(self, buf):
+        """
+        Fill the encoder state machine with a buffer.
+        """
         if isinstance(buf, (unicode, memoryview)):
-            msg = "Cannot use {.__name__} to intialize an array with typecode 'B'"
+            msg = "Cannot fill encoder with type '{.__name__}'"
             raise TypeError(msg.format(buf.__class__))
 
         # Convert input to a byte representation
         cdef array.array byte_buf = array.array('B', buf)
 
+        cdef size_t sink_size
         cdef size_t total_sunk_size = 0
-        cdef array.array encoded = array.array('B', [])
+
+        while total_sunk_size < len(byte_buf):
+            res = self._encoder.sink(&byte_buf.data.as_uchars[total_sunk_size],
+                                     len(byte_buf) - total_sunk_size, &sink_size)
+
+            if res < 0:
+                raise RuntimeError('Encoder sink failed.')
+
+            # Sink until empty
+            total_sunk_size += sink_size
+
+        return total_sunk_size
+
+    def drain(self):
+        """Empty data from the encoder state machine."""
+        cdef size_t poll_size
+        cdef array.array polled = array.array('B', [])
+        # Resize to a decent length
+        array.resize(polled, self._encoder.max_output_size)
 
         while True:
-            if total_sunk_size < len(byte_buf):
-                total_sunk_size += sink(self._encoder, byte_buf, total_sunk_size)
+            res = self._encoder.poll(polled.data.as_uchars,
+                                     len(polled), &poll_size)
 
-            for polled in self._drain():
-                encoded.extend(polled)
+            if res < 0:
+                raise RuntimeError('Encoder polling failed.')
 
-            if not byte_buf or not polled:
-                self.finish()
-
-        try:  # Python 3
-            return encoded.tobytes()
-        except AttributeError:
-            return encoded.tostring()
+            # Resize to drop unused elements
+            array.resize(polled, poll_size)
+            if self._encoder.is_poll_empty(res):
+                raise StopIteration
+            else:
+                # TODO: Handle .tobytes()
+                # TODO: Consider returning just the array
+                yield polled.tostring()
 
     # TODO: Find a way to handle that there may be left over
     # TODO: data in the state machine.
     def finish(self):
-        cdef array.array encoded = array.array('B', [])
+        cdef array.array data = array.array('B', [])
 
-        while not finish(self._encoder):
-            for polled in self._drain():
-                encoded.extend(polled)
+        while not self._encoder.is_finished():
+            res = self._encoder.finish()
+            if res < 0:
+                raise RuntimeError('Encoder finish failed.')
+
+            for polled in self.drain():
+                data.extend(polled)
+
+        return data.tostring()
 
 
-cdef encode_impl(obj, buf):
+cdef encode_impl(encoder, buf):
     """Encode iterable `buf` into an array of bytes."""
-    # HACK: Mitigate python 2 issues with value `Integer is required`
-    # HACK: error messages for some types of objects.
-    if isinstance(buf, (unicode, memoryview)):
-        msg = "cannot use {.__name__} to initialize an array with typecode 'B'"
-        raise TypeError(msg.format(buf.__class__))
+    encoder = Encoder(encoder)
 
-    # Convert input to a byte representation
-    cdef array.array byte_buf = array.array('B', buf)
+    fill_size = encoder.fill(buf)
+    # Ensure that everything was sunk properly
+    assert fill_size == len(buf)
 
-    cdef size_t total_sunk_size = 0
-    cdef array.array encoded = array.array('B', [])
+    # Clear state machine
+    encoded = [polled for polled in encoder.drain()]
 
-    while True:
-        if total_sunk_size < len(byte_buf):
-            total_sunk_size += sink(obj, byte_buf, total_sunk_size)
+    # Add any extra data remaining in the state machine
+    encoded += encoder.finish()
 
-        while True:
-            polled, done = poll(obj)
-            # TODO: Optimize this
-            encoded.extend(polled)
-            if done:
-                break
-
-        if total_sunk_size >= len(byte_buf):
-            # If the encoder isn't finished we need to re-poll
-            if finish(obj):
-                break
-
-    try:
-        # Python 3
-        return encoded.tobytes()
-    except AttributeError:
-        return encoded.tostring()
+    return encoded
 
 
 def encode(buf, **kwargs):
@@ -299,7 +241,6 @@ def encode(buf, **kwargs):
         RuntimeError: Thrown if internal polling or sinking of the
             encoder/decoder fails.
     """
-
     encode_params = {
         'window_sz2': DEFAULT_WINDOW_SZ2,
         'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,
@@ -339,7 +280,14 @@ def decode(buf, **kwargs):
         RuntimeError: Thrown if internal polling or sinking of the
             encoder/decoder fails.
     """
-    decoder = Reader(**kwargs)
-    data = decoder.decode()
-    data += decoder.finish()
-    return data
+    decode_params = {
+        'input_buffer_size': DEFAULT_INPUT_BUFFER_SIZE,
+        'window_sz2': DEFAULT_WINDOW_SZ2,
+        'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,
+    }
+    decode_params.update(kwargs)
+
+    encoder = _Reader(decode_params['input_buffer_size'],
+                      decode_params['window_sz2'],
+                      decode_params['lookahead_sz2'])
+    return encode_impl(encoder, buf)
