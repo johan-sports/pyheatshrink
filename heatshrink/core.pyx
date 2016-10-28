@@ -220,7 +220,7 @@ class Reader(object):
                 encoded.extend(polled)
 
             if not byte_buf or not polled:
-                self.flush()
+                self.finish()
 
         try:  # Python 3
             return encoded.tobytes()
@@ -229,7 +229,7 @@ class Reader(object):
 
     # TODO: Find a way to handle that there may be left over
     # TODO: data in the state machine.
-    def flush(self):
+    def finish(self):
         cdef array.array encoded = array.array('B', [])
 
         while not finish(self._encoder):
