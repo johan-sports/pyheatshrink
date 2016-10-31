@@ -33,222 +33,243 @@ def random_string(size):
     return ''.join(random.choice(choices) for _ in range(size))
 
 
-class EncoderTest(unittest.TestCase):
-    def setUp(self):
-        self.encoded = heatshrink.encode(b'abcde')
+# class EncoderTest(unittest.TestCase):
+    # def setUp(self):
+    #     self.encoded = heatshrink.encode(b'abcde')
 
-    def test_encoded_size(self):
-        self.assertEqual(len(self.encoded), 6)
+    # def test_encoded_size(self):
+    #     self.assertEqual(len(self.encoded), 6)
 
-    def test_encoded_bytes(self):
-        self.assertEqual(self.encoded, b'\xb0\xd8\xacvK(')
+    # def test_encoded_bytes(self):
+    #     self.assertEqual(self.encoded, b'\xb0\xd8\xacvK(')
 
-    def test_encode_with_window_sz2(self):
-        encoded = heatshrink.encode(b'abcde', window_sz2=8)
-        # FIXME: Prove that this setting changes output
-        self.assertEqual(encoded, b'\xb0\xd8\xacvK(')
+    # def test_encode_with_window_sz2(self):
+    #     encoded = heatshrink.encode(b'abcde', window_sz2=8)
+    #     # FIXME: Prove that this setting changes output
+    #     self.assertEqual(encoded, b'\xb0\xd8\xacvK(')
 
-    def test_encode_checks_window_sz2_type(self):
-        with self.assertRaises(TypeError):
-            heatshrink.encode(b'abcde', window_sz2='a string')
-        with self.assertRaises(TypeError):
-            heatshrink.encode(b'abcde', window_sz2=lambda x: None)
+    # def test_encode_checks_window_sz2_type(self):
+    #     with self.assertRaises(TypeError):
+    #         heatshrink.encode(b'abcde', window_sz2='a string')
+    #     with self.assertRaises(TypeError):
+    #         heatshrink.encode(b'abcde', window_sz2=lambda x: None)
 
-    def test_encode_checks_window_sz2_within_limits(self):
-        with self.assertRaises(ValueError):
-            heatshrink.encode(b'abcde', window_sz2=3)
-        with self.assertRaises(ValueError):
-            heatshrink.encode(b'abcde', window_sz2=16)
-        heatshrink.encode(b'abcde', window_sz2=5)
-        heatshrink.encode(b'abcde', window_sz2=14)
+    # def test_encode_checks_window_sz2_within_limits(self):
+    #     with self.assertRaises(ValueError):
+    #         heatshrink.encode(b'abcde', window_sz2=3)
+    #     with self.assertRaises(ValueError):
+    #         heatshrink.encode(b'abcde', window_sz2=16)
+    #     heatshrink.encode(b'abcde', window_sz2=5)
+    #     heatshrink.encode(b'abcde', window_sz2=14)
 
-    def test_encode_with_lookahead_sz2(self):
-        encoded = heatshrink.encode(b'abcde', lookahead_sz2=3)
-        self.assertEqual(encoded, b'\xb0\xd8\xacvK(')
+    # def test_encode_with_lookahead_sz2(self):
+    #     encoded = heatshrink.encode(b'abcde', lookahead_sz2=3)
+    #     self.assertEqual(encoded, b'\xb0\xd8\xacvK(')
 
-    def test_encode_checks_lookahead_sz2_type(self):
-        with self.assertRaises(TypeError):
-            heatshrink.encode(b'abcde', lookahead_sz2='a string')
-        with self.assertRaises(TypeError):
-            heatshrink.encode(b'abcde', lookahead_sz2=lambda x: None)
+    # def test_encode_checks_lookahead_sz2_type(self):
+    #     with self.assertRaises(TypeError):
+    #         heatshrink.encode(b'abcde', lookahead_sz2='a string')
+    #     with self.assertRaises(TypeError):
+    #         heatshrink.encode(b'abcde', lookahead_sz2=lambda x: None)
 
-    def test_encode_checks_lookahead_sz2_within_limits(self):
-        with self.assertRaises(ValueError):
-            heatshrink.encode(b'abcde', lookahead_sz2=1)
-        with self.assertRaises(ValueError):
-            heatshrink.encode(b'abcde', lookahead_sz2=16)
-        heatshrink.encode(b'abcde', lookahead_sz2=4)
-        heatshrink.encode(b'abcde', lookahead_sz2=10)
+    # def test_encode_checks_lookahead_sz2_within_limits(self):
+    #     with self.assertRaises(ValueError):
+    #         heatshrink.encode(b'abcde', lookahead_sz2=1)
+    #     with self.assertRaises(ValueError):
+    #         heatshrink.encode(b'abcde', lookahead_sz2=16)
+    #     heatshrink.encode(b'abcde', lookahead_sz2=4)
+    #     heatshrink.encode(b'abcde', lookahead_sz2=10)
 
-    def test_different_params_yield_different_output(self):
-        string = b'A string with stuff in it'
-        self.assertNotEqual(heatshrink.encode(string, window_sz2=8),
-                            heatshrink.encode(string, window_sz2=11))
-        self.assertNotEqual(heatshrink.encode(string, lookahead_sz2=4),
-                            heatshrink.encode(string, lookahead_sz2=8))
+    # def test_different_params_yield_different_output(self):
+    #     string = b'A string with stuff in it'
+    #     self.assertNotEqual(heatshrink.encode(string, window_sz2=8),
+    #                         heatshrink.encode(string, window_sz2=11))
+    #     self.assertNotEqual(heatshrink.encode(string, lookahead_sz2=4),
+    #                         heatshrink.encode(string, lookahead_sz2=8))
 
-    def test_valid_encode_types(self):
-        heatshrink.encode(b'abcde')
-        heatshrink.encode('abcde'.encode('utf8'))
-        heatshrink.encode(bytearray([1, 2, 3]))
-        heatshrink.encode(array.array('B', [1, 2, 3]))
-        heatshrink.encode([1, 2, 3])
-        with self.assertRaises(TypeError):
-            heatshrink.encode(memoryview(b'abcde'))
-        try:
-            with self.assertRaises(TypeError):
-                heatshrink.encode(unicode('abcde'))
-        except NameError:  # Python 3
-            pass
-        with self.assertRaises(TypeError):
-            heatshrink.encode(lambda x: x)
-        with self.assertRaises(TypeError):
-            heatshrink.encode(True)
-
-
-class DecoderTest(unittest.TestCase):
-    def test_returns_string(self):
-        self.assertIsInstance(heatshrink.decode('abcde'), str)
-
-    def test_accepts_buffer_like_objects(self):
-        heatshrink.decode('abcde')
-        heatshrink.decode(b'abcde')
-        heatshrink.decode(bytearray([1, 2, 3]))
-        heatshrink.decode(array.array('B', [1, 2, 3]))
-        heatshrink.decode([1, 2, 3])
-        with self.assertRaisesRegexp(TypeError, "unicode .* array"):
-            heatshrink.decode(u'abcde')
-        with self.assertRaisesRegexp(TypeError, "memoryview .* array"):
-            heatshrink.decode(memoryview(b'abcde'))
-        with self.assertRaisesRegexp(TypeError, "'int' .* not iterable"):
-            heatshrink.decode(1)
-        with self.assertRaisesRegexp(TypeError, "'function' .* not iterable"):
-            heatshrink.decode(lambda x: x)
-        with self.assertRaisesRegexp(TypeError, "'bool' .* not iterable"):
-            heatshrink.decode(True)
-
-    def test_decode_with_window_sz2(self):
-        decoded = heatshrink.decode(b'\xb0\xd8\xacvK(', window_sz2=11)
-        self.assertEqual(decoded, 'abcde')
-
-    def test_decode_checks_window_sz2_type(self):
-        with self.assertRaises(TypeError):
-            heatshrink.decode('abcde', window_sz2='a string')
-        with self.assertRaises(TypeError):
-            heatshrink.decode('abcde', window_sz2=lambda x: None)
-
-    def test_decode_checks_window_sz2_within_limits(self):
-        with self.assertRaises(ValueError):
-            heatshrink.decode('abcde', window_sz2=3)
-        with self.assertRaises(ValueError):
-            heatshrink.decode('abcde', window_sz2=16)
-        heatshrink.decode('abcde', window_sz2=5)
-        heatshrink.decode('abcde', window_sz2=14)
-
-    def test_decode_with_lookahead_sz2(self):
-        decoded = heatshrink.decode('\xb0\xd8\xacvK(', lookahead_sz2=3)
-        self.assertEqual(decoded, 'abcde')
-
-    def test_decode_checks_lookahead_sz2_type(self):
-        with self.assertRaises(TypeError):
-            heatshrink.decode('abcde', lookahead_sz2='a string')
-        with self.assertRaises(TypeError):
-            heatshrink.decode('abcde', lookahead_sz2=lambda x: None)
-
-    def test_decode_checks_lookahead_sz2_within_limits(self):
-        with self.assertRaises(ValueError):
-            heatshrink.decode('abcde', lookahead_sz2=1)
-        with self.assertRaises(ValueError):
-            heatshrink.decode('abcde', lookahead_sz2=16)
-        heatshrink.decode('abcde', lookahead_sz2=4)
-        heatshrink.decode('abcde', lookahead_sz2=10)
+    # TODO: Remove me
+    # def test_valid_encode_types(self):
+    #     heatshrink.encode(b'abcde')
+    #     heatshrink.encode('abcde'.encode('utf8'))
+    #     heatshrink.encode(bytearray([1, 2, 3]))
+    #     heatshrink.encode(array.array('B', [1, 2, 3]))
+    #     heatshrink.encode([1, 2, 3])
+    #     with self.assertRaises(TypeError):
+    #         heatshrink.encode(memoryview(b'abcde'))
+    #     try:
+    #         with self.assertRaises(TypeError):
+    #             heatshrink.encode(unicode('abcde'))
+    #     except NameError:  # Python 3
+    #         pass
+    #     with self.assertRaises(TypeError):
+    #         heatshrink.encode(lambda x: x)
+    #     with self.assertRaises(TypeError):
+    #         heatshrink.encode(True)
 
 
-class EncoderToDecoderTest(unittest.TestCase):
-    """
-    Tests assertion that data passed through the encoder
-    and then the decoder with the same parameters will be
-    equal to the original data.
-    """
+# class DecoderTest(unittest.TestCase):
+    # def test_returns_string(self):
+        # self.assertIsInstance(heatshrink.decode('abcde'), str)
 
-    def test_round_robin(self):
-        encoded = heatshrink.encode(b'a string')
-        self.assertEqual(heatshrink.decode(encoded), 'a string')
+    # def test_accepts_buffer_like_objects(self):
+    #     heatshrink.decode('abcde')
+    #     heatshrink.decode(b'abcde')
+    #     heatshrink.decode(bytearray([1, 2, 3]))
+    #     heatshrink.decode(array.array('B', [1, 2, 3]))
+    #     heatshrink.decode([1, 2, 3])
+    #     with self.assertRaisesRegexp(TypeError, "unicode .* array"):
+    #         heatshrink.decode(u'abcde')
+    #     with self.assertRaisesRegexp(TypeError, "memoryview .* array"):
+    #         heatshrink.decode(memoryview(b'abcde'))
+    #     with self.assertRaisesRegexp(TypeError, "'int' .* not iterable"):
+    #         heatshrink.decode(1)
+    #     with self.assertRaisesRegexp(TypeError, "'function' .* not iterable"):
+    #         heatshrink.decode(lambda x: x)
+    #     with self.assertRaisesRegexp(TypeError, "'bool' .* not iterable"):
+    #         heatshrink.decode(True)
 
-    def test_with_a_paragraph(self):
-        encoded = heatshrink.encode(LARGE_PARAGRAPH)
-        self.assertEqual(heatshrink.decode(encoded), LARGE_PARAGRAPH)
+    # def test_decode_with_window_sz2(self):
+    #     decoded = heatshrink.decode(b'\xb0\xd8\xacvK(', window_sz2=11)
+    #     self.assertEqual(decoded, 'abcde')
 
-    def test_with_large_strings(self):
-        test_sizes = [1000, 10000, 100000]
+    # def test_decode_checks_window_sz2_type(self):
+    #     with self.assertRaises(TypeError):
+    #         heatshrink.decode('abcde', window_sz2='a string')
+    #     with self.assertRaises(TypeError):
+    #         heatshrink.decode('abcde', window_sz2=lambda x: None)
 
-        for size in test_sizes:
-            contents = random_string(size)
+    # def test_decode_checks_window_sz2_within_limits(self):
+    #     with self.assertRaises(ValueError):
+    #         heatshrink.decode('abcde', window_sz2=3)
+    #     with self.assertRaises(ValueError):
+    #         heatshrink.decode('abcde', window_sz2=16)
+    #     heatshrink.decode('abcde', window_sz2=5)
+    #     heatshrink.decode('abcde', window_sz2=14)
 
-            decoded = heatshrink.decode(heatshrink.encode(contents))
-            # Check whole file, but don't use assertEqual as it will print all the data
-            if decoded != contents:
-                msg = ('Decoded and original file contents '
-                       'do not match for size: {}')
-                self.fail(msg.format(size))
+    # def test_decode_with_lookahead_sz2(self):
+    #     decoded = heatshrink.decode('\xb0\xd8\xacvK(', lookahead_sz2=3)
+    #     self.assertEqual(decoded, 'abcde')
+
+    # def test_decode_checks_lookahead_sz2_type(self):
+    #     with self.assertRaises(TypeError):
+    #         heatshrink.decode('abcde', lookahead_sz2='a string')
+    #     with self.assertRaises(TypeError):
+    #         heatshrink.decode('abcde', lookahead_sz2=lambda x: None)
+
+    # def test_decode_checks_lookahead_sz2_within_limits(self):
+    #     with self.assertRaises(ValueError):
+    #         heatshrink.decode('abcde', lookahead_sz2=1)
+    #     with self.assertRaises(ValueError):
+    #         heatshrink.decode('abcde', lookahead_sz2=16)
+    #     heatshrink.decode('abcde', lookahead_sz2=4)
+    #     heatshrink.decode('abcde', lookahead_sz2=10)
 
 
-class EncodedFileTest(unittest.TestCase):
-    def test_round_robin(self):
-        filename = 'test.bin'
-        write_str = 'Testing\nAnd Stuff'
+# class EncoderToDecoderTest(unittest.TestCase):
+#     """
+#     Tests assertion that data passed through the encoder
+#     and then the decoder with the same parameters will be
+#     equal to the original data.
+#     """
 
-        # TODO: Consider using EncodedFile with StringIO
-        with heatshrink.open(filename, 'wb') as fp:
-            fp.write(write_str)
+#     def test_round_robin(self):
+#         encoded = heatshrink.encode(b'a string')
+#         self.assertEqual(heatshrink.decode(encoded), 'a string')
 
-        with heatshrink.open(filename, 'rb') as fp:
-            read_str = fp.read()
+#     def test_with_a_paragraph(self):
+#         encoded = heatshrink.encode(LARGE_PARAGRAPH)
+#         self.assertEqual(heatshrink.decode(encoded), LARGE_PARAGRAPH)
 
-        os.unlink(filename)
-        self.assertEqual(write_str, read_str)
+#     def test_with_large_strings(self):
+#         test_sizes = [1000, 10000, 100000]
 
-    def test_large_file(self):
-        filename = 'test.bin'
+#         for size in test_sizes:
+#             contents = random_string(size)
 
-        with heatshrink.open(filename, 'wb') as fp:
-            fp.write(LARGE_PARAGRAPH)
+#             decoded = heatshrink.decode(heatshrink.encode(contents))
+#             # Check whole file, but don't use assertEqual as it will print all the data
+#             if decoded != contents:
+#                 msg = ('Decoded and original file contents '
+#                        'do not match for size: {}')
+#                 self.fail(msg.format(size))
 
-        with heatshrink.open(filename, 'rb') as fp:
-            read_str = fp.read()
 
-        os.unlink(filename)
-        self.assertEqual(LARGE_PARAGRAPH, read_str)
+# class EncodedFileTest(unittest.TestCase):
+#     def test_round_robin(self):
+#         filename = 'test.bin'
+#         write_str = 'Testing\nAnd Stuff'
 
-    def test_with_large_files(self):
-        filename = 'test.bin'
-        test_sizes = [1000, 10000, 100000]
+#         # TODO: Consider using EncodedFile with StringIO
+#         with heatshrink.open(filename, 'wb') as fp:
+#             fp.write(write_str)
 
-        for size in test_sizes:
-            contents = random_string(size)
+#         with heatshrink.open(filename, 'rb') as fp:
+#             read_str = fp.read()
 
-            with heatshrink.open(filename, 'wb') as fp:
-                fp.write(contents)
+#         os.unlink(filename)
+#         self.assertEqual(write_str, read_str)
 
-            with heatshrink.open(filename, 'rb') as fp:
-                read_str = fp.read()
+#     def test_large_file(self):
+#         filename = 'test.bin'
 
-            os.unlink(filename)
-            if read_str != contents:
-                msg = ('Decoded and original file contents '
-                       'do not match for size: {}')
-                self.fail(msg.format(size))
+#         with heatshrink.open(filename, 'wb') as fp:
+#             fp.write(LARGE_PARAGRAPH)
 
-    def test_read_lines(self):
-        filename = 'test.bin'
-        lines = ['Line one', 'Line two', 'All the lines']
+#         with heatshrink.open(filename, 'rb') as fp:
+#             read_str = fp.read()
 
-        with heatshrink.open(filename, 'wb') as fp:
-            fp.write('\n'.join(lines))
+#         os.unlink(filename)
+#         self.assertEqual(LARGE_PARAGRAPH, read_str)
 
-        with heatshrink.open(filename, 'rb') as fp:
-            # String contents already contains the newlines
-            read_str = ''.join([line for line in fp])
+#     def test_with_large_files(self):
+#         filename = 'test.bin'
+#         test_sizes = [1000, 10000, 100000]
 
-        os.unlink(filename)
-        self.assertEqual('\n'.join(lines), read_str)
+#         for size in test_sizes:
+#             contents = random_string(size)
+
+#             with heatshrink.open(filename, 'wb') as fp:
+#                 fp.write(contents)
+
+#             with heatshrink.open(filename, 'rb') as fp:
+#                 read_str = fp.read()
+
+#             os.unlink(filename)
+#             if read_str != contents:
+#                 msg = ('Decoded and original file contents '
+#                        'do not match for size: {}')
+#                 self.fail(msg.format(size))
+
+#     def test_read_lines(self):
+#         filename = 'test.bin'
+#         lines = ['Line one', 'Line two', 'All the lines']
+
+#         with heatshrink.open(filename, 'wb') as fp:
+#             fp.write('\n'.join(lines))
+
+#         with heatshrink.open(filename, 'rb') as fp:
+#             # String contents already contains the newlines
+#             read_str = ''.join([line for line in fp])
+
+#         os.unlink(filename)
+#         self.assertEqual('\n'.join(lines), read_str)
+
+import array
+from heatshrink import core
+
+
+class ReplicateSegfaultTest(unittest.TestCase):
+    def test_break_all_the_things(self):
+        writer = core._Writer(11, 4)
+
+        with open('scripts/data/plain_file.txt', 'rb') as fp:
+            buf = fp.read(writer.max_output_size)
+
+        data = array.array('B', buf)
+        print('Sinking %d bytes...' % len(data))
+        res, sink_size = core.sink_p(writer, data, 0)
+        print('Successfully sunk %d bytes' % sink_size)
+
+        print('Polling data...')
+        out_buf = array.array('B', [])
+        res, poll_size = core.poll_p(writer, out_buf, 2048)
