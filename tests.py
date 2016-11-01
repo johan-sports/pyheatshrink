@@ -34,8 +34,8 @@ def random_string(size):
 
 
 # class EncoderTest(unittest.TestCase):
-    # def setUp(self):
-    #     self.encoded = heatshrink.encode(b'abcde')
+# def setUp(self):
+#     self.encoded = heatshrink.encode(b'abcde')
 
     # def test_encoded_size(self):
     #     self.assertEqual(len(self.encoded), 6)
@@ -108,8 +108,8 @@ def random_string(size):
 
 
 # class DecoderTest(unittest.TestCase):
-    # def test_returns_string(self):
-        # self.assertIsInstance(heatshrink.decode('abcde'), str)
+# def test_returns_string(self):
+# self.assertIsInstance(heatshrink.decode('abcde'), str)
 
     # def test_accepts_buffer_like_objects(self):
     #     heatshrink.decode('abcde')
@@ -254,22 +254,25 @@ def random_string(size):
 #         os.unlink(filename)
 #         self.assertEqual('\n'.join(lines), read_str)
 
-import array
+import pprint
+import gc
 from heatshrink import core
 
 
 class ReplicateSegfaultTest(unittest.TestCase):
     def test_break_all_the_things(self):
+        gc.collect()
         writer = core._Writer(11, 4)
+        gc.collect()
+        e = core.Encoder(writer)
+        gc.collect()
 
         with open('scripts/data/plain_file.txt', 'rb') as fp:
             buf = fp.read(writer.max_output_size)
 
-        data = array.array('B', buf)
-        print('Sinking %d bytes...' % len(data))
-        res, sink_size = core.sink_p(writer, data, 0)
-        print('Successfully sunk %d bytes' % sink_size)
-
-        print('Polling data...')
-        out_buf = array.array('B', [])
-        res, poll_size = core.poll_p(writer, out_buf, 2048)
+        encoded = e.fill(buf)
+        gc.collect()  # Fails here on encoded return
+        print('[test] Encoded %d to %d' % (len(buf), len(encoded)))
+        encoded += e.finish()
+        gc.collect()
+        print('[test] Final encoded size: %d' % len(encoded))
