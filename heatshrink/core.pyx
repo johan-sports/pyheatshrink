@@ -47,7 +47,9 @@ cdef class Writer:
     """Thin wrapper around heatshrink_encoder"""
     cdef _heatshrink.heatshrink_encoder *_hse
 
-    def __cinit__(self, window_sz2, lookahead_sz2):
+    def __cinit__(self,
+                  window_sz2=DEFAULT_WINDOW_SZ2,
+                  lookahead_sz2=DEFAULT_LOOKAHEAD_SZ2):
         _validate_bounds(window_sz2, name='window_sz2',
                         min=MIN_WINDOW_SZ2, max=MAX_WINDOW_SZ2)
         _validate_bounds(lookahead_sz2, name='lookahead_sz2',
@@ -120,7 +122,10 @@ cdef class Reader:
     """Thin wrapper around heatshrink_decoder"""
     cdef _heatshrink.heatshrink_decoder *_hsd
 
-    def __cinit__(self, input_buffer_size, window_sz2, lookahead_sz2):
+    def __cinit__(self,
+                  input_buffer_size=DEFAULT_INPUT_BUFFER_SIZE,
+                  window_sz2=DEFAULT_WINDOW_SZ2,
+                  lookahead_sz2=DEFAULT_LOOKAHEAD_SZ2):
         _validate_bounds(input_buffer_size, name='input_buffer_size', min=0)
         _validate_bounds(window_sz2, name='window_sz2',
                         min=MIN_WINDOW_SZ2, max=MAX_WINDOW_SZ2)

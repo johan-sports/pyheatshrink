@@ -12,7 +12,7 @@ class DecompressReader(io.RawIOBase):
     decompression modules. See github for more details:
     https://github.com/python/cpython/blob/3.6/Lib/_compression.py#L33
     """
-    def __init__(self, fp, decomp_fn, **decomp_args):
+    def __init__(self, fp, decomp_factory, **decomp_args):
         self._fp = fp
         self._eof = False
         self._pos = 0  # Current offset in decompressed stream
@@ -20,8 +20,11 @@ class DecompressReader(io.RawIOBase):
         # Set to size of decompressed stream once it is known
         self._size = -1
 
-        self._decomp_fn = decomp_fn
+        self._decomp_factory = decomp_factory
         self._decomp_args = decomp_args
+
+        reader = core.Reader(**decomp_args)
+        self._decoder = decomp_factory(reader)
 
     def close(self):
         return super(EncodedFile).close()
@@ -47,14 +50,16 @@ class DecompressReader(io.RawIOBase):
 
         raw_chunk = self._fp.read(size)
         if raw_chunk:
-            data = self._decomp_fn(raw_chunk, **self._decomp_args)
+            data = self._decoder.fill(raw_chunk)
         else:
             data = None
 
         if not data:
             self._eof = True
             self._size = self._pos
-            return b''
+            # Finalize internal decoder.
+            # TODO: Don't allow any further operations after this
+            return self._decoder.finish()
         self._pos += len(data)
         return data
 
@@ -125,7 +130,7 @@ class EncodedFile(io.BufferedIOBase):
             raise ValueError('No filename or file object provided')
 
         if self._mode == _MODE_READ:
-            self._buffer = DecompressReader(self._fp, core.decode,
+            self._buffer = DecompressReader(self._fp, core.Encoder,
                                             **self._compress_options)
 
         # File seek position

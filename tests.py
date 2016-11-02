@@ -117,9 +117,9 @@ class DecoderTest(unittest.TestCase):
         heatshrink.decode(bytearray([1, 2, 3]))
         heatshrink.decode(array.array('B', [1, 2, 3]))
         heatshrink.decode([1, 2, 3])
-        with self.assertRaisesRegexp(TypeError, "unicode .* array"):
+        with self.assertRaisesRegexp(TypeError, "unicode"):
             heatshrink.decode(u'abcde')
-        with self.assertRaisesRegexp(TypeError, "memoryview .* array"):
+        with self.assertRaisesRegexp(TypeError, "memoryview"):
             heatshrink.decode(memoryview(b'abcde'))
         with self.assertRaisesRegexp(TypeError, "'int' .* not iterable"):
             heatshrink.decode(1)
