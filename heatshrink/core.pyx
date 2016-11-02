@@ -55,7 +55,7 @@ cdef class Writer:
 
         self._hse = _heatshrink.heatshrink_encoder_alloc(window_sz2, lookahead_sz2)
         if self._hse is NULL:
-            raise MemoryError
+            raise MemoryError()
 
     def __dealloc__(self):
         if self._hse is not NULL:
@@ -66,6 +66,9 @@ cdef class Writer:
         return 1 << self._hse.window_sz2
 
     def sink(self, array.array in_buf, size_t offset=0):
+        """
+        Sink input in to the encoder with an optional N byte `offset`.
+        """
         cdef:
             size_t sink_size
             _heatshrink.HSE_sink_res res
@@ -85,6 +88,8 @@ cdef class Writer:
 
         Assumes that the passed in array is large enough to
         contain all data from the state machine.
+
+        FIXME: Protect against segfaults
         """
         cdef:
             size_t poll_size
@@ -104,6 +109,7 @@ cdef class Writer:
         return res == _heatshrink.HSER_POLL_EMPTY
 
     def finish(self):
+        """Notifies the encoder that the input stream is finished."""
         return _heatshrink.heatshrink_encoder_finish(self._hse)
 
     def is_finished(self, _heatshrink.HSE_finish_res res):
@@ -124,7 +130,7 @@ cdef class Reader:
         self._hsd = _heatshrink.heatshrink_decoder_alloc(
             input_buffer_size, window_sz2, lookahead_sz2)
         if self._hsd is NULL:
-            raise MemoryError
+            raise MemoryError()
 
     def __dealloc__(self):
         if self._hsd is not NULL:
@@ -135,6 +141,9 @@ cdef class Reader:
         return 1 << self._hsd.window_sz2
 
     def sink(self, array.array in_buf, size_t offset=0):
+        """
+        Sink input in to the encoder with an optional N byte `offset`.
+        """
         cdef:
             size_t sink_size
             _heatshrink.HSD_sink_res res
@@ -168,50 +177,14 @@ cdef class Reader:
         return res == _heatshrink.HSDR_POLL_EMPTY
 
     def finish(self):
+        """Notifies the encoder that the input stream is finished."""
         return _heatshrink.heatshrink_decoder_finish(self._hsd)
 
     def is_finished(self, _heatshrink.HSD_finish_res res):
         return res == _heatshrink.HSDR_FINISH_DONE
 
 
-def sink(encoder, array.array in_buf, size_t offset=0):
-    """
-    Sink input in to the encoder with an optional N byte `offset`.
-    """
-    res, sink_size = encoder.sink(in_buf, offset=offset)
-    if res < 0:
-        raise RuntimeError('Sink failed.')
-
-    return sink_size
-
-
-def poll(encoder):
-    """
-    Poll output from an encoder/decoder.
-    Returns a tuple containing the poll output buffer
-    and a boolean indicating if polling is finished.
-    """
-    cdef array.array out_buf = array.array('B', [])
-    # Resize to a decent length
-    array.resize(out_buf, encoder.max_output_size)
-
-    res, poll_size = encoder.poll(out_buf)
-    if res < 0:
-        raise RuntimeError('Polling failed.')
-
-    # Resize to drop unused elements
-    array.resize(out_buf, poll_size)
-
-    done = encoder.is_poll_empty(res)
-    return out_buf, done
-
-
 def finish(encoder):
-    """
-    Notifies the encoder that the input stream is finished.
-    Returns `False` if there is more ouput to be processed,
-    meaning that poll should be called again.
-    """
     res = encoder.finish()
     if res < 0:
         raise RuntimeError("Finish failed.")
@@ -225,12 +198,24 @@ class Encoder(object):
 
     def _drain(self):
         """Empty data from the encoder state machine."""
+        cdef:
+            array.array out_buf = array.array('B', [])
+
         while True:
-            polled, done = poll(self._encoder)
+            # Resize to decent length
+            array.resize(out_buf, self._encoder.max_output_size)
 
-            yield polled
+            res, poll_size = self._encoder.poll(out_buf)
+            if res < 0:
+                raise RuntimeError('Encoder poll failed.')
 
-            if done:
+            # Drop unused elements
+            array.resize(out_buf, poll_size)
+
+            yield out_buf
+
+            # Done polling
+            if self._encoder.is_poll_empty(res):
                 raise StopIteration
 
     def fill(self, buf):
@@ -248,7 +233,12 @@ class Encoder(object):
         cdef size_t total_sunk = 0
 
         while total_sunk < len(in_buf):
-            total_sunk += sink(self._encoder, in_buf, offset=total_sunk)
+            res, sunk = self._encoder.sink(in_buf, offset=total_sunk)
+
+            if res < 0:
+                raise RuntimeError('Encoder sink failed.')
+
+            total_sunk += sunk
 
             # Clear state machine
             for data in self._drain():
@@ -262,7 +252,11 @@ class Encoder(object):
         cdef array.array out_buf = array.array('B', [])
 
         while True:
-            if finish(self._encoder):
+            res = self._encoder.finish()
+            if res < 0:
+                raise RuntimeError('Encoder finish failed.')
+
+            if self._encoder.is_finished(res):
                 break
 
             for data in self._drain():
