@@ -87,6 +87,7 @@ class EncoderTest(unittest.TestCase):
         self.assertNotEqual(heatshrink.encode(string, lookahead_sz2=4),
                             heatshrink.encode(string, lookahead_sz2=8))
 
+    # TODO: Remove me
     def test_valid_encode_types(self):
         heatshrink.encode(b'abcde')
         heatshrink.encode('abcde'.encode('utf8'))
