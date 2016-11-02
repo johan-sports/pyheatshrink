@@ -108,6 +108,15 @@ class EncodedFile(io.BufferedIOBase):
         self._mode = _MODE_CLOSED
         self._compress_options = compress_options
 
+        if mode in ('', 'r', 'rb'):
+            mode = 'rb'
+            self._mode = _MODE_READ
+        elif mode in ('w', 'wb'):
+            mode = 'wb'
+            self._mode = _MODE_WRITE
+        else:
+            raise ValueError('Invalid mode: {}'.format(mode))
+
         if filename:
             self._fp = builtin_open(filename, mode)
         elif file:
@@ -115,16 +124,9 @@ class EncodedFile(io.BufferedIOBase):
         else:
             raise ValueError('No filename or file object provided')
 
-        if mode in ('', 'r', 'rb'):
-            mode = 'rb'
-            self._mode = _MODE_READ
+        if self._mode == _MODE_READ:
             self._buffer = DecompressReader(self._fp, core.decode,
                                             **self._compress_options)
-        elif mode in ('w', 'wb'):
-            mode = 'wb'
-            self._mode = _MODE_WRITE
-        else:
-            raise ValueError('Invalid mode: {}'.format(mode))
 
         # File seek position
         self._pos = 0
