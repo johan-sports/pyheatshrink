@@ -254,25 +254,32 @@ def random_string(size):
 #         os.unlink(filename)
 #         self.assertEqual('\n'.join(lines), read_str)
 
-import pprint
+import array
 import gc
 from heatshrink import core
 
 
 class ReplicateSegfaultTest(unittest.TestCase):
     def test_break_all_the_things(self):
-        gc.collect()
-        writer = core._Writer(11, 4)
-        gc.collect()
-        e = core.Encoder(writer)
-        gc.collect()
+        for i in range(100):
+            writer = core.Writer(11, 4)
+            gc.collect()
 
-        with open('scripts/data/plain_file.txt', 'rb') as fp:
-            buf = fp.read(writer.max_output_size)
+            with open('scripts/data/plain_file.txt', 'rb') as fp:
+                buf = fp.read(writer.max_output_size)
 
-        encoded = e.fill(buf)
-        gc.collect()  # Fails here on encoded return
-        print('[test] Encoded %d to %d' % (len(buf), len(encoded)))
-        encoded += e.finish()
-        gc.collect()
-        print('[test] Final encoded size: %d' % len(encoded))
+            data = array.array('B', buf)
+            sunk = writer.sink(writer, data)
+            gc.collect()
+            print('\n[test] Sunk %d bytes' % sunk)
+
+            polled, done = writer.poll(writer)
+            gc.collect()
+            print('[test] Polled %d bytes' % len(polled))
+
+            encoded = polled.tostring()
+            gc.collect()
+            print('[test] Encoded to string %d bytes' % len(encoded))
+
+            writer.finish(writer)
+            print('[test] Finished encoder')

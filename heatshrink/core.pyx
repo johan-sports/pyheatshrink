@@ -62,24 +62,40 @@ cdef class Writer:
         if self._hse is not NULL:
             _heatshrink.heatshrink_encoder_free(self._hse)
 
-    cdef _heatshrink.HSE_sink_res sink(self, uint8_t *in_buf, size_t size, size_t *input_size) nogil:
-        return _heatshrink.heatshrink_encoder_sink(self._hse, in_buf, size, input_size)
-
     @property
     def max_output_size(self):
         return 1 << self._hse.window_sz2
 
-    cdef _heatshrink.HSE_poll_res poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size) nogil:
-        return _heatshrink.heatshrink_encoder_poll(self._hse, out_buf, out_buf_size, output_size)
+    cdef _heatshrink.HSE_sink_res sink(self,
+                                        uint8_t *in_buf,
+                                        size_t in_buf_size,
+                                        size_t *sink_size) nogil:
+        return _heatshrink.heatshrink_encoder_sink(
+            self._hse,
+            in_buf,
+            in_buf_size,
+            sink_size
+        )
 
-    cdef is_poll_empty(self, _heatshrink.HSE_poll_res res):
-        return res == _heatshrink.HSER_POLL_EMPTY
+    cdef _heatshrink.HSE_poll_res poll(self,
+                                        uint8_t *out_buf,
+                                        size_t out_buf_size,
+                                        size_t *poll_size) nogil:
+        return _heatshrink.heatshrink_encoder_poll(
+            self._hse,
+            out_buf,
+            out_buf_size,
+            poll_size
+        )
 
-    cdef finish(self):
+    def is_poll_empty(self, _heatshrink.HSE_poll_res res):
+        return res == _heatshrink.HSE_POLL_EMPTY
+
+    cdef _heatshrink.HSE_finish_res finish(self):
         return _heatshrink.heatshrink_encoder_finish(self._hse)
 
-    cdef is_finished(self, _heatshrink.HSE_finish_res res):
-        return res == _heatshrink.HSER_FINISH_DONE
+    def is_finished(self, _heatshrink.HSE_finish_res res):
+        return res == _heatshrink.HSE_FINISH_DONE
 
 
 cdef class Reader:
@@ -102,53 +118,65 @@ cdef class Reader:
         if self._hsd is not NULL:
             _heatshrink.heatshrink_decoder_free(self._hsd)
 
-    cdef _heatshrink.HSD_sink_res sink(self, uint8_t *in_buf, size_t size, size_t *input_size) nogil:
-        return _heatshrink.heatshrink_decoder_sink(self._hsd, in_buf, size, input_size)
-
     @property
     def max_output_size(self):
         return 1 << self._hsd.window_sz2
 
-    cdef _heatshrink.HSD_poll_res poll(self, uint8_t *out_buf, size_t out_buf_size, size_t *output_size) nogil:
-        return _heatshrink.heatshrink_decoder_poll(self._hsd, out_buf, out_buf_size, output_size)
+    cdef _heatshrink.HSD_sink_res sink(self,
+                                       uint8_t *in_buf,
+                                       size_t in_buf_size,
+                                       size_t *sink_size) nogil:
+        return _heatshrink.heatshrink_decoder_sink(
+            self._hsd,
+            in_buf,
+            in_buf_size,
+            sink_size
+        )
 
-    cdef is_poll_empty(self, _heatshrink.HSD_poll_res res):
+    cdef _heatshrink.HSD_poll_res poll(self,
+                                       uint8_t *out_buf,
+                                       size_t out_buf_size,
+                                       size_t *poll_size) nogil:
+        return _heatshrink.heatshrink_decoder_poll(
+            self._hsd,
+            out_buf,
+            out_buf_size,
+            poll_size
+        )
+
+    def is_poll_empty(self, _heatshrink.HSD_poll_res res):
         return res == _heatshrink.HSDR_POLL_EMPTY
 
-    cdef finish(self):
+    cdef _heatshrink.HSD_finish_res finish(self):
         return _heatshrink.heatshrink_decoder_finish(self._hsd)
 
-    cdef is_finished(self, _heatshrink.HSD_finish_res res):
+    def is_finished(self, _heatshrink.HSD_finish_res res):
         return res == _heatshrink.HSDR_FINISH_DONE
 
 
-cdef size_t sink(encoder, array.array in_buf, size_t offset=0):
+def sink(encoder, array.array in_buf, size_t offset=0):
     """
     Sink input in to the encoder with an optional N byte `offset`.
     """
-    cdef size_t sink_size
-
-    res = encoder.sink(&in_buf.data.as_uchars[offset],
-                   len(in_buf) - offset, &sink_size)
+    res, sink_size = encoder.sink(&in_buf.data.as_uchars[offset],
+                                  len(in_buf) - offset)
     if res < 0:
         raise RuntimeError('Sink failed.')
 
     return sink_size
 
 
-cdef poll(encoder):
+def poll(encoder):
     """
     Poll output from an encoder/decoder.
     Returns a tuple containing the poll output buffer
     and a boolean indicating if polling is finished.
     """
-    cdef size_t poll_size
-
     cdef array.array out_buf = array.array('B', [])
     # Resize to a decent length
     array.resize(out_buf, encoder.max_output_size)
 
-    res = encoder.poll(out_buf.data.as_uchars, len(out_buf), &poll_size)
+    res, poll_size = encoder.poll(out_buf.data.as_uchars, len(out_buf))
     if res < 0:
         raise RuntimeError('Polling failed.')
 
@@ -159,7 +187,7 @@ cdef poll(encoder):
     return (out_buf, done)
 
 
-cdef finish(encoder):
+def finish(encoder):
     """
     Notifies the encoder that the input stream is finished.
     Returns `False` if there is more ouput to be processed,
@@ -171,10 +199,9 @@ cdef finish(encoder):
     return encoder.is_finished(res)
 
 
-
 # TODO: Use a better name
 class Encoder(object):
-    def __init__(self, _Encoder encoder):
+    def __init__(self, encoder):
         self._encoder = encoder
 
     def _drain(self):
@@ -206,9 +233,11 @@ class Encoder(object):
 
             # Clear state machine
             for data in self._drain():
-                out_buf.extend(data)
+                pass
+                # out_buf.extend(data)
 
-        return out_buf.tostring()
+        # return out_buf.tostring()
+        return None
 
     # TODO: Find a way to handle that there may be left over
     # TODO: data in the state machine.
