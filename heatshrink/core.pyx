@@ -184,13 +184,6 @@ cdef class Reader:
         return res == _heatshrink.HSDR_FINISH_DONE
 
 
-def finish(encoder):
-    res = encoder.finish()
-    if res < 0:
-        raise RuntimeError("Finish failed.")
-    return encoder.is_finished(res)
-
-
 class Encoder(object):
     """TODO"""
     def __init__(self, encoder):
