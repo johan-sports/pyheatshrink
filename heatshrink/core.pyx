@@ -193,6 +193,14 @@ class Encoder(object):
     """High level interface to the Heatshrink encoders/decoders."""
     def __init__(self, encoder):
         self._encoder = encoder
+        self._finished = False
+
+    def _check_not_finished(self):
+        """Throws an exception if the encoder has been closed."""
+        if self._finished:
+            msg = 'Attempted to perform operation on a closed encoder.'
+            # TODO: ValueError isn't the right exception for this
+            raise ValueError(msg)
 
     def _drain(self):
         """Empty data from the encoder state machine."""
@@ -217,9 +225,9 @@ class Encoder(object):
                 raise StopIteration
 
     def fill(self, buf):
-        """
-        Fill the encoder state machine with a buffer.
-        """
+        """Fill the encoder state machine with a buffer."""
+        self._check_not_finished()
+
         if isinstance(buf, (unicode, memoryview)):
             msg = "Cannot fill encoder with type '{.__name__}'"
             raise TypeError(msg.format(buf.__class__))
@@ -244,9 +252,10 @@ class Encoder(object):
 
         return out_buf.tostring()
 
-    # TODO: Find a way to handle that there may be left over
-    # TODO: data in the state machine.
     def finish(self):
+        """Close encoder and flush any remaining data."""
+        self._check_not_finished()
+
         cdef array.array out_buf = array.array('B', [])
 
         while True:
@@ -255,12 +264,18 @@ class Encoder(object):
                 raise RuntimeError('Encoder finish failed.')
 
             if self._encoder.is_finished(res):
+                self._finished = True
                 break
 
             for data in self._drain():
                 out_buf.extend(data)
 
         return out_buf.tostring()
+
+    @property
+    def finished(self):
+        """Returns true if the encoder has been closed."""
+        return self._finished
 
 
 cdef encode_impl(encoder, buf):
