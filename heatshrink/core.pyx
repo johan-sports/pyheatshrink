@@ -200,7 +200,7 @@ class Encoder(object):
         if self._finished:
             msg = 'Attempted to perform operation on a closed encoder.'
             # TODO: ValueError isn't the right exception for this
-            raise BufferError(msg)
+            raise ValueError(msg)
 
     def _drain(self):
         """Empty data from the encoder state machine."""

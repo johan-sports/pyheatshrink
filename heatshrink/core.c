@@ -546,7 +546,7 @@ struct __pyx_obj_10heatshrink_4core_Reader {
 
 
 /* "heatshrink/core.pyx":205
- *             raise BufferError(msg)
+ *             raise ValueError(msg)
  * 
  *     def _drain(self):             # <<<<<<<<<<<<<<
  *         """Empty data from the encoder state machine."""
@@ -1197,7 +1197,6 @@ static PyObject *__pyx_builtin_property;
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_MemoryError;
-static PyObject *__pyx_builtin_BufferError;
 static PyObject *__pyx_builtin_RuntimeError;
 static PyObject *__pyx_builtin_StopIteration;
 static PyObject *__pyx_builtin_memoryview;
@@ -1261,7 +1260,6 @@ static const char __pyx_k_finished_2[] = "finished";
 static const char __pyx_k_memoryview[] = "memoryview";
 static const char __pyx_k_total_sunk[] = "total_sunk";
 static const char __pyx_k_window_sz2[] = "window_sz2";
-static const char __pyx_k_BufferError[] = "BufferError";
 static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_is_finished[] = "is_finished";
 static const char __pyx_k_Encoder_fill[] = "Encoder.fill";
@@ -1300,7 +1298,6 @@ static const char __pyx_k_Expecting_either_a_min_or_max_pa[] = "Expecting either
 static const char __pyx_k_High_level_interface_to_the_Heat[] = "High level interface to the Heatshrink encoders/decoders.";
 static PyObject *__pyx_kp_s_Attempted_to_perform_operation_o;
 static PyObject *__pyx_n_s_B;
-static PyObject *__pyx_n_s_BufferError;
 static PyObject *__pyx_kp_s_Cannot_fill_encoder_with_type;
 static PyObject *__pyx_n_s_DEFAULT_INPUT_BUFFER_SIZE;
 static PyObject *__pyx_n_s_DEFAULT_LOOKAHEAD_SZ2;
@@ -3789,7 +3786,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_2_check_not_finished(CYTHO
  *         if self._finished:
  *             msg = 'Attempted to perform operation on a closed encoder.'             # <<<<<<<<<<<<<<
  *             # TODO: ValueError isn't the right exception for this
- *             raise BufferError(msg)
+ *             raise ValueError(msg)
  */
     __Pyx_INCREF(__pyx_kp_s_Attempted_to_perform_operation_o);
     __pyx_v_msg = __pyx_kp_s_Attempted_to_perform_operation_o;
@@ -3797,7 +3794,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_2_check_not_finished(CYTHO
     /* "heatshrink/core.pyx":203
  *             msg = 'Attempted to perform operation on a closed encoder.'
  *             # TODO: ValueError isn't the right exception for this
- *             raise BufferError(msg)             # <<<<<<<<<<<<<<
+ *             raise ValueError(msg)             # <<<<<<<<<<<<<<
  * 
  *     def _drain(self):
  */
@@ -3806,7 +3803,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_2_check_not_finished(CYTHO
     __Pyx_INCREF(__pyx_v_msg);
     __Pyx_GIVEREF(__pyx_v_msg);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_msg);
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_BufferError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 203, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 203, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
@@ -3847,7 +3844,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_2_check_not_finished(CYTHO
 static PyObject *__pyx_gb_10heatshrink_4core_7Encoder_6generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
 /* "heatshrink/core.pyx":205
- *             raise BufferError(msg)
+ *             raise ValueError(msg)
  * 
  *     def _drain(self):             # <<<<<<<<<<<<<<
  *         """Empty data from the encoder state machine."""
@@ -4192,7 +4189,7 @@ static PyObject *__pyx_gb_10heatshrink_4core_7Encoder_6generator(__pyx_Coroutine
   }
 
   /* "heatshrink/core.pyx":205
- *             raise BufferError(msg)
+ *             raise ValueError(msg)
  * 
  *     def _drain(self):             # <<<<<<<<<<<<<<
  *         """Empty data from the encoder state machine."""
@@ -6898,7 +6895,6 @@ static struct PyModuleDef __pyx_moduledef = {
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_Attempted_to_perform_operation_o, __pyx_k_Attempted_to_perform_operation_o, sizeof(__pyx_k_Attempted_to_perform_operation_o), 0, 0, 1, 0},
   {&__pyx_n_s_B, __pyx_k_B, sizeof(__pyx_k_B), 0, 0, 1, 1},
-  {&__pyx_n_s_BufferError, __pyx_k_BufferError, sizeof(__pyx_k_BufferError), 0, 0, 1, 1},
   {&__pyx_kp_s_Cannot_fill_encoder_with_type, __pyx_k_Cannot_fill_encoder_with_type, sizeof(__pyx_k_Cannot_fill_encoder_with_type), 0, 0, 1, 0},
   {&__pyx_n_s_DEFAULT_INPUT_BUFFER_SIZE, __pyx_k_DEFAULT_INPUT_BUFFER_SIZE, sizeof(__pyx_k_DEFAULT_INPUT_BUFFER_SIZE), 0, 0, 1, 1},
   {&__pyx_n_s_DEFAULT_LOOKAHEAD_SZ2, __pyx_k_DEFAULT_LOOKAHEAD_SZ2, sizeof(__pyx_k_DEFAULT_LOOKAHEAD_SZ2), 0, 0, 1, 1},
@@ -7001,7 +6997,6 @@ static int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 28, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 32, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 60, __pyx_L1_error)
-  __pyx_builtin_BufferError = __Pyx_GetBuiltinName(__pyx_n_s_BufferError); if (!__pyx_builtin_BufferError) __PYX_ERR(0, 203, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(0, 216, __pyx_L1_error)
   __pyx_builtin_StopIteration = __Pyx_GetBuiltinName(__pyx_n_s_StopIteration); if (!__pyx_builtin_StopIteration) __PYX_ERR(0, 225, __pyx_L1_error)
   __pyx_builtin_memoryview = __Pyx_GetBuiltinName(__pyx_n_s_memoryview); if (!__pyx_builtin_memoryview) __PYX_ERR(0, 231, __pyx_L1_error)
@@ -7117,7 +7112,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_slacker_Programming_johan, __pyx_n_s_check_not_finished, 198, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 198, __pyx_L1_error)
 
   /* "heatshrink/core.pyx":205
- *             raise BufferError(msg)
+ *             raise ValueError(msg)
  * 
  *     def _drain(self):             # <<<<<<<<<<<<<<
  *         """Empty data from the encoder state machine."""
@@ -7525,7 +7520,7 @@ PyMODINIT_FUNC PyInit_core(void)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "heatshrink/core.pyx":205
- *             raise BufferError(msg)
+ *             raise ValueError(msg)
  * 
  *     def _drain(self):             # <<<<<<<<<<<<<<
  *         """Empty data from the encoder state machine."""

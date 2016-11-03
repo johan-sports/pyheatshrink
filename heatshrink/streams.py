@@ -112,7 +112,7 @@ class EncodedFile(io.BufferedIOBase):
         if mode in ('', 'r', 'rb'):
             mode = 'rb'
             self._mode = _MODE_READ
-        elif mode in ('w', 'wb'):
+        elif mode in ('w', 'wb'):  # TODO: Support a, ab
             mode = 'wb'
             self._mode = _MODE_WRITE
         else:
