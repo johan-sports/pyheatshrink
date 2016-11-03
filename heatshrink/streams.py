@@ -50,7 +50,7 @@ class DecompressReader(io.RawIOBase):
         else:
             data = None
 
-        if not data:
+        if data is None:  # data may be an empty string
             self._eof = True
             self._size = self._pos
             # Finalize internal decoder.

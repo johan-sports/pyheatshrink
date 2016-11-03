@@ -1,36 +1,10 @@
 import array
-import os
-import random
-import string
 import unittest
 
 import heatshrink
 
-
-LARGE_PARAGRAPH = """I know this from my own experience, as a high school kid
-writing programs in Basic. That language didn't even support recursion. It's
-hard to imagine writing programs without using recursion, but I didn't miss it
-at the time. I thought in Basic. And I was a whiz at it.
-Master of all I surveyed. - Paul Graham
-
-A programming language is for thinking about programs, not for expressing
-programs you've already thought of. It should be a pencil, not a pen.
-- Paul Graham
-
-A recursive definition does not necessarily lead to a recursive process.
-- Gerald Jay Sussman
-"""
-
-
-BASE_DIR = os.path.dirname(__file__)
-
-
-def random_string(size):
-    """
-    Generate a random string of size `size`.
-    """
-    choices = string.lowercase + string.uppercase + string.digits + '\n'
-    return ''.join(random.choice(choices) for _ in range(size))
+from .constants import LARGE_PARAGRAPH
+from .utils import random_string
 
 
 class EncoderTest(unittest.TestCase):
@@ -187,69 +161,9 @@ class EncoderToDecoderTest(unittest.TestCase):
             contents = random_string(size)
 
             decoded = heatshrink.decode(heatshrink.encode(contents))
-            # Check whole file, but don't use assertEqual as it will print all the data
+            # Check whole file, but don't use assertEqual as it will
+            # print all the data
             if decoded != contents:
                 msg = ('Decoded and original file contents '
                        'do not match for size: {}')
                 self.fail(msg.format(size))
-
-
-class EncodedFileTest(unittest.TestCase):
-    def test_round_robin(self):
-        filename = 'test.bin'
-        write_str = 'Testing\nAnd Stuff'
-
-        # TODO: Consider using EncodedFile with StringIO
-        with heatshrink.open(filename, 'wb') as fp:
-            fp.write(write_str)
-
-        with heatshrink.open(filename, 'rb') as fp:
-            read_str = fp.read()
-
-        os.unlink(filename)
-        self.assertEqual(write_str, read_str)
-
-    def test_large_file(self):
-        filename = 'test.bin'
-
-        with heatshrink.open(filename, 'wb') as fp:
-            fp.write(LARGE_PARAGRAPH)
-
-        with heatshrink.open(filename, 'rb') as fp:
-            read_str = fp.read()
-
-        os.unlink(filename)
-        self.assertEqual(LARGE_PARAGRAPH, read_str)
-
-    def test_with_large_files(self):
-        filename = 'test.bin'
-        test_sizes = [1000, 10000, 100000]
-
-        for size in test_sizes:
-            contents = random_string(size)
-
-            with heatshrink.open(filename, 'wb') as fp:
-                fp.write(contents)
-
-            with heatshrink.open(filename, 'rb') as fp:
-                read_str = fp.read()
-
-            os.unlink(filename)
-            if read_str != contents:
-                msg = ('Decoded and original file contents '
-                       'do not match for size: {}')
-                self.fail(msg.format(size))
-
-    def test_read_lines(self):
-        filename = 'test.bin'
-        lines = ['Line one', 'Line two', 'All the lines']
-
-        with heatshrink.open(filename, 'wb') as fp:
-            fp.write('\n'.join(lines))
-
-        with heatshrink.open(filename, 'rb') as fp:
-            # String contents already contains the newlines
-            read_str = ''.join([line for line in fp])
-
-        os.unlink(filename)
-        self.assertEqual('\n'.join(lines), read_str)
