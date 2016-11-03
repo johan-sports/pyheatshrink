@@ -17,7 +17,7 @@ class BaseTest(unittest.TestCase):
             raise AssertionError(msg.format(e.__class__))
 
 
-class BaseEncoderTest(BaseTest):
+class InternalEncodersTest(BaseTest):
     """Tests for the Writer and Reader classes."""
     def test_checks_window_sz2_type(self):
         for cls in (Writer, Reader):
