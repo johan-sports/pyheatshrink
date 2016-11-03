@@ -1219,7 +1219,6 @@ static const char __pyx_k_min[] = "min";
 static const char __pyx_k_msg[] = "msg";
 static const char __pyx_k_res[] = "res";
 static const char __pyx_k_val[] = "val";
-static const char __pyx_k_TODO[] = "TODO";
 static const char __pyx_k_args[] = "args";
 static const char __pyx_k_data[] = "data";
 static const char __pyx_k_fill[] = "fill";
@@ -1297,6 +1296,7 @@ static const char __pyx_k_DEFAULT_INPUT_BUFFER_SIZE[] = "DEFAULT_INPUT_BUFFER_SI
 static const char __pyx_k_Cannot_fill_encoder_with_type[] = "Cannot fill encoder with type '{.__name__}'";
 static const char __pyx_k_home_slacker_Programming_johan[] = "/home/slacker/Programming/johan/pyheatshrink/heatshrink/core.pyx";
 static const char __pyx_k_Expecting_either_a_min_or_max_pa[] = "Expecting either a min or max parameter";
+static const char __pyx_k_High_level_interface_to_the_Heat[] = "High level interface to the Heatshrink encoders/decoders.";
 static PyObject *__pyx_n_s_B;
 static PyObject *__pyx_kp_s_Cannot_fill_encoder_with_type;
 static PyObject *__pyx_n_s_DEFAULT_INPUT_BUFFER_SIZE;
@@ -1312,6 +1312,7 @@ static PyObject *__pyx_kp_s_Encoder_poll_failed;
 static PyObject *__pyx_kp_s_Encoder_sink_failed;
 static PyObject *__pyx_kp_s_Expected_number_got;
 static PyObject *__pyx_kp_s_Expecting_either_a_min_or_max_pa;
+static PyObject *__pyx_kp_s_High_level_interface_to_the_Heat;
 static PyObject *__pyx_n_s_MAX_WINDOW_SZ2;
 static PyObject *__pyx_n_s_MIN_LOOKAHEAD_SZ2;
 static PyObject *__pyx_n_s_MIN_WINDOW_SZ2;
@@ -1319,7 +1320,6 @@ static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_n_s_Number;
 static PyObject *__pyx_n_s_RuntimeError;
 static PyObject *__pyx_n_s_StopIteration;
-static PyObject *__pyx_n_s_TODO;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_kp_s__2;
@@ -3604,7 +3604,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_6Reader_12is_finished(CYTHON_UNUSED
 
 /* "heatshrink/core.pyx":194
  * class Encoder(object):
- *     """TODO"""
+ *     """High level interface to the Heatshrink encoders/decoders."""
  *     def __init__(self, encoder):             # <<<<<<<<<<<<<<
  *         self._encoder = encoder
  * 
@@ -3675,7 +3675,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder___init__(CYTHON_UNUSED PyO
   __Pyx_RefNannySetupContext("__init__", 0);
 
   /* "heatshrink/core.pyx":195
- *     """TODO"""
+ *     """High level interface to the Heatshrink encoders/decoders."""
  *     def __init__(self, encoder):
  *         self._encoder = encoder             # <<<<<<<<<<<<<<
  * 
@@ -3685,7 +3685,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder___init__(CYTHON_UNUSED PyO
 
   /* "heatshrink/core.pyx":194
  * class Encoder(object):
- *     """TODO"""
+ *     """High level interface to the Heatshrink encoders/decoders."""
  *     def __init__(self, encoder):             # <<<<<<<<<<<<<<
  *         self._encoder = encoder
  * 
@@ -6639,6 +6639,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_Encoder_sink_failed, __pyx_k_Encoder_sink_failed, sizeof(__pyx_k_Encoder_sink_failed), 0, 0, 1, 0},
   {&__pyx_kp_s_Expected_number_got, __pyx_k_Expected_number_got, sizeof(__pyx_k_Expected_number_got), 0, 0, 1, 0},
   {&__pyx_kp_s_Expecting_either_a_min_or_max_pa, __pyx_k_Expecting_either_a_min_or_max_pa, sizeof(__pyx_k_Expecting_either_a_min_or_max_pa), 0, 0, 1, 0},
+  {&__pyx_kp_s_High_level_interface_to_the_Heat, __pyx_k_High_level_interface_to_the_Heat, sizeof(__pyx_k_High_level_interface_to_the_Heat), 0, 0, 1, 0},
   {&__pyx_n_s_MAX_WINDOW_SZ2, __pyx_k_MAX_WINDOW_SZ2, sizeof(__pyx_k_MAX_WINDOW_SZ2), 0, 0, 1, 1},
   {&__pyx_n_s_MIN_LOOKAHEAD_SZ2, __pyx_k_MIN_LOOKAHEAD_SZ2, sizeof(__pyx_k_MIN_LOOKAHEAD_SZ2), 0, 0, 1, 1},
   {&__pyx_n_s_MIN_WINDOW_SZ2, __pyx_k_MIN_WINDOW_SZ2, sizeof(__pyx_k_MIN_WINDOW_SZ2), 0, 0, 1, 1},
@@ -6646,7 +6647,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Number, __pyx_k_Number, sizeof(__pyx_k_Number), 0, 0, 1, 1},
   {&__pyx_n_s_RuntimeError, __pyx_k_RuntimeError, sizeof(__pyx_k_RuntimeError), 0, 0, 1, 1},
   {&__pyx_n_s_StopIteration, __pyx_k_StopIteration, sizeof(__pyx_k_StopIteration), 0, 0, 1, 1},
-  {&__pyx_n_s_TODO, __pyx_k_TODO, sizeof(__pyx_k_TODO), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_kp_s__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 0, 1, 0},
@@ -6788,7 +6788,7 @@ static int __Pyx_InitCachedConstants(void) {
 
   /* "heatshrink/core.pyx":194
  * class Encoder(object):
- *     """TODO"""
+ *     """High level interface to the Heatshrink encoders/decoders."""
  *     def __init__(self, encoder):             # <<<<<<<<<<<<<<
  *         self._encoder = encoder
  * 
@@ -7156,7 +7156,7 @@ PyMODINIT_FUNC PyInit_core(void)
  * 
  * 
  * class Encoder(object):             # <<<<<<<<<<<<<<
- *     """TODO"""
+ *     """High level interface to the Heatshrink encoders/decoders."""
  *     def __init__(self, encoder):
  */
   __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 192, __pyx_L1_error)
@@ -7166,12 +7166,12 @@ PyMODINIT_FUNC PyInit_core(void)
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_builtin_object);
   __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_Encoder, __pyx_n_s_Encoder, (PyObject *) NULL, __pyx_n_s_heatshrink_core, __pyx_n_s_TODO); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 192, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_Encoder, __pyx_n_s_Encoder, (PyObject *) NULL, __pyx_n_s_heatshrink_core, __pyx_kp_s_High_level_interface_to_the_Heat); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
   /* "heatshrink/core.pyx":194
  * class Encoder(object):
- *     """TODO"""
+ *     """High level interface to the Heatshrink encoders/decoders."""
  *     def __init__(self, encoder):             # <<<<<<<<<<<<<<
  *         self._encoder = encoder
  * 
@@ -7221,7 +7221,7 @@ PyMODINIT_FUNC PyInit_core(void)
  * 
  * 
  * class Encoder(object):             # <<<<<<<<<<<<<<
- *     """TODO"""
+ *     """High level interface to the Heatshrink encoders/decoders."""
  *     def __init__(self, encoder):
  */
   __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_Encoder, __pyx_t_1, __pyx_t_3, NULL, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 192, __pyx_L1_error)

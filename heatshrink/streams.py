@@ -12,7 +12,7 @@ class DecompressReader(io.RawIOBase):
     decompression modules. See github for more details:
     https://github.com/python/cpython/blob/3.6/Lib/_compression.py#L33
     """
-    def __init__(self, fp, decomp_factory, **decomp_args):
+    def __init__(self, fp, reader):
         self._fp = fp
         self._eof = False
         self._pos = 0  # Current offset in decompressed stream
@@ -20,11 +20,7 @@ class DecompressReader(io.RawIOBase):
         # Set to size of decompressed stream once it is known
         self._size = -1
 
-        self._decomp_factory = decomp_factory
-        self._decomp_args = decomp_args
-
-        reader = core.Reader(**decomp_args)
-        self._decoder = decomp_factory(reader)
+        self._decoder = core.Encoder(reader)
 
     def close(self):
         return super(EncodedFile).close()
@@ -58,8 +54,8 @@ class DecompressReader(io.RawIOBase):
             self._eof = True
             self._size = self._pos
             # Finalize internal decoder.
-            # TODO: Don't allow any further operations after this
-            return self._decoder.finish()
+            # FIXME: Don't allow any further operations after this
+            data = self._decoder.finish()
         self._pos += len(data)
         return data
 
@@ -130,8 +126,11 @@ class EncodedFile(io.BufferedIOBase):
             raise ValueError('No filename or file object provided')
 
         if self._mode == _MODE_READ:
-            self._buffer = DecompressReader(self._fp, core.Encoder,
-                                            **self._compress_options)
+            reader = core.Reader(**compress_options)
+            self._buffer = DecompressReader(self._fp, reader)
+        else:
+            writer = core.Writer(**compress_options)
+            self._encoder = core.Encoder(writer)
 
         # File seek position
         self._pos = 0
@@ -144,6 +143,12 @@ class EncodedFile(io.BufferedIOBase):
 
     def close(self):
         with self._lock:
+            # Flush and finish the decoder.
+            if self._mode == _MODE_WRITE:
+                compressed = self._encoder.finish()
+                self._fp.write(compressed)
+            # Actually close the internal file pointer.
+            # FIXME: Disable future operations
             if not self.closed:
                 self._mode = _MODE_CLOSED
                 self._fp.close()
@@ -158,7 +163,9 @@ class EncodedFile(io.BufferedIOBase):
 
     def seekable(self):
         """Return whether the file supports seeking."""
-        return self.readable()
+        # FIXME: The only way to seek is to create a new
+        # FIXME: encoder
+        return False
 
     def readable(self):
         """Return whether the file was opened for reading."""
@@ -228,7 +235,7 @@ class EncodedFile(io.BufferedIOBase):
         may not reflect the data written until close() is called.
         """
         with self._lock:
-            compressed = core.encode(data, **self._compress_options)
+            compressed = self._encoder.fill(data)
             self._fp.write(compressed)
             self._pos += len(data)
             return len(data)
@@ -242,21 +249,6 @@ class EncodedFile(io.BufferedIOBase):
         Line separators are not added between the written byte strings."""
         with self._lock:
             return super(EncodedFile, self).writelines(seq)
-
-    def seek(self, offset, whence=io.SEEK_SET):
-        """Change the file position.
-
-        The new position is specified by offset, relative to the
-        position indicated by whence. Values for whence are:
-
-            0: start of stream(default); offset must not be negative
-            1: current stream position
-            2: end of stream; offset must not be positive
-
-        Returns the new file position.
-        """
-        with self._lock:
-            self._buffer.seek(offset, whence)
 
     def tell(self):
         """Return the current file position."""

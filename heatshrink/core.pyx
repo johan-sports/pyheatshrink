@@ -190,7 +190,7 @@ cdef class Reader:
 
 
 class Encoder(object):
-    """TODO"""
+    """High level interface to the Heatshrink encoders/decoders."""
     def __init__(self, encoder):
         self._encoder = encoder
 
