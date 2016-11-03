@@ -57,7 +57,7 @@ cdef class Writer:
 
         self._hse = _heatshrink.heatshrink_encoder_alloc(window_sz2, lookahead_sz2)
         if self._hse is NULL:
-            raise MemoryError()
+            raise MemoryError('Failed to allocate encoder.')
 
     def __dealloc__(self):
         if self._hse is not NULL:
@@ -135,7 +135,7 @@ cdef class Reader:
         self._hsd = _heatshrink.heatshrink_decoder_alloc(
             input_buffer_size, window_sz2, lookahead_sz2)
         if self._hsd is NULL:
-            raise MemoryError()
+            raise MemoryError('Failed to allocate decoder.')
 
     def __dealloc__(self):
         if self._hsd is not NULL:
@@ -200,7 +200,7 @@ class Encoder(object):
         if self._finished:
             msg = 'Attempted to perform operation on a closed encoder.'
             # TODO: ValueError isn't the right exception for this
-            raise ValueError(msg)
+            raise BufferError(msg)
 
     def _drain(self):
         """Empty data from the encoder state machine."""
@@ -253,7 +253,11 @@ class Encoder(object):
         return out_buf.tostring()
 
     def finish(self):
-        """Close encoder and flush any remaining data."""
+        """Close encoder and return any remaining data.
+
+        Will throw an exception if fill() or finish()
+        is used after this.
+        """
         self._check_not_finished()
 
         cdef array.array out_buf = array.array('B', [])
