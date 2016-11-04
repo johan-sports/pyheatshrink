@@ -23,7 +23,7 @@ class DecompressReader(io.RawIOBase):
         self._decoder = core.Encoder(reader)
 
     def close(self):
-        return super(EncodedFile).close()
+        return super(EncodedFile, self).close()
 
     def readable(self):
         return True
@@ -114,7 +114,8 @@ class EncodedFile(io.BufferedIOBase):
                  file=None, **compress_options):
         self._lock = RLock()
         self._mode = _MODE_CLOSED
-        self._compress_options = compress_options
+
+        # TODO: Handle file object mode
 
         if mode in ('', 'r', 'rb'):
             mode = 'rb'
@@ -145,8 +146,47 @@ class EncodedFile(io.BufferedIOBase):
         self._size = -1
         # True if reached EOF
         self._eof = False
-        # Name of file
-        self.name = self._fp.name
+        # None if its a BytesIO or StringIO
+        self.name = getattr(self._fp, 'name', None)
+
+    def seekable(self):
+        """Return whether the file supports seeking."""
+        # FIXME: The only way to seek is to create a new
+        # FIXME: encoder
+        return False
+
+    def readable(self):
+        """Return whether the file was opened for reading."""
+        return self._mode == _MODE_READ
+
+    def writable(self):
+        """Return whether the file was opened for writing."""
+        return self._mode == _MODE_WRITE
+
+    def _check_not_closed(self):
+        """Throws a ValueError if the file has been closed."""
+        if self.closed:
+            raise ValueError('I/O operation on closed file')
+
+    def _check_can_read(self):
+        """Throws an io.UnsupportedOperation if the file can not be read."""
+        if not self.readable():
+            raise io.UnsupportedOperation('File not open for reading')
+
+    def _check_can_write(self):
+        """Throws an io.UnsupportedOperation if the file can not be written."""
+        if not self.writable():
+            raise io.UnsupportedOperation('File not open for writing')
+
+    def _check_can_seek(self):
+        """Throws an io.UnsupportedOperation if the file can not be seeeked."""
+        if not self.readable():
+            msg = 'Seeking is only supported on files open for reading'
+            raise io.UnsupportedOperation(msg)
+
+        if not self.seekable():
+            msg = 'The underlying file object does not support seeking.'
+            raise io.UnsupportedOperation(msg)
 
     def close(self):
         with self._lock:
@@ -154,8 +194,8 @@ class EncodedFile(io.BufferedIOBase):
             if self._mode == _MODE_WRITE:
                 compressed = self._encoder.finish()
                 self._fp.write(compressed)
+
             # Actually close the internal file pointer.
-            # FIXME: Disable future operations
             if not self.closed:
                 self._mode = _MODE_CLOSED
                 self._fp.close()
@@ -168,20 +208,6 @@ class EncodedFile(io.BufferedIOBase):
     def fileno(self):
         return self._fp.fileno()
 
-    def seekable(self):
-        """Return whether the file supports seeking."""
-        # FIXME: The only way to seek is to create a new
-        # FIXME: encoder
-        return False
-
-    def readable(self):
-        """Return whether the file was opened for reading."""
-        return self._mode == _MODE_READ
-
-    def writeable(self):
-        """Return whether the file was opened for writing."""
-        return self._mode == _MODE_WRITE
-
     def peek(self, size=-1):
         return self._buffer.peek(size)
 
@@ -191,6 +217,7 @@ class EncodedFile(io.BufferedIOBase):
         If size is negative or omitted, read until EOF is reached.
         Returns b'' if the file is already at EOF.
         """
+        self._check_can_read()
         with self._lock:
             return self._buffer.read(size)
 
@@ -201,6 +228,8 @@ class EncodedFile(io.BufferedIOBase):
 
         Returns b'' if the file is at EOF.
         """
+        self._check_can_read()
+
         with self._lock:
             if size < 0:
                 size = io.DEFAULT_BUFFER_SIZE
@@ -211,6 +240,8 @@ class EncodedFile(io.BufferedIOBase):
 
         Returns the number of bytes read (0 for EOF).
         """
+        self._check_can_read()
+
         with self._lock:
             return self._buffer.readinto(b)
 
@@ -221,6 +252,8 @@ class EncodedFile(io.BufferedIOBase):
         non-negative, no more than size bytes will be read (in which
         case the line may be incomplete). Returns b'' if already at EOF.
         """
+        self._check_can_read()
+
         with self._lock:
             return self._buffer.readline(size)
 
@@ -231,6 +264,8 @@ class EncodedFile(io.BufferedIOBase):
         further lines will be read once the total size of the lines read
         so far equals or exceeds size.
         """
+        self._check_can_read()
+
         with self._lock:
             return self._buffer.readlines(size)
 
@@ -241,6 +276,8 @@ class EncodedFile(io.BufferedIOBase):
         always len(data). Note that due to buffering, the file on disk
         may not reflect the data written until close() is called.
         """
+        self._check_can_write()
+
         with self._lock:
             compressed = self._encoder.fill(data)
             self._fp.write(compressed)
@@ -253,7 +290,10 @@ class EncodedFile(io.BufferedIOBase):
         Returns the number of uncompressed bytes written.
         seq can be any iterable yielding byte strings.
 
-        Line separators are not added between the written byte strings."""
+        Line separators are not added between the written byte strings.
+        """
+        self._check_can_write()
+
         with self._lock:
             return super(EncodedFile, self).writelines(seq)
 
@@ -273,7 +313,7 @@ def open(file, mode='rb', **kwargs):
     or a file-like object.
     """
     if isinstance(file, (unicode, str)):
-        binary_file = EncodedFile(file, mode)
+        binary_file = EncodedFile(file, mode, **kwargs)
     # Implements the file protocol
     elif hasattr(file, 'read') or hasattr(file, 'write'):
         binary_file = EncodedFile(file=file, mode=mode, **kwargs)

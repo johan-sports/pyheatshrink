@@ -1,13 +1,28 @@
-LARGE_PARAGRAPH = """I know this from my own experience, as a high school kid
-writing programs in Basic. That language didn't even support recursion. It's
-hard to imagine writing programs without using recursion, but I didn't miss it
-at the time. I thought in Basic. And I was a whiz at it.
-Master of all I surveyed. - Paul Graham
+LARGE_PARAGRAPH = """
+Overhead the albatross hangs motionless upon the air
+And deep beneath the rolling waves in labyrinths of coral caves
+The echo of a distant tide
+Comes willowing across the sand
+And everything is green and submarine
 
-A programming language is for thinking about programs, not for expressing
-programs you've already thought of. It should be a pencil, not a pen.
-- Paul Graham
+And no one showed us to the land
+And no one knows the wheres or whys
+But something stirs and something tries
+And starts to climb towards the light
 
-A recursive definition does not necessarily lead to a recursive process.
-- Gerald Jay Sussman
+Strangers passing in the street
+By chance two separate glances meet
+And I am you and what I see is me
+And do I take you by the hand
+And lead you through the land
+And help me understand the best I can
+And no one calls us to move on
+And no one forces down our eyes
+No one speaks
+And no one tries
+No one flies around the sun
+
+...
+
+Echoes - Pink Floyd
 """

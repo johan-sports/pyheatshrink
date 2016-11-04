@@ -1,13 +1,15 @@
+import io
 import os
 import unittest
 
-import heatshrink
 from heatshrink.streams import EncodedFile
 
 from .constants import LARGE_PARAGRAPH
 from .utils import random_string
 
 
+# TODO: Add test to see if compression parameters are
+# TODO: passed to Reader/Writer
 class EncodedFileTest(unittest.TestCase):
     TEST_FILENAME = 'test.bin'
 
@@ -55,7 +57,13 @@ class EncodedFileTest(unittest.TestCase):
                 self.fail(msg.format(size))
 
     def test_with_file_object(self):
-        pass
+        data = io.BytesIO()
+
+        fp = EncodedFile(file=data, mode='wb')
+        fp.write(LARGE_PARAGRAPH)
+        data.seek(0)
+        self.assertTrue(len(data.read()) > 0)
+        fp.close()
 
     def test_closed_true_when_file_closed(self):
         fp = EncodedFile(self.TEST_FILENAME, mode='wb')
@@ -88,12 +96,12 @@ class EncodedFileTest(unittest.TestCase):
 
         with EncodedFile(self.TEST_FILENAME) as fp:
             self.assertTrue(fp.readable())
-            self.assertTrue(not fp.writeable())
+            self.assertTrue(not fp.writable())
             self.assertRaises(IOError, fp.write, 'abcde')
 
     def test_cannot_read_in_write_mode(self):
         with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
-            self.assertTrue(fp.writeable())
+            self.assertTrue(fp.writable())
             self.assertTrue(not fp.readable())
             self.assertRaises(IOError, fp.read)
 
@@ -186,10 +194,31 @@ class EncodedFileTest(unittest.TestCase):
     # Writing
     #################
     def test_write(self):
-        pass
+        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
+            BUFFER_SIZE = 16
+            # StringIO makes it easy to buffer
+            text_buf = io.BytesIO(LARGE_PARAGRAPH.encode('utf8'))
 
-    def test_remaining_data_flushed_on_close(self):
-        pass
+            while True:
+                chunk = text_buf.read(BUFFER_SIZE)
+
+                if not chunk:
+                    break
+
+                fp.write(chunk)
+
+        with EncodedFile(self.TEST_FILENAME) as fp:
+            self.assertEqual(fp.read(), LARGE_PARAGRAPH)
 
     def test_writelines(self):
-        pass
+        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
+            lines = LARGE_PARAGRAPH.splitlines()
+            fp.writelines(lines)
+
+        with EncodedFile(self.TEST_FILENAME) as fp:
+            self.assertEqual(fp.read(), LARGE_PARAGRAPH)
+
+    def test_remaining_data_flushed_on_close(self):
+        fp = EncodedFile(self.TEST_FILENAME, mode='wb')
+        fp.write(LARGE_PARAGRAPH)
+        fp.close()
