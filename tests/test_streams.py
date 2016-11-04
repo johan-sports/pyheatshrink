@@ -16,6 +16,13 @@ class EncodedFileTest(unittest.TestCase):
         if os.path.exists(self.TEST_FILENAME):
             os.unlink(self.TEST_FILENAME)
 
+    def test_bad_args(self):
+        self.assertRaises(ValueError, EncodedFile, file=None, filename=None)
+        self.assertRaises(ValueError, EncodedFile, mode='eb')
+
+    def test_invalid_modes(self):
+        pass
+
     def test_round_robin(self):
         write_str = 'Testing\nAnd Stuff'
 
@@ -54,9 +61,44 @@ class EncodedFileTest(unittest.TestCase):
                        'do not match for size: {}')
                 self.fail(msg.format(size))
 
-    def test_bad_args(self):
-        self.assertRaises(ValueError, EncodedFile, file=None, filename=None)
-        self.assertRaises(ValueError, EncodedFile, mode='eb')
+    def test_closed_true_when_file_closed(self):
+        pass
+
+    def test_context_manager(self):
+        pass
+
+    def test_cannot_write_in_read_mode(self):
+        pass
+
+    def test_cannot_read_in_write_mode(self):
+        pass
+
+    def test_seeking_forwards(self):
+        pass
+
+    def test_seeking_backwards(self):
+        pass
+
+    def test_tell(self):
+        pass
+
+    def test_peek(self):
+        pass
+
+    #################
+    # Reading
+    #################
+    def test_read_whole_file(self):
+        pass
+
+    def test_read_buffered(self):
+        pass
+
+    def test_read_eof(self):
+        pass
+
+    def test_readinto(self):
+        pass
 
     def test_readline(self):
         lines = ['Line one', 'Line two', 'All the lines']
@@ -67,3 +109,18 @@ class EncodedFileTest(unittest.TestCase):
         with heatshrink.open(self.TEST_FILENAME, 'rb') as fp:
             for line in lines:
                 self.assertEqual(fp.readline(), line)
+
+    def test_readlines(self):
+        pass
+
+    #################
+    # Writing
+    #################
+    def test_write(self):
+        pass
+
+    def test_remaining_data_flushed_on_close(self):
+        pass
+
+    def test_writelines(self):
+        pass

@@ -59,6 +59,12 @@ class DecompressReader(io.RawIOBase):
         self._pos += len(data)
         return data
 
+    def readline(self, size=-1):
+        # Readline currently doesn't work because
+        # reading one character at a time doesn't
+        # really work too well.
+        raise NotImplementedError()
+
     # Rewind the file to the beginning of the data stream.
     def _rewind(self):
         self._fp.seek(0)
