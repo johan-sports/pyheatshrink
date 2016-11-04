@@ -21,7 +21,9 @@ class EncodedFileTest(unittest.TestCase):
         self.assertRaises(ValueError, EncodedFile, mode='eb')
 
     def test_invalid_modes(self):
-        pass
+        for mode in ['a+', 'w+', 'ab', 'r+', 'U', 'x', 'xb']:
+            with self.assertRaisesRegexp(ValueError, '^Invalid mode: .*$'):
+                EncodedFile(mode=mode)
 
     def test_round_robin(self):
         write_str = 'Testing\nAnd Stuff'
@@ -62,26 +64,70 @@ class EncodedFileTest(unittest.TestCase):
                 self.fail(msg.format(size))
 
     def test_closed_true_when_file_closed(self):
-        pass
+        fp = heatshrink.open(self.TEST_FILENAME, 'wb')
+        self.assertTrue(not fp.closed)
+        fp.close()
+        self.assertTrue(fp.closed)
 
     def test_context_manager(self):
-        pass
+        with heatshrink.open(self.TEST_FILENAME, 'wb') as fp:
+            fp.write('Testing\n')
+            fp.write('One, two...')
+
+        self.assertTrue(fp.closed)
+
+    def test_operations_on_closed_file(self):
+        fp = heatshrink.open(self.TEST_FILENAME, 'wb')
+        fp.close()
+        self.assertRaises(ValueError, fp.write, 'abcde')
+        self.assertRaises(ValueError, fp.seek, 0)
+
+        fp = heatshrink.open(self.TEST_FILENAME, 'rb')
+        fp.close()
+        self.assertRaises(ValueError, fp.read)
+        self.assertRaises(ValueError, fp.seek, 0)
 
     def test_cannot_write_in_read_mode(self):
-        pass
+        # Write some junk data
+        with open(self.TEST_FILENAME, 'wb') as fp:
+            fp.write(b'abcde')
+
+        with heatshrink.open(self.TEST_FILENAME) as fp:
+            self.assertTrue(fp.readable())
+            self.assertTrue(not fp.writeable())
+            self.assertRaises(IOError, fp.write, 'abcde')
 
     def test_cannot_read_in_write_mode(self):
-        pass
+        with heatshrink.open(self.TEST_FILENAME, 'wb') as fp:
+            self.assertTrue(fp.writeable())
+            self.assertTrue(not fp.readable())
+            self.assertRaises(IOError, fp.read)
 
+    @unittest.skip('Not implemented')
     def test_seeking_forwards(self):
         pass
 
+    @unittest.skip('Not implemented')
     def test_seeking_backwards(self):
-        pass
+        with heatshrink.open(self.TEST_FILENAME, 'wb') as fp:
+            fp.write('abcde')
+
+        with heatshrink.open(self.TEST_FILENAME) as fp:
+            contents = fp.read(100)
+            # Reset and re-read
+            fp.seek(0)
+            self.assertEqual(fp.read(100), contents)
 
     def test_tell(self):
-        pass
+        with heatshrink.open(self.TEST_FILENAME, 'wb') as fp:
+            bytes_written = fp.write('abcde')
+            self.assertEqual(fp.tell(), bytes_written)
 
+        with heatshrink.open(self.TEST_FILENAME) as fp:
+            fp.read(3)
+            self.assertEqual(fp.tell(), 3)
+
+    @unittest.skip('Not implemented')
     def test_peek(self):
         pass
 
@@ -100,6 +146,7 @@ class EncodedFileTest(unittest.TestCase):
     def test_readinto(self):
         pass
 
+    @unittest.skip('Not implemented')
     def test_readline(self):
         lines = ['Line one', 'Line two', 'All the lines']
 
@@ -110,6 +157,7 @@ class EncodedFileTest(unittest.TestCase):
             for line in lines:
                 self.assertEqual(fp.readline(), line)
 
+    @unittest.skip('Not implemented')
     def test_readlines(self):
         pass
 

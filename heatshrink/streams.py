@@ -56,7 +56,8 @@ class DecompressReader(io.RawIOBase):
             # Finalize internal decoder.
             # FIXME: Don't allow any further operations after this
             data = self._decoder.finish()
-        self._pos += len(data)
+        # FIXME: Determine how the file pointer should move
+        self._pos += len(raw_chunk)
         return data
 
     def readline(self, size=-1):
@@ -118,11 +119,11 @@ class EncodedFile(io.BufferedIOBase):
         if mode in ('', 'r', 'rb'):
             mode = 'rb'
             self._mode = _MODE_READ
-        elif mode in ('w', 'wb'):  # TODO: Support a, ab
+        elif mode in ('w', 'wb'):
             mode = 'wb'
             self._mode = _MODE_WRITE
         else:
-            raise ValueError('Invalid mode: {}'.format(mode))
+            raise ValueError("Invalid mode: '{!r}'".format(mode))
 
         if filename:
             self._fp = builtin_open(filename, mode)
