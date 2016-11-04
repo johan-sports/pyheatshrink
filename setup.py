@@ -68,7 +68,7 @@ setup(name='Heatshrink',
         'Programming Language :: Python :: 3.5',
       ],
 
-      keywords='compression bindings heatshrink LZSS',
-      test_suite="tests",
+      keywords='compression binding heatshrink LZSS',
+      test_suite='tests',
       packages=['heatshrink'],
       ext_modules=extensions)

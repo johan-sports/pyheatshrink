@@ -110,7 +110,7 @@ _MODE_WRITE = 2
 
 
 class EncodedFile(io.BufferedIOBase):
-    def __init__(self, filename=None, mode=None,
+    def __init__(self, filename=None, mode='rb',
                  file=None, **compress_options):
         self._lock = RLock()
         self._mode = _MODE_CLOSED

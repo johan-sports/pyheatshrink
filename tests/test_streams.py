@@ -29,22 +29,13 @@ class EncodedFileTest(unittest.TestCase):
         write_str = 'Testing\nAnd Stuff'
 
         # TODO: Consider using EncodedFile with StringIO
-        with heatshrink.open(self.TEST_FILENAME, 'wb') as fp:
+        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
             fp.write(write_str)
 
-        with heatshrink.open(self.TEST_FILENAME, 'rb') as fp:
+        with EncodedFile(self.TEST_FILENAME) as fp:
             read_str = fp.read()
 
         self.assertEqual(write_str, read_str)
-
-    def test_large_file(self):
-        with heatshrink.open(self.TEST_FILENAME, 'wb') as fp:
-            fp.write(LARGE_PARAGRAPH)
-
-        with heatshrink.open(self.TEST_FILENAME, 'rb') as fp:
-            read_str = fp.read()
-
-        self.assertEqual(LARGE_PARAGRAPH, read_str)
 
     def test_with_large_files(self):
         test_sizes = [1000, 10000, 100000]
@@ -52,10 +43,10 @@ class EncodedFileTest(unittest.TestCase):
         for size in test_sizes:
             contents = random_string(size)
 
-            with heatshrink.open(self.TEST_FILENAME, 'wb') as fp:
+            with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
                 fp.write(contents)
 
-            with heatshrink.open(self.TEST_FILENAME, 'rb') as fp:
+            with EncodedFile(self.TEST_FILENAME) as fp:
                 read_str = fp.read()
 
             if read_str != contents:
@@ -67,25 +58,25 @@ class EncodedFileTest(unittest.TestCase):
         pass
 
     def test_closed_true_when_file_closed(self):
-        fp = heatshrink.open(self.TEST_FILENAME, 'wb')
+        fp = EncodedFile(self.TEST_FILENAME, mode='wb')
         self.assertTrue(not fp.closed)
         fp.close()
         self.assertTrue(fp.closed)
 
     def test_context_manager(self):
-        with heatshrink.open(self.TEST_FILENAME, 'wb') as fp:
+        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
             fp.write('Testing\n')
             fp.write('One, two...')
 
         self.assertTrue(fp.closed)
 
     def test_operations_on_closed_file(self):
-        fp = heatshrink.open(self.TEST_FILENAME, 'wb')
+        fp = EncodedFile(self.TEST_FILENAME, mode='wb')
         fp.close()
         self.assertRaises(ValueError, fp.write, 'abcde')
         self.assertRaises(ValueError, fp.seek, 0)
 
-        fp = heatshrink.open(self.TEST_FILENAME, 'rb')
+        fp = EncodedFile(self.TEST_FILENAME, 'rb')
         fp.close()
         self.assertRaises(ValueError, fp.read)
         self.assertRaises(ValueError, fp.seek, 0)
@@ -95,13 +86,13 @@ class EncodedFileTest(unittest.TestCase):
         with open(self.TEST_FILENAME, 'wb') as fp:
             fp.write(b'abcde')
 
-        with heatshrink.open(self.TEST_FILENAME) as fp:
+        with EncodedFile(self.TEST_FILENAME) as fp:
             self.assertTrue(fp.readable())
             self.assertTrue(not fp.writeable())
             self.assertRaises(IOError, fp.write, 'abcde')
 
     def test_cannot_read_in_write_mode(self):
-        with heatshrink.open(self.TEST_FILENAME, 'wb') as fp:
+        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
             self.assertTrue(fp.writeable())
             self.assertTrue(not fp.readable())
             self.assertRaises(IOError, fp.read)
@@ -112,21 +103,21 @@ class EncodedFileTest(unittest.TestCase):
 
     @unittest.skip('Not implemented')
     def test_seeking_backwards(self):
-        with heatshrink.open(self.TEST_FILENAME, 'wb') as fp:
+        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
             fp.write('abcde')
 
-        with heatshrink.open(self.TEST_FILENAME) as fp:
+        with EncodedFile(self.TEST_FILENAME) as fp:
             contents = fp.read(100)
             # Reset and re-read
             fp.seek(0)
             self.assertEqual(fp.read(100), contents)
 
     def test_tell(self):
-        with heatshrink.open(self.TEST_FILENAME, 'wb') as fp:
+        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
             bytes_written = fp.write('abcde')
             self.assertEqual(fp.tell(), bytes_written)
 
-        with heatshrink.open(self.TEST_FILENAME) as fp:
+        with EncodedFile(self.TEST_FILENAME) as fp:
             fp.read(3)
             self.assertEqual(fp.tell(), 3)
 
@@ -138,14 +129,35 @@ class EncodedFileTest(unittest.TestCase):
     # Reading
     #################
     def test_read_whole_file(self):
-        pass
+        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
+            fp.write(LARGE_PARAGRAPH)
+
+        with EncodedFile(self.TEST_FILENAME) as fp:
+            read_str = fp.read()
+
+        self.assertEqual(LARGE_PARAGRAPH, read_str)
 
     def test_read_buffered(self):
-        pass
+        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
+            fp.write(LARGE_PARAGRAPH)
 
-    def test_read_eof(self):
-        pass
+        READ_SIZE = 128
+        offset = 0
 
+        with EncodedFile(self.TEST_FILENAME) as fp:
+            while True:
+                contents = fp.read(READ_SIZE)
+
+                if not contents:
+                    break
+
+                self.assertEqual(
+                    contents,
+                    LARGE_PARAGRAPH[offset:offset+READ_SIZE]
+                )
+                offset += READ_SIZE
+
+    # FIXME: YAGNI?
     def test_readinto(self):
         pass
 
@@ -153,16 +165,22 @@ class EncodedFileTest(unittest.TestCase):
     def test_readline(self):
         lines = ['Line one', 'Line two', 'All the lines']
 
-        with heatshrink.open(self.TEST_FILENAME, 'wb') as fp:
+        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
             fp.write('\n'.join(lines))
 
-        with heatshrink.open(self.TEST_FILENAME, 'rb') as fp:
+        with EncodedFile(self.TEST_FILENAME) as fp:
             for line in lines:
                 self.assertEqual(fp.readline(), line)
 
     @unittest.skip('Not implemented')
     def test_readlines(self):
-        pass
+        lines = ['Line one', 'Line two', 'All the lines']
+
+        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
+            fp.write('\n'.join(lines))
+
+        with EncodedFile(self.TEST_FILENAME) as fp:
+            self.assertEqual(fp.readlines(), lines)
 
     #################
     # Writing

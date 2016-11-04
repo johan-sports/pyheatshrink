@@ -26,6 +26,7 @@ class TestUtils(object):
 
 class InternalEncodersTest(TestUtils, unittest.TestCase):
     """Tests for the Writer and Reader classes."""
+
     def test_checks_window_sz2_type(self):
         for cls in (Writer, Reader):
             self.assertRaises(TypeError, cls, window_sz2='a string')
@@ -100,6 +101,7 @@ class EncoderTest(TestUtils, unittest.TestCase):
 
 class EncodeFunctionTest(TestUtils, unittest.TestCase):
     """Tests for the core.encode function."""
+
     def setUp(self):
         self.encoded = heatshrink.encode(b'abcde')
 
