@@ -295,12 +295,7 @@ class Encoder(object):
 cdef encode_impl(encoder, buf):
     """Encode iterable `buf` into an array of bytes."""
     encoder = Encoder(encoder)
-
-    encoded = encoder.fill(buf)
-    # Add any extra data remaining in the state machine
-    encoded += encoder.finish()
-
-    return encoded
+    return encoder.fill(buf) + encoder.finish()
 
 
 def encode(buf, **kwargs):
