@@ -148,7 +148,7 @@ class EncoderToDecoderTest(TestUtils, unittest.TestCase):
     equal to the original data.
     """
 
-    def test_round_robin(self):
+    def test_round_trip(self):
         encoded = heatshrink.encode(b'a string')
         self.assertEqual(heatshrink.decode(encoded), 'a string')
 

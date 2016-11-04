@@ -25,7 +25,7 @@ class EncodedFileTest(unittest.TestCase):
             with self.assertRaisesRegexp(ValueError, '^Invalid mode: .*$'):
                 EncodedFile(mode=mode)
 
-    def test_round_robin(self):
+    def test_round_trip(self):
         write_str = 'Testing\nAnd Stuff'
 
         # TODO: Consider using EncodedFile with StringIO
@@ -62,6 +62,9 @@ class EncodedFileTest(unittest.TestCase):
                 msg = ('Decoded and original file contents '
                        'do not match for size: {}')
                 self.fail(msg.format(size))
+
+    def test_with_file_object(self):
+        pass
 
     def test_closed_true_when_file_closed(self):
         fp = heatshrink.open(self.TEST_FILENAME, 'wb')
