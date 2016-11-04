@@ -56,40 +56,45 @@ class EncoderTest(TestUtils, unittest.TestCase):
     """Test encoder state machine."""
 
     def setUp(self):
-        # TODO: Find a way to test with both reader and writer
-        self.encoder = Encoder(Writer())
+        self.reader = Reader()
+        self.writer = Writer()
+        self.encoders = [Encoder(e) for e in [self.reader, self.writer]]
 
     def test_fill_accepted_types(self):
-        self.assertNotRaises(self.encoder.fill, b'abcde')
-        self.assertNotRaises(self.encoder.fill, u'abcde'.encode('utf8'))
-        self.assertNotRaises(self.encoder.fill, bytearray([1, 2, 3]))
-        self.assertNotRaises(self.encoder.fill, array.array('B', [1, 2, 3]))
-        self.assertNotRaises(self.encoder.fill, [1, 2, 3])
+        for encoder in self.encoders:
+            self.assertNotRaises(encoder.fill, b'abcde')
+            self.assertNotRaises(encoder.fill, u'abcde'.encode('utf8'))
+            self.assertNotRaises(encoder.fill, bytearray([1, 2, 3]))
+            self.assertNotRaises(encoder.fill, array.array('B', [1, 2, 3]))
+            self.assertNotRaises(encoder.fill, [1, 2, 3])
 
-        self.assertRaises(TypeError, self.encoder.fill, memoryview(b'abcde'))
-        self.assertRaises(TypeError, self.encoder.fill, u'abcde')
-        # Obvious fail cases
-        self.assertRaises(TypeError, self.encoder.fill, lambda x: x)
-        self.assertRaises(TypeError, self.encoder.fill, True)
+            self.assertRaises(TypeError, encoder.fill, memoryview(b'abcde'))
+            self.assertRaises(TypeError, encoder.fill, u'abcde')
+            # Obvious fail cases
+            self.assertRaises(TypeError, encoder.fill, lambda x: x)
+            self.assertRaises(TypeError, encoder.fill, True)
 
     def test_finished_true_after_finish(self):
-        self.assertTrue(not self.encoder.finished)
-        self.encoder.finish()
-        self.assertTrue(self.encoder.finished)
+        for encoder in self.encoders:
+            self.assertTrue(not encoder.finished)
+            encoder.finish()
+            self.assertTrue(encoder.finished)
 
     def test_operation_after_finish_fails(self):
-        self.encoder.fill('abcde')
-        self.encoder.finish()
-        self.assertRaises(ValueError, self.encoder.fill, 'abcde')
-        self.assertRaises(ValueError, self.encoder.finish)
+        for encoder in self.encoders:
+            encoder.fill('abcde')
+            encoder.finish()
+            self.assertRaises(ValueError, encoder.fill, 'abcde')
+            self.assertRaises(ValueError, encoder.finish)
 
     def test_fill_doesnt_flush_small_values(self):
+        encoder = Encoder(self.writer)
         # Pass a small value, this wont cause the encoder
         # to actually do anything
-        encoded = self.encoder.fill('abcde')
+        encoded = encoder.fill('abcde')
         self.assertTrue(len(encoded) == 0)
         # This should clear the encoder completely
-        encoded = self.encoder.finish()
+        encoded = encoder.finish()
         self.assertTrue(len(encoded) > 0)
 
 
