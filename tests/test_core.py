@@ -53,6 +53,8 @@ class InternalEncodersTest(TestUtils, unittest.TestCase):
 
 
 class EncoderTest(TestUtils, unittest.TestCase):
+    """Test encoder state machine."""
+
     def setUp(self):
         # TODO: Find a way to test with both reader and writer
         self.encoder = Encoder(Writer())
@@ -71,7 +73,7 @@ class EncoderTest(TestUtils, unittest.TestCase):
         self.assertRaises(TypeError, self.encoder.fill, True)
 
     def test_finished_true_after_finish(self):
-        self.assertFalse(self.encoder.finished)
+        self.assertTrue(not self.encoder.finished)
         self.encoder.finish()
         self.assertTrue(self.encoder.finished)
 
@@ -80,6 +82,15 @@ class EncoderTest(TestUtils, unittest.TestCase):
         self.encoder.finish()
         self.assertRaises(ValueError, self.encoder.fill, 'abcde')
         self.assertRaises(ValueError, self.encoder.finish)
+
+    def test_fill_doesnt_flush_small_values(self):
+        # Pass a small value, this wont cause the encoder
+        # to actually do anything
+        encoded = self.encoder.fill('abcde')
+        self.assertTrue(len(encoded) == 0)
+        # This should clear the encoder completely
+        encoded = self.encoder.finish()
+        self.assertTrue(len(encoded) > 0)
 
 
 class EncodeFunctionTest(TestUtils, unittest.TestCase):

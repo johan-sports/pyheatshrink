@@ -250,7 +250,12 @@ class Encoder(object):
             for data in self._drain():
                 out_buf.extend(data)
 
-        return out_buf.tostring()
+
+        try:
+            # Python 3
+            return out_buf.tobytes()
+        except AttributeError:
+            return out_buf.tostring()
 
     def finish(self):
         """Close encoder and return any remaining data.
@@ -274,7 +279,12 @@ class Encoder(object):
             for data in self._drain():
                 out_buf.extend(data)
 
-        return out_buf.tostring()
+
+        try:
+            # Python 3
+            return out_buf.tobytes()
+        except AttributeError:
+            return out_buf.tostring()
 
     @property
     def finished(self):
