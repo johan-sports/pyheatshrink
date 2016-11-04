@@ -8,8 +8,15 @@ from .constants import LARGE_PARAGRAPH
 from .utils import random_string
 
 
-class BaseTest(unittest.TestCase):
+class TestUtils(object):
+    """Mixin that provides extra testing utilities."""
+
     def assertNotRaises(self, func, *args, **kwargs):
+        """Ensure that the an exception isn't raised.
+
+        An AssertionError is raised if calling func with
+        the given argument triggers any exception.
+        """
         try:
             func(*args, **kwargs)
         except Exception as e:
@@ -17,7 +24,7 @@ class BaseTest(unittest.TestCase):
             raise AssertionError(msg.format(e.__class__))
 
 
-class InternalEncodersTest(BaseTest):
+class InternalEncodersTest(TestUtils, unittest.TestCase):
     """Tests for the Writer and Reader classes."""
     def test_checks_window_sz2_type(self):
         for cls in (Writer, Reader):
@@ -45,7 +52,7 @@ class InternalEncodersTest(BaseTest):
             self.assertNotRaises(cls, lookahead_sz2=10)
 
 
-class EncoderTest(BaseTest):
+class EncoderTest(TestUtils, unittest.TestCase):
     def setUp(self):
         # TODO: Find a way to test with both reader and writer
         self.encoder = Encoder(Writer())
@@ -75,7 +82,7 @@ class EncoderTest(BaseTest):
         self.assertRaises(ValueError, self.encoder.finish)
 
 
-class EncodeFunctionTest(BaseTest):
+class EncodeFunctionTest(TestUtils, unittest.TestCase):
     """Tests for the core.encode function."""
     def setUp(self):
         self.encoded = heatshrink.encode(b'abcde')
@@ -103,7 +110,7 @@ class EncodeFunctionTest(BaseTest):
                             heatshrink.encode(string, lookahead_sz2=8))
 
 
-class DecodeFunctionTest(BaseTest):
+class DecodeFunctionTest(TestUtils, unittest.TestCase):
     """Tests for the core.decode function."""
 
     def test_returns_string(self):
@@ -118,7 +125,7 @@ class DecodeFunctionTest(BaseTest):
         self.assertEqual(decoded, 'abcde')
 
 
-class EncoderToDecoderTest(BaseTest):
+class EncoderToDecoderTest(TestUtils, unittest.TestCase):
     """
     Tests assertion that data passed through the encoder
     and then the decoder with the same parameters will be
