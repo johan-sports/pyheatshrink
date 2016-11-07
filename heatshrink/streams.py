@@ -23,7 +23,8 @@ class DecompressReader(io.RawIOBase):
         self._decoder = core.Encoder(reader)
 
     def close(self):
-        return super(EncodedFile, self).close()
+        # Don't close self._fp because we don't own it.
+        pass
 
     def readable(self):
         return True
@@ -60,18 +61,18 @@ class DecompressReader(io.RawIOBase):
         self._pos += len(raw_chunk)
         return data
 
-    def readline(self, size=-1):
-        # Readline currently doesn't work because
-        # reading one character at a time doesn't
-        # really work too well.
-        cls = self.__class__
-        msg = "'{}' does not support readline"
-        raise io.UnsupportedOperation(msg.format(cls.__name__))
+    # def readline(self, size=-1):
+    #     # Readline currently doesn't work because
+    #     # reading one character at a time doesn't
+    #     # really work too well.
+    #     cls = self.__class__
+    #     msg = "'{}' does not support readline"
+    #     raise io.UnsupportedOperation(msg.format(cls.__name__))
 
-    def readlines(self, size=-1):
-        cls = self.__class__
-        msg = "'{}' does not support readlines"
-        raise io.UnsupportedOperation(msg.format(cls.__name__))
+    # def readlines(self, size=-1):
+    #     cls = self.__class__
+    #     msg = "'{}' does not support readlines"
+    #     raise io.UnsupportedOperation(msg.format(cls.__name__))
 
     # Rewind the file to the beginning of the data stream.
     def _rewind(self):
@@ -117,12 +118,10 @@ _MODE_WRITE = 2
 
 
 class EncodedFile(io.BufferedIOBase):
-    def __init__(self, filename=None, mode='rb',
-                 file=None, **compress_options):
+    def __init__(self, filename, mode='rb', **compress_options):
         self._lock = RLock()
+        self._fp = None
         self._mode = _MODE_CLOSED
-
-        # TODO: Handle file object mode
 
         if mode in ('', 'r', 'rb'):
             mode = 'rb'
@@ -133,28 +132,24 @@ class EncodedFile(io.BufferedIOBase):
         else:
             raise ValueError("Invalid mode: '{!r}'".format(mode))
 
-        if filename:
+        if isinstance(filename, (str, bytes, unicode)):
             self._fp = builtin_open(filename, mode)
-        elif file:
-            self._fp = file
+        elif hasattr(filename, 'read') or hasattr(filename, 'write'):
+            # Implements the file protocol
+            self._fp = filename
         else:
-            raise ValueError('No filename or file object provided')
+            msg = 'filename must be an str, bytes or a file-like object'
+            raise TypeError(msg)
 
         if self._mode == _MODE_READ:
             reader = core.Reader(**compress_options)
-            self._buffer = DecompressReader(self._fp, reader)
+            raw = DecompressReader(self._fp, reader)
+            self._buffer = io.BufferedReader(raw)
         else:
             writer = core.Writer(**compress_options)
             self._encoder = core.Encoder(writer)
-
-        # File seek position
-        self._pos = 0
-        # Set to size of the decompressed stream once it is known
-        self._size = -1
-        # True if reached EOF
-        self._eof = False
-        # None if its a BytesIO or StringIO
-        self.name = getattr(self._fp, 'name', None)
+            # File seek position
+            self._pos = 0
 
     def seekable(self):
         """Return whether the file supports seeking."""
@@ -203,9 +198,11 @@ class EncodedFile(io.BufferedIOBase):
         """
         with self._lock:
             # Flush and finish the decoder.
-            if self._mode == _MODE_WRITE:
-                compressed = self._encoder.finish()
-                self._fp.write(compressed)
+            if self._mode == _MODE_READ:
+                self._buffer.close()
+            elif self._mode == _MODE_WRITE:
+                self._fp.write(self._encoder.finish())
+                self._encoder = None
 
             # Actually close the internal file pointer.
             if not self.closed:
@@ -354,7 +351,7 @@ def open(filename, mode='rb', **kwargs):
     """Open LZSS compressed file in binary mode.
 
     The filename argument can be an actual filename (a str, bytes or
-    path-like object), or an existing file object to read from or write
+    file-like object), or an existing file object to read from or write
     to.
 
     The mode argument can be "rb", "wb". "r" and "w" are converted to
@@ -363,11 +360,4 @@ def open(filename, mode='rb', **kwargs):
     This function is equivalent to the EncodedFile constructor:
     EncodedFile(filename, mode, **compress_options).
     """
-    if isinstance(filename, (unicode, str)):
-        binary_file = EncodedFile(filename, mode, **kwargs)
-    # Implements the file protocol
-    elif hasattr(filename, 'read') or hasattr(file, 'write'):
-        binary_file = EncodedFile(file=filename, mode=mode, **kwargs)
-    else:
-        raise TypeError('file must be an str, unicode or file-like object')
-    return binary_file
+    return EncodedFile(filename, mode, **kwargs)

@@ -19,13 +19,15 @@ class EncodedFileTest(unittest.TestCase):
             os.unlink(self.TEST_FILENAME)
 
     def test_bad_args(self):
-        self.assertRaises(ValueError, EncodedFile, file=None, filename=None)
-        self.assertRaises(ValueError, EncodedFile, mode='eb')
+        self.assertRaises(TypeError, EncodedFile, None)
+        self.assertRaises(ValueError, EncodedFile, None, mode='eb')
 
     def test_invalid_modes(self):
+        data = io.BytesIO()
+
         for mode in ['a+', 'w+', 'ab', 'r+', 'U', 'x', 'xb']:
             with self.assertRaisesRegexp(ValueError, '^Invalid mode: .*$'):
-                EncodedFile(mode=mode)
+                EncodedFile(data, mode=mode)
 
     def test_round_trip(self):
         write_str = 'Testing\nAnd Stuff'
@@ -59,7 +61,7 @@ class EncodedFileTest(unittest.TestCase):
     def test_with_file_object(self):
         data = io.BytesIO()
 
-        fp = EncodedFile(file=data, mode='wb')
+        fp = EncodedFile(data, mode='wb')
         fp.write(LARGE_PARAGRAPH)
         data.seek(0)
         self.assertTrue(len(data.read()) > 0)
