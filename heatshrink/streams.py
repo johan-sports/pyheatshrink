@@ -39,13 +39,20 @@ class DecompressReader(io.RawIOBase):
         return True
 
     def seekable(self):
-        return self._fp.seekable()
+        try:
+            # Python 3
+            return self._fp.seekable()
+        except AttributeError:
+            # Python 2 file object
+            # TODO: Check that this is actually robust.
+            # TODO: What happens if .seek() is implemented
+            # TODO: but not .tell() or .truncate()
+            return hasattr(self._fp, 'seek')
 
     def readinto(self, b):
-        with memoryview(b) as view, view.cast('B') as byte_view:
-            data = self.read(len(byte_view))
-            byte_view[:len(data)] = data
-        return len(data)
+        buf = self.read(len(b))
+        b[:len(buf)] = buf
+        return len(buf)
 
     def read(self, size=-1):
         if size < 0:
@@ -69,19 +76,6 @@ class DecompressReader(io.RawIOBase):
         # FIXME: Determine how the file pointer should move
         self._pos += len(raw_chunk)
         return data
-
-    # def readline(self, size=-1):
-    #     # Readline currently doesn't work because
-    #     # reading one character at a time doesn't
-    #     # really work too well.
-    #     cls = self.__class__
-    #     msg = "'{}' does not support readline"
-    #     raise io.UnsupportedOperation(msg.format(cls.__name__))
-
-    # def readlines(self, size=-1):
-    #     cls = self.__class__
-    #     msg = "'{}' does not support readlines"
-    #     raise io.UnsupportedOperation(msg.format(cls.__name__))
 
     # Rewind the file to the beginning of the data stream.
     def _rewind(self):
@@ -165,9 +159,7 @@ class EncodedFile(io.BufferedIOBase):
 
     def seekable(self):
         """Return whether the file supports seeking."""
-        # FIXME: The only way to seek is to create a new
-        # FIXME: encoder
-        return False
+        return self.readable() and self._buffer.seekable()
 
     def readable(self):
         """Return whether the file was opened for reading."""
