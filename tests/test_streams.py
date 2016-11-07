@@ -1,4 +1,5 @@
 import array
+import functools
 import io
 import os
 import unittest
@@ -182,17 +183,14 @@ class EncodedFileTest(unittest.TestCase):
         offset = 0
 
         with EncodedFile(TEST_FILENAME) as fp:
-            while True:
-                contents = fp.read(READ_SIZE)
+            read_buf = functools.partial(fp.read, READ_SIZE)
 
-                if not contents:
-                    break
-
+            for i, contents in enumerate(iter(read_buf, '')):
+                offset = READ_SIZE * i
                 self.assertEqual(
                     contents,
-                    LARGE_PARAGRAPH[offset:offset+READ_SIZE]
+                    LARGE_PARAGRAPH[offset: offset + READ_SIZE]
                 )
-                offset += READ_SIZE
 
     def test_read_one_char(self):
         with EncodedFile(TEST_FILENAME, mode='wb') as fp:
@@ -217,6 +215,19 @@ class EncodedFileTest(unittest.TestCase):
                 self.assertEqual('abcde', a.tobytes()[:n])
             except AttributeError:
                 self.assertEqual('abcde', a.tostring()[:n])
+
+    def test_readline(self):
+        with EncodedFile(TEST_FILENAME, mode='wb') as fp:
+            fp.write(LARGE_PARAGRAPH)
+
+        with EncodedFile(TEST_FILENAME) as fp:
+            lines = LARGE_PARAGRAPH.splitlines()
+
+            for index, line in enumerate(iter(fp.readline, '')):
+                self.assertEqual(line, lines[index] + '\n')
+
+    def test_readline_iterator(self):
+        pass
 
     #################
     # Writing

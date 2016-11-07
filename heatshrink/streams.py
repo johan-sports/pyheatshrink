@@ -273,7 +273,6 @@ class EncodedFile(io.BufferedIOBase):
             self._check_can_read()
             return self._buffer.readinto(b)
 
-    # TODO: YAGNI
     def readline(self, size=-1):
         """Read a line of uncompressed bytes from the file.
 
