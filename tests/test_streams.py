@@ -59,13 +59,18 @@ class EncodedFileTest(unittest.TestCase):
                 self.fail(msg.format(size))
 
     def test_with_file_object(self):
-        data = io.BytesIO()
+        plain_file = open(TEST_FILENAME, 'wb')
+        encoded_file = EncodedFile(plain_file, mode='wb')
 
-        fp = EncodedFile(data, mode='wb')
-        fp.write(LARGE_PARAGRAPH)
-        data.seek(0)
-        self.assertTrue(len(data.read()) > 0)
-        fp.close()
+        encoded_file.write(LARGE_PARAGRAPH)
+        # Flush data
+        encoded_file.close()
+        self.assertTrue(encoded_file.closed)
+        # Should close the plain file too, as it "owns" it.
+        self.assertTrue(plain_file.closed)
+
+        with open(TEST_FILENAME, 'rb') as fp:
+            self.assertTrue(len(fp.read()) > 0)
 
     def test_closed_true_when_file_closed(self):
         fp = EncodedFile(TEST_FILENAME, mode='wb')
