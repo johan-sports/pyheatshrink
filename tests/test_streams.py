@@ -111,7 +111,6 @@ class EncodedFileTest(unittest.TestCase):
     def test_seeking_forwards(self):
         pass
 
-    @unittest.skip('Not implemented')
     def test_seeking_backwards(self):
         with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
             fp.write('abcde')

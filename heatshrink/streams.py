@@ -12,7 +12,7 @@ class DecompressReader(io.RawIOBase):
     decompression modules. See github for more details:
     https://github.com/python/cpython/blob/3.6/Lib/_compression.py#L33
     """
-    def __init__(self, fp, reader):
+    def __init__(self, fp, reader_factory, **reader_args):
         self._fp = fp
         self._eof = False
         self._pos = 0  # Current offset in decompressed stream
@@ -20,11 +20,20 @@ class DecompressReader(io.RawIOBase):
         # Set to size of decompressed stream once it is known
         self._size = -1
 
-        self._decoder = core.Encoder(reader)
+        self._reader_factory = reader_factory
+        self._reader_args = reader_args
+
+        self._decoder = self._new_decoder()
+
+    def _new_decoder(self):
+        """Create a new decoder using the reader factory and args."""
+        reader = self._reader_factory(**self._reader_args)
+        return core.Encoder(reader)
 
     def close(self):
-        # Don't close self._fp because we don't own it.
-        pass
+        self._decoder = None
+        # Don't close self._fp directly because we don't own it.
+        return super(DecompressReader, self).close()
 
     def readable(self):
         return True
@@ -79,20 +88,23 @@ class DecompressReader(io.RawIOBase):
         self._fp.seek(0)
         self._eof = False
         self._pos = 0
+        # Restart the decoder from the beginning
+        self._decoder = self._new_decoder()
 
     def seek(self, offset, whence=io.SEEK_SET):
-        # if whence == io.SEEK_SET:
-        #     pass
-        # elif whence == io.SEEK_CUR:
-        #     offset += self._pos
-        # elif whence == io.SEEK_END:
-        #     if self._size < 0:
-        #         # Finish reading the file
-        #         while self.read(io.DEFAULT_BUFFER_SIZE):
-        #             pass
-        #     offset += self._size
-        # else:
-        #     raise ValueError('Invalid value for whence: {}'.format(whence))
+        # Recalculate offset as an absolute file position.
+        if whence == io.SEEK_SET:
+            pass
+        elif whence == io.SEEK_CUR:
+            offset += self._pos
+        elif whence == io.SEEK_END:
+            if self._size < 0:
+                # Finish reading the file
+                while self.read(io.DEFAULT_BUFFER_SIZE):
+                    pass
+            offset += self._size
+        else:
+            raise ValueError('Invalid value for whence: {}'.format(whence))
 
         # Make it so that offset is the number of bytes to skip forward.
         if offset < self._pos:
@@ -101,11 +113,12 @@ class DecompressReader(io.RawIOBase):
             offset -= self._pos
 
         # Read and discard data until we reach the desired position
-        # while offset > 0:
-        #     data = self.read(min(io.DEFAULT_BUFFER_SIZE, offset))
-        #     if not data:
-        #         break
-        #     offset -= len(data)
+        while offset > 0:
+            data = self.read(min(io.DEFAULT_BUFFER_SIZE, offset))
+            if not data:
+                break
+            offset -= len(data)
+
         return self._pos
 
     def tell(self):
@@ -142,8 +155,7 @@ class EncodedFile(io.BufferedIOBase):
             raise TypeError(msg)
 
         if self._mode == _MODE_READ:
-            reader = core.Reader(**compress_options)
-            raw = DecompressReader(self._fp, reader)
+            raw = DecompressReader(self._fp, core.Reader, **compress_options)
             self._buffer = io.BufferedReader(raw)
         else:
             writer = core.Writer(**compress_options)
