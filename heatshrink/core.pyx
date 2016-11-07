@@ -250,7 +250,6 @@ class Encoder(object):
             for data in self._drain():
                 out_buf.extend(data)
 
-
         try:
             # Python 3
             return out_buf.tobytes()
@@ -278,7 +277,6 @@ class Encoder(object):
 
             for data in self._drain():
                 out_buf.extend(data)
-
 
         try:
             # Python 3
