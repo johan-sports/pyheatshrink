@@ -226,6 +226,15 @@ class EncodedFileTest(unittest.TestCase):
             for index, line in enumerate(iter(fp.readline, '')):
                 self.assertEqual(line, lines[index] + '\n')
 
+    def test_readline_iterator(self):
+        with EncodedFile(TEST_FILENAME, mode='wb') as fp:
+            fp.write(LARGE_PARAGRAPH)
+
+        with EncodedFile(TEST_FILENAME) as fp:
+            lines = LARGE_PARAGRAPH.splitlines()
+
+            for i, line in enumerate(fp):
+                self.assertEqual(line, lines[i] + '\n')
 
     def test_readlines(self):
         with EncodedFile(TEST_FILENAME, mode='wb') as fp:
@@ -234,9 +243,6 @@ class EncodedFileTest(unittest.TestCase):
         with EncodedFile(TEST_FILENAME) as fp:
             lines = fp.readlines()
             self.assertEqual(''.join(lines), LARGE_PARAGRAPH)
-
-    def test_readline_iterator(self):
-        pass
 
     #################
     # Writing
