@@ -4734,7 +4734,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_7fill(CYTHON_UNUSED PyObje
  *             for data in self._drain():
  *                 out_buf.extend(data)             # <<<<<<<<<<<<<<
  * 
- * 
+ *         try:
  */
       __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_out_buf), __pyx_n_s_extend); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 251, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
@@ -4776,8 +4776,8 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_7fill(CYTHON_UNUSED PyObje
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
 
-  /* "heatshrink/core.pyx":254
- * 
+  /* "heatshrink/core.pyx":253
+ *                 out_buf.extend(data)
  * 
  *         try:             # <<<<<<<<<<<<<<
  *             # Python 3
@@ -4792,7 +4792,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_7fill(CYTHON_UNUSED PyObje
     __Pyx_XGOTREF(__pyx_t_15);
     /*try:*/ {
 
-      /* "heatshrink/core.pyx":256
+      /* "heatshrink/core.pyx":255
  *         try:
  *             # Python 3
  *             return out_buf.tobytes()             # <<<<<<<<<<<<<<
@@ -4800,7 +4800,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_7fill(CYTHON_UNUSED PyObje
  *             return out_buf.tostring()
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_out_buf), __pyx_n_s_tobytes); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 256, __pyx_L13_error)
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_out_buf), __pyx_n_s_tobytes); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 255, __pyx_L13_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_8 = NULL;
       if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -4813,10 +4813,10 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_7fill(CYTHON_UNUSED PyObje
         }
       }
       if (__pyx_t_8) {
-        __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 256, __pyx_L13_error)
+        __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 255, __pyx_L13_error)
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       } else {
-        __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 256, __pyx_L13_error)
+        __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 255, __pyx_L13_error)
       }
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -4824,8 +4824,8 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_7fill(CYTHON_UNUSED PyObje
       __pyx_t_3 = 0;
       goto __pyx_L17_try_return;
 
-      /* "heatshrink/core.pyx":254
- * 
+      /* "heatshrink/core.pyx":253
+ *                 out_buf.extend(data)
  * 
  *         try:             # <<<<<<<<<<<<<<
  *             # Python 3
@@ -4840,7 +4840,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_7fill(CYTHON_UNUSED PyObje
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "heatshrink/core.pyx":257
+    /* "heatshrink/core.pyx":256
  *             # Python 3
  *             return out_buf.tobytes()
  *         except AttributeError:             # <<<<<<<<<<<<<<
@@ -4850,12 +4850,12 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_7fill(CYTHON_UNUSED PyObje
     __pyx_t_16 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_AttributeError);
     if (__pyx_t_16) {
       __Pyx_AddTraceback("heatshrink.core.Encoder.fill", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_3, &__pyx_t_2, &__pyx_t_8) < 0) __PYX_ERR(0, 257, __pyx_L15_except_error)
+      if (__Pyx_GetException(&__pyx_t_3, &__pyx_t_2, &__pyx_t_8) < 0) __PYX_ERR(0, 256, __pyx_L15_except_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_GOTREF(__pyx_t_8);
 
-      /* "heatshrink/core.pyx":258
+      /* "heatshrink/core.pyx":257
  *             return out_buf.tobytes()
  *         except AttributeError:
  *             return out_buf.tostring()             # <<<<<<<<<<<<<<
@@ -4863,7 +4863,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_7fill(CYTHON_UNUSED PyObje
  *     def finish(self):
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_out_buf), __pyx_n_s_tostring); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 258, __pyx_L15_except_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_out_buf), __pyx_n_s_tostring); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 257, __pyx_L15_except_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_17 = NULL;
       if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_1))) {
@@ -4876,10 +4876,10 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_7fill(CYTHON_UNUSED PyObje
         }
       }
       if (__pyx_t_17) {
-        __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_17); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 258, __pyx_L15_except_error)
+        __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_17); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 257, __pyx_L15_except_error)
         __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
       } else {
-        __pyx_t_7 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 258, __pyx_L15_except_error)
+        __pyx_t_7 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 257, __pyx_L15_except_error)
       }
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4893,8 +4893,8 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_7fill(CYTHON_UNUSED PyObje
     goto __pyx_L15_except_error;
     __pyx_L15_except_error:;
 
-    /* "heatshrink/core.pyx":254
- * 
+    /* "heatshrink/core.pyx":253
+ *                 out_buf.extend(data)
  * 
  *         try:             # <<<<<<<<<<<<<<
  *             # Python 3
@@ -4952,7 +4952,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_7fill(CYTHON_UNUSED PyObje
   return __pyx_r;
 }
 
-/* "heatshrink/core.pyx":260
+/* "heatshrink/core.pyx":259
  *             return out_buf.tostring()
  * 
  *     def finish(self):             # <<<<<<<<<<<<<<
@@ -4996,14 +4996,14 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
   PyObject *__pyx_t_13 = NULL;
   __Pyx_RefNannySetupContext("finish", 0);
 
-  /* "heatshrink/core.pyx":266
+  /* "heatshrink/core.pyx":265
  *         is used after this.
  *         """
  *         self._check_not_finished()             # <<<<<<<<<<<<<<
  * 
  *         cdef array.array out_buf = array.array('B', [])
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_check_not_finished); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_check_not_finished); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -5016,25 +5016,25 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 266, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 265, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 266, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 265, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "heatshrink/core.pyx":268
+  /* "heatshrink/core.pyx":267
  *         self._check_not_finished()
  * 
  *         cdef array.array out_buf = array.array('B', [])             # <<<<<<<<<<<<<<
  * 
  *         while True:
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 267, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 267, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_B);
   __Pyx_GIVEREF(__pyx_n_s_B);
@@ -5042,13 +5042,13 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_7cpython_5array_array), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 267, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_out_buf = ((arrayobject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "heatshrink/core.pyx":270
+  /* "heatshrink/core.pyx":269
  *         cdef array.array out_buf = array.array('B', [])
  * 
  *         while True:             # <<<<<<<<<<<<<<
@@ -5057,16 +5057,16 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
  */
   while (1) {
 
-    /* "heatshrink/core.pyx":271
+    /* "heatshrink/core.pyx":270
  * 
  *         while True:
  *             res = self._encoder.finish()             # <<<<<<<<<<<<<<
  *             if res < 0:
  *                 raise RuntimeError('Encoder finish failed.')
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_encoder_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 271, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_encoder_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 270, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_finish); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 271, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_finish); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 270, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_2 = NULL;
@@ -5080,42 +5080,42 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
       }
     }
     if (__pyx_t_2) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 270, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else {
-      __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 270, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_XDECREF_SET(__pyx_v_res, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "heatshrink/core.pyx":272
+    /* "heatshrink/core.pyx":271
  *         while True:
  *             res = self._encoder.finish()
  *             if res < 0:             # <<<<<<<<<<<<<<
  *                 raise RuntimeError('Encoder finish failed.')
  * 
  */
-    __pyx_t_1 = PyObject_RichCompare(__pyx_v_res, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 272, __pyx_L1_error)
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 272, __pyx_L1_error)
+    __pyx_t_1 = PyObject_RichCompare(__pyx_v_res, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 271, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_4) {
 
-      /* "heatshrink/core.pyx":273
+      /* "heatshrink/core.pyx":272
  *             res = self._encoder.finish()
  *             if res < 0:
  *                 raise RuntimeError('Encoder finish failed.')             # <<<<<<<<<<<<<<
  * 
  *             if self._encoder.is_finished(res):
  */
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 273, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 272, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_Raise(__pyx_t_1, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __PYX_ERR(0, 273, __pyx_L1_error)
+      __PYX_ERR(0, 272, __pyx_L1_error)
 
-      /* "heatshrink/core.pyx":272
+      /* "heatshrink/core.pyx":271
  *         while True:
  *             res = self._encoder.finish()
  *             if res < 0:             # <<<<<<<<<<<<<<
@@ -5124,16 +5124,16 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
  */
     }
 
-    /* "heatshrink/core.pyx":275
+    /* "heatshrink/core.pyx":274
  *                 raise RuntimeError('Encoder finish failed.')
  * 
  *             if self._encoder.is_finished(res):             # <<<<<<<<<<<<<<
  *                 self._finished = True
  *                 break
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_encoder_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 275, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_encoder_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_is_finished); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 275, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_is_finished); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = NULL;
@@ -5147,34 +5147,34 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
       }
     }
     if (!__pyx_t_3) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_res); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 275, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_res); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
     } else {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 275, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 274, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_res);
       __Pyx_GIVEREF(__pyx_v_res);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_v_res);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 275, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 275, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_4) {
 
-      /* "heatshrink/core.pyx":276
+      /* "heatshrink/core.pyx":275
  * 
  *             if self._encoder.is_finished(res):
  *                 self._finished = True             # <<<<<<<<<<<<<<
  *                 break
  * 
  */
-      if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_finished, Py_True) < 0) __PYX_ERR(0, 276, __pyx_L1_error)
+      if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_finished, Py_True) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
 
-      /* "heatshrink/core.pyx":277
+      /* "heatshrink/core.pyx":276
  *             if self._encoder.is_finished(res):
  *                 self._finished = True
  *                 break             # <<<<<<<<<<<<<<
@@ -5183,7 +5183,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
  */
       goto __pyx_L4_break;
 
-      /* "heatshrink/core.pyx":275
+      /* "heatshrink/core.pyx":274
  *                 raise RuntimeError('Encoder finish failed.')
  * 
  *             if self._encoder.is_finished(res):             # <<<<<<<<<<<<<<
@@ -5192,14 +5192,14 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
  */
     }
 
-    /* "heatshrink/core.pyx":279
+    /* "heatshrink/core.pyx":278
  *                 break
  * 
  *             for data in self._drain():             # <<<<<<<<<<<<<<
  *                 out_buf.extend(data)
  * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_drain); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 279, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_drain); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 278, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_5 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -5212,10 +5212,10 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
       }
     }
     if (__pyx_t_5) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 278, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     } else {
-      __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 278, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5223,9 +5223,9 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
       __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_6 = 0;
       __pyx_t_7 = NULL;
     } else {
-      __pyx_t_6 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 279, __pyx_L1_error)
+      __pyx_t_6 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 278, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_7 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 279, __pyx_L1_error)
+      __pyx_t_7 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 278, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     for (;;) {
@@ -5233,17 +5233,17 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
         if (likely(PyList_CheckExact(__pyx_t_2))) {
           if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 279, __pyx_L1_error)
+          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 278, __pyx_L1_error)
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L1_error)
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 278, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         } else {
           if (__pyx_t_6 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 279, __pyx_L1_error)
+          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 278, __pyx_L1_error)
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L1_error)
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 278, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         }
@@ -5253,7 +5253,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 279, __pyx_L1_error)
+            else __PYX_ERR(0, 278, __pyx_L1_error)
           }
           break;
         }
@@ -5262,14 +5262,14 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
       __Pyx_XDECREF_SET(__pyx_v_data, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "heatshrink/core.pyx":280
+      /* "heatshrink/core.pyx":279
  * 
  *             for data in self._drain():
  *                 out_buf.extend(data)             # <<<<<<<<<<<<<<
  * 
- * 
+ *         try:
  */
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_out_buf), __pyx_n_s_extend); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 280, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_out_buf), __pyx_n_s_extend); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 279, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_3 = NULL;
       if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_5))) {
@@ -5282,23 +5282,23 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
         }
       }
       if (!__pyx_t_3) {
-        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 280, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
       } else {
-        __pyx_t_8 = PyTuple_New(1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 280, __pyx_L1_error)
+        __pyx_t_8 = PyTuple_New(1+1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 279, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_3); __pyx_t_3 = NULL;
         __Pyx_INCREF(__pyx_v_data);
         __Pyx_GIVEREF(__pyx_v_data);
         PyTuple_SET_ITEM(__pyx_t_8, 0+1, __pyx_v_data);
-        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 280, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       }
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "heatshrink/core.pyx":279
+      /* "heatshrink/core.pyx":278
  *                 break
  * 
  *             for data in self._drain():             # <<<<<<<<<<<<<<
@@ -5310,8 +5310,8 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
   }
   __pyx_L4_break:;
 
-  /* "heatshrink/core.pyx":283
- * 
+  /* "heatshrink/core.pyx":281
+ *                 out_buf.extend(data)
  * 
  *         try:             # <<<<<<<<<<<<<<
  *             # Python 3
@@ -5326,7 +5326,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
     __Pyx_XGOTREF(__pyx_t_11);
     /*try:*/ {
 
-      /* "heatshrink/core.pyx":285
+      /* "heatshrink/core.pyx":283
  *         try:
  *             # Python 3
  *             return out_buf.tobytes()             # <<<<<<<<<<<<<<
@@ -5334,7 +5334,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
  *             return out_buf.tostring()
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_out_buf), __pyx_n_s_tobytes); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 285, __pyx_L9_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_out_buf), __pyx_n_s_tobytes); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 283, __pyx_L9_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_5 = NULL;
       if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_1))) {
@@ -5347,10 +5347,10 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
         }
       }
       if (__pyx_t_5) {
-        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 285, __pyx_L9_error)
+        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 283, __pyx_L9_error)
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       } else {
-        __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 285, __pyx_L9_error)
+        __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 283, __pyx_L9_error)
       }
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -5358,8 +5358,8 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
       __pyx_t_2 = 0;
       goto __pyx_L13_try_return;
 
-      /* "heatshrink/core.pyx":283
- * 
+      /* "heatshrink/core.pyx":281
+ *                 out_buf.extend(data)
  * 
  *         try:             # <<<<<<<<<<<<<<
  *             # Python 3
@@ -5374,7 +5374,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "heatshrink/core.pyx":286
+    /* "heatshrink/core.pyx":284
  *             # Python 3
  *             return out_buf.tobytes()
  *         except AttributeError:             # <<<<<<<<<<<<<<
@@ -5384,12 +5384,12 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
     __pyx_t_12 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_AttributeError);
     if (__pyx_t_12) {
       __Pyx_AddTraceback("heatshrink.core.Encoder.finish", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_2, &__pyx_t_1, &__pyx_t_5) < 0) __PYX_ERR(0, 286, __pyx_L11_except_error)
+      if (__Pyx_GetException(&__pyx_t_2, &__pyx_t_1, &__pyx_t_5) < 0) __PYX_ERR(0, 284, __pyx_L11_except_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_GOTREF(__pyx_t_5);
 
-      /* "heatshrink/core.pyx":287
+      /* "heatshrink/core.pyx":285
  *             return out_buf.tobytes()
  *         except AttributeError:
  *             return out_buf.tostring()             # <<<<<<<<<<<<<<
@@ -5397,7 +5397,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
  *     @property
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_out_buf), __pyx_n_s_tostring); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 287, __pyx_L11_except_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_out_buf), __pyx_n_s_tostring); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 285, __pyx_L11_except_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_13 = NULL;
       if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_3))) {
@@ -5410,10 +5410,10 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
         }
       }
       if (__pyx_t_13) {
-        __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_13); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 287, __pyx_L11_except_error)
+        __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_13); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 285, __pyx_L11_except_error)
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
       } else {
-        __pyx_t_8 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 287, __pyx_L11_except_error)
+        __pyx_t_8 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 285, __pyx_L11_except_error)
       }
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -5427,8 +5427,8 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
     goto __pyx_L11_except_error;
     __pyx_L11_except_error:;
 
-    /* "heatshrink/core.pyx":283
- * 
+    /* "heatshrink/core.pyx":281
+ *                 out_buf.extend(data)
  * 
  *         try:             # <<<<<<<<<<<<<<
  *             # Python 3
@@ -5456,7 +5456,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
     goto __pyx_L0;
   }
 
-  /* "heatshrink/core.pyx":260
+  /* "heatshrink/core.pyx":259
  *             return out_buf.tostring()
  * 
  *     def finish(self):             # <<<<<<<<<<<<<<
@@ -5483,7 +5483,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_9finish(CYTHON_UNUSED PyOb
   return __pyx_r;
 }
 
-/* "heatshrink/core.pyx":290
+/* "heatshrink/core.pyx":288
  * 
  *     @property
  *     def finished(self):             # <<<<<<<<<<<<<<
@@ -5512,7 +5512,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_11finished(CYTHON_UNUSED P
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("finished", 0);
 
-  /* "heatshrink/core.pyx":292
+  /* "heatshrink/core.pyx":290
  *     def finished(self):
  *         """Returns true if the encoder has been closed."""
  *         return self._finished             # <<<<<<<<<<<<<<
@@ -5520,13 +5520,13 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_11finished(CYTHON_UNUSED P
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_finished); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 292, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_finished); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "heatshrink/core.pyx":290
+  /* "heatshrink/core.pyx":288
  * 
  *     @property
  *     def finished(self):             # <<<<<<<<<<<<<<
@@ -5545,7 +5545,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_7Encoder_11finished(CYTHON_UNUSED P
   return __pyx_r;
 }
 
-/* "heatshrink/core.pyx":295
+/* "heatshrink/core.pyx":293
  * 
  * 
  * cdef encode_impl(encoder, buf):             # <<<<<<<<<<<<<<
@@ -5563,14 +5563,14 @@ static PyObject *__pyx_f_10heatshrink_4core_encode_impl(PyObject *__pyx_v_encode
   __Pyx_RefNannySetupContext("encode_impl", 0);
   __Pyx_INCREF(__pyx_v_encoder);
 
-  /* "heatshrink/core.pyx":297
+  /* "heatshrink/core.pyx":295
  * cdef encode_impl(encoder, buf):
  *     """Encode iterable `buf` into an array of bytes."""
  *     encoder = Encoder(encoder)             # <<<<<<<<<<<<<<
  *     return encoder.fill(buf) + encoder.finish()
  * 
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_Encoder); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 297, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_Encoder); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -5583,16 +5583,16 @@ static PyObject *__pyx_f_10heatshrink_4core_encode_impl(PyObject *__pyx_v_encode
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_encoder); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 297, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_encoder); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
-    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 297, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
     __Pyx_INCREF(__pyx_v_encoder);
     __Pyx_GIVEREF(__pyx_v_encoder);
     PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_encoder);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 297, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
@@ -5600,7 +5600,7 @@ static PyObject *__pyx_f_10heatshrink_4core_encode_impl(PyObject *__pyx_v_encode
   __Pyx_DECREF_SET(__pyx_v_encoder, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "heatshrink/core.pyx":298
+  /* "heatshrink/core.pyx":296
  *     """Encode iterable `buf` into an array of bytes."""
  *     encoder = Encoder(encoder)
  *     return encoder.fill(buf) + encoder.finish()             # <<<<<<<<<<<<<<
@@ -5608,7 +5608,7 @@ static PyObject *__pyx_f_10heatshrink_4core_encode_impl(PyObject *__pyx_v_encode
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_encoder, __pyx_n_s_fill); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_encoder, __pyx_n_s_fill); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -5621,21 +5621,21 @@ static PyObject *__pyx_f_10heatshrink_4core_encode_impl(PyObject *__pyx_v_encode
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_buf); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_buf); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 296, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
-    __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 298, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 296, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4); __pyx_t_4 = NULL;
     __Pyx_INCREF(__pyx_v_buf);
     __Pyx_GIVEREF(__pyx_v_buf);
     PyTuple_SET_ITEM(__pyx_t_3, 0+1, __pyx_v_buf);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 296, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_encoder, __pyx_n_s_finish); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_encoder, __pyx_n_s_finish); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_3))) {
@@ -5648,14 +5648,14 @@ static PyObject *__pyx_f_10heatshrink_4core_encode_impl(PyObject *__pyx_v_encode
     }
   }
   if (__pyx_t_4) {
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 298, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 296, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   } else {
-    __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 298, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 296, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 298, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 296, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5663,7 +5663,7 @@ static PyObject *__pyx_f_10heatshrink_4core_encode_impl(PyObject *__pyx_v_encode
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "heatshrink/core.pyx":295
+  /* "heatshrink/core.pyx":293
  * 
  * 
  * cdef encode_impl(encoder, buf):             # <<<<<<<<<<<<<<
@@ -5686,7 +5686,7 @@ static PyObject *__pyx_f_10heatshrink_4core_encode_impl(PyObject *__pyx_v_encode
   return __pyx_r;
 }
 
-/* "heatshrink/core.pyx":301
+/* "heatshrink/core.pyx":299
  * 
  * 
  * def encode(buf, **kwargs):             # <<<<<<<<<<<<<<
@@ -5724,7 +5724,7 @@ static PyObject *__pyx_pw_10heatshrink_4core_3encode(PyObject *__pyx_self, PyObj
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, pos_args, "encode") < 0)) __PYX_ERR(0, 301, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, pos_args, "encode") < 0)) __PYX_ERR(0, 299, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -5735,7 +5735,7 @@ static PyObject *__pyx_pw_10heatshrink_4core_3encode(PyObject *__pyx_self, PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("encode", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 301, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("encode", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 299, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
   __Pyx_AddTraceback("heatshrink.core.encode", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5761,42 +5761,42 @@ static PyObject *__pyx_pf_10heatshrink_4core_2encode(CYTHON_UNUSED PyObject *__p
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("encode", 0);
 
-  /* "heatshrink/core.pyx":327
+  /* "heatshrink/core.pyx":325
  *     """
  *     encode_params = {
  *         'window_sz2': DEFAULT_WINDOW_SZ2,             # <<<<<<<<<<<<<<
  *         'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,
  *     }
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 327, __pyx_L1_error)
+  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 325, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_WINDOW_SZ2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 327, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_WINDOW_SZ2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 325, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_window_sz2, __pyx_t_2) < 0) __PYX_ERR(0, 327, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_window_sz2, __pyx_t_2) < 0) __PYX_ERR(0, 325, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "heatshrink/core.pyx":328
+  /* "heatshrink/core.pyx":326
  *     encode_params = {
  *         'window_sz2': DEFAULT_WINDOW_SZ2,
  *         'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,             # <<<<<<<<<<<<<<
  *     }
  *     encode_params.update(kwargs)
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_LOOKAHEAD_SZ2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 328, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_LOOKAHEAD_SZ2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 326, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_lookahead_sz2, __pyx_t_2) < 0) __PYX_ERR(0, 327, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_lookahead_sz2, __pyx_t_2) < 0) __PYX_ERR(0, 325, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_encode_params = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "heatshrink/core.pyx":330
+  /* "heatshrink/core.pyx":328
  *         'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,
  *     }
  *     encode_params.update(kwargs)             # <<<<<<<<<<<<<<
  * 
  *     encoder = Writer(encode_params['window_sz2'],
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_encode_params, __pyx_n_s_update); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 330, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_encode_params, __pyx_n_s_update); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 328, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -5809,50 +5809,50 @@ static PyObject *__pyx_pf_10heatshrink_4core_2encode(CYTHON_UNUSED PyObject *__p
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_kwargs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 330, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_kwargs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 328, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
-    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 330, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 328, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
     __Pyx_INCREF(__pyx_v_kwargs);
     __Pyx_GIVEREF(__pyx_v_kwargs);
     PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_kwargs);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 330, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 328, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "heatshrink/core.pyx":332
+  /* "heatshrink/core.pyx":330
  *     encode_params.update(kwargs)
  * 
  *     encoder = Writer(encode_params['window_sz2'],             # <<<<<<<<<<<<<<
  *                       encode_params['lookahead_sz2'])
  *     return encode_impl(encoder, buf)
  */
-  __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_encode_params, __pyx_n_s_window_sz2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_encode_params, __pyx_n_s_window_sz2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 330, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "heatshrink/core.pyx":333
+  /* "heatshrink/core.pyx":331
  * 
  *     encoder = Writer(encode_params['window_sz2'],
  *                       encode_params['lookahead_sz2'])             # <<<<<<<<<<<<<<
  *     return encode_impl(encoder, buf)
  * 
  */
-  __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_encode_params, __pyx_n_s_lookahead_sz2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 333, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_encode_params, __pyx_n_s_lookahead_sz2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 331, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "heatshrink/core.pyx":332
+  /* "heatshrink/core.pyx":330
  *     encode_params.update(kwargs)
  * 
  *     encoder = Writer(encode_params['window_sz2'],             # <<<<<<<<<<<<<<
  *                       encode_params['lookahead_sz2'])
  *     return encode_impl(encoder, buf)
  */
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 330, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
@@ -5860,13 +5860,13 @@ static PyObject *__pyx_pf_10heatshrink_4core_2encode(CYTHON_UNUSED PyObject *__p
   PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_2);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10heatshrink_4core_Writer), __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10heatshrink_4core_Writer), __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 330, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_encoder = ((struct __pyx_obj_10heatshrink_4core_Writer *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "heatshrink/core.pyx":334
+  /* "heatshrink/core.pyx":332
  *     encoder = Writer(encode_params['window_sz2'],
  *                       encode_params['lookahead_sz2'])
  *     return encode_impl(encoder, buf)             # <<<<<<<<<<<<<<
@@ -5874,13 +5874,13 @@ static PyObject *__pyx_pf_10heatshrink_4core_2encode(CYTHON_UNUSED PyObject *__p
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __pyx_f_10heatshrink_4core_encode_impl(((PyObject *)__pyx_v_encoder), __pyx_v_buf); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 334, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_10heatshrink_4core_encode_impl(((PyObject *)__pyx_v_encoder), __pyx_v_buf); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 332, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "heatshrink/core.pyx":301
+  /* "heatshrink/core.pyx":299
  * 
  * 
  * def encode(buf, **kwargs):             # <<<<<<<<<<<<<<
@@ -5904,7 +5904,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_2encode(CYTHON_UNUSED PyObject *__p
   return __pyx_r;
 }
 
-/* "heatshrink/core.pyx":337
+/* "heatshrink/core.pyx":335
  * 
  * 
  * def decode(buf, **kwargs):             # <<<<<<<<<<<<<<
@@ -5942,7 +5942,7 @@ static PyObject *__pyx_pw_10heatshrink_4core_5decode(PyObject *__pyx_self, PyObj
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, pos_args, "decode") < 0)) __PYX_ERR(0, 337, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, pos_args, "decode") < 0)) __PYX_ERR(0, 335, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -5953,7 +5953,7 @@ static PyObject *__pyx_pw_10heatshrink_4core_5decode(PyObject *__pyx_self, PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("decode", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 337, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("decode", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 335, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
   __Pyx_AddTraceback("heatshrink.core.decode", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5979,54 +5979,54 @@ static PyObject *__pyx_pf_10heatshrink_4core_4decode(CYTHON_UNUSED PyObject *__p
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("decode", 0);
 
-  /* "heatshrink/core.pyx":366
+  /* "heatshrink/core.pyx":364
  *     """
  *     decode_params = {
  *         'input_buffer_size': DEFAULT_INPUT_BUFFER_SIZE,             # <<<<<<<<<<<<<<
  *         'window_sz2': DEFAULT_WINDOW_SZ2,
  *         'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 366, __pyx_L1_error)
+  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 364, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_INPUT_BUFFER_SIZE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 366, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_INPUT_BUFFER_SIZE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 364, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_input_buffer_size, __pyx_t_2) < 0) __PYX_ERR(0, 366, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_input_buffer_size, __pyx_t_2) < 0) __PYX_ERR(0, 364, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "heatshrink/core.pyx":367
+  /* "heatshrink/core.pyx":365
  *     decode_params = {
  *         'input_buffer_size': DEFAULT_INPUT_BUFFER_SIZE,
  *         'window_sz2': DEFAULT_WINDOW_SZ2,             # <<<<<<<<<<<<<<
  *         'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,
  *     }
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_WINDOW_SZ2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 367, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_WINDOW_SZ2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 365, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_window_sz2, __pyx_t_2) < 0) __PYX_ERR(0, 366, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_window_sz2, __pyx_t_2) < 0) __PYX_ERR(0, 364, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "heatshrink/core.pyx":368
+  /* "heatshrink/core.pyx":366
  *         'input_buffer_size': DEFAULT_INPUT_BUFFER_SIZE,
  *         'window_sz2': DEFAULT_WINDOW_SZ2,
  *         'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,             # <<<<<<<<<<<<<<
  *     }
  *     decode_params.update(kwargs)
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_LOOKAHEAD_SZ2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 368, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_LOOKAHEAD_SZ2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 366, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_lookahead_sz2, __pyx_t_2) < 0) __PYX_ERR(0, 366, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_lookahead_sz2, __pyx_t_2) < 0) __PYX_ERR(0, 364, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_decode_params = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "heatshrink/core.pyx":370
+  /* "heatshrink/core.pyx":368
  *         'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,
  *     }
  *     decode_params.update(kwargs)             # <<<<<<<<<<<<<<
  * 
  *     encoder = Reader(decode_params['input_buffer_size'],
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_decode_params, __pyx_n_s_update); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 370, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_decode_params, __pyx_n_s_update); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 368, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -6039,60 +6039,60 @@ static PyObject *__pyx_pf_10heatshrink_4core_4decode(CYTHON_UNUSED PyObject *__p
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_kwargs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 370, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_kwargs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 368, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
-    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 370, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 368, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
     __Pyx_INCREF(__pyx_v_kwargs);
     __Pyx_GIVEREF(__pyx_v_kwargs);
     PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_kwargs);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 370, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 368, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "heatshrink/core.pyx":372
+  /* "heatshrink/core.pyx":370
  *     decode_params.update(kwargs)
  * 
  *     encoder = Reader(decode_params['input_buffer_size'],             # <<<<<<<<<<<<<<
  *                       decode_params['window_sz2'],
  *                       decode_params['lookahead_sz2'])
  */
-  __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_decode_params, __pyx_n_s_input_buffer_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 372, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_decode_params, __pyx_n_s_input_buffer_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "heatshrink/core.pyx":373
+  /* "heatshrink/core.pyx":371
  * 
  *     encoder = Reader(decode_params['input_buffer_size'],
  *                       decode_params['window_sz2'],             # <<<<<<<<<<<<<<
  *                       decode_params['lookahead_sz2'])
  *     return encode_impl(encoder, buf)
  */
-  __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_decode_params, __pyx_n_s_window_sz2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 373, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_decode_params, __pyx_n_s_window_sz2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 371, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "heatshrink/core.pyx":374
+  /* "heatshrink/core.pyx":372
  *     encoder = Reader(decode_params['input_buffer_size'],
  *                       decode_params['window_sz2'],
  *                       decode_params['lookahead_sz2'])             # <<<<<<<<<<<<<<
  *     return encode_impl(encoder, buf)
  * 
  */
-  __pyx_t_4 = __Pyx_PyDict_GetItem(__pyx_v_decode_params, __pyx_n_s_lookahead_sz2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 374, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_GetItem(__pyx_v_decode_params, __pyx_n_s_lookahead_sz2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 372, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "heatshrink/core.pyx":372
+  /* "heatshrink/core.pyx":370
  *     decode_params.update(kwargs)
  * 
  *     encoder = Reader(decode_params['input_buffer_size'],             # <<<<<<<<<<<<<<
  *                       decode_params['window_sz2'],
  *                       decode_params['lookahead_sz2'])
  */
-  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 372, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -6103,26 +6103,26 @@ static PyObject *__pyx_pf_10heatshrink_4core_4decode(CYTHON_UNUSED PyObject *__p
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10heatshrink_4core_Reader), __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 372, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10heatshrink_4core_Reader), __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_encoder = ((struct __pyx_obj_10heatshrink_4core_Reader *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "heatshrink/core.pyx":375
+  /* "heatshrink/core.pyx":373
  *                       decode_params['window_sz2'],
  *                       decode_params['lookahead_sz2'])
  *     return encode_impl(encoder, buf)             # <<<<<<<<<<<<<<
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_10heatshrink_4core_encode_impl(((PyObject *)__pyx_v_encoder), __pyx_v_buf); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 375, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_10heatshrink_4core_encode_impl(((PyObject *)__pyx_v_encoder), __pyx_v_buf); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 373, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "heatshrink/core.pyx":337
+  /* "heatshrink/core.pyx":335
  * 
  * 
  * def decode(buf, **kwargs):             # <<<<<<<<<<<<<<
@@ -7244,14 +7244,14 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 };
 static int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_object = __Pyx_GetBuiltinName(__pyx_n_s_object); if (!__pyx_builtin_object) __PYX_ERR(0, 192, __pyx_L1_error)
-  __pyx_builtin_property = __Pyx_GetBuiltinName(__pyx_n_s_property); if (!__pyx_builtin_property) __PYX_ERR(0, 289, __pyx_L1_error)
+  __pyx_builtin_property = __Pyx_GetBuiltinName(__pyx_n_s_property); if (!__pyx_builtin_property) __PYX_ERR(0, 287, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 28, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 32, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 60, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(0, 216, __pyx_L1_error)
   __pyx_builtin_StopIteration = __Pyx_GetBuiltinName(__pyx_n_s_StopIteration); if (!__pyx_builtin_StopIteration) __PYX_ERR(0, 225, __pyx_L1_error)
   __pyx_builtin_memoryview = __Pyx_GetBuiltinName(__pyx_n_s_memoryview); if (!__pyx_builtin_memoryview) __PYX_ERR(0, 231, __pyx_L1_error)
-  __pyx_builtin_AttributeError = __Pyx_GetBuiltinName(__pyx_n_s_AttributeError); if (!__pyx_builtin_AttributeError) __PYX_ERR(0, 257, __pyx_L1_error)
+  __pyx_builtin_AttributeError = __Pyx_GetBuiltinName(__pyx_n_s_AttributeError); if (!__pyx_builtin_AttributeError) __PYX_ERR(0, 256, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -7316,14 +7316,14 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
 
-  /* "heatshrink/core.pyx":273
+  /* "heatshrink/core.pyx":272
  *             res = self._encoder.finish()
  *             if res < 0:
  *                 raise RuntimeError('Encoder finish failed.')             # <<<<<<<<<<<<<<
  * 
  *             if self._encoder.is_finished(res):
  */
-  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_s_Encoder_finish_failed); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_s_Encoder_finish_failed); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
 
@@ -7387,53 +7387,53 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__21);
   __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(2, 0, 9, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_slacker_Programming_johan, __pyx_n_s_fill, 227, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 227, __pyx_L1_error)
 
-  /* "heatshrink/core.pyx":260
+  /* "heatshrink/core.pyx":259
  *             return out_buf.tostring()
  * 
  *     def finish(self):             # <<<<<<<<<<<<<<
  *         """Close encoder and return any remaining data.
  * 
  */
-  __pyx_tuple__23 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_out_buf, __pyx_n_s_res, __pyx_n_s_data); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __pyx_tuple__23 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_out_buf, __pyx_n_s_res, __pyx_n_s_data); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_GIVEREF(__pyx_tuple__23);
-  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_slacker_Programming_johan, __pyx_n_s_finish, 260, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_slacker_Programming_johan, __pyx_n_s_finish, 259, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 259, __pyx_L1_error)
 
-  /* "heatshrink/core.pyx":290
+  /* "heatshrink/core.pyx":288
  * 
  *     @property
  *     def finished(self):             # <<<<<<<<<<<<<<
  *         """Returns true if the encoder has been closed."""
  *         return self._finished
  */
-  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
-  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_slacker_Programming_johan, __pyx_n_s_finished_2, 290, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_slacker_Programming_johan, __pyx_n_s_finished_2, 288, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 288, __pyx_L1_error)
 
-  /* "heatshrink/core.pyx":301
+  /* "heatshrink/core.pyx":299
  * 
  * 
  * def encode(buf, **kwargs):             # <<<<<<<<<<<<<<
  *     """
  *     Encode iterable `buf` in to a byte string.
  */
-  __pyx_tuple__27 = PyTuple_Pack(4, __pyx_n_s_buf, __pyx_n_s_kwargs, __pyx_n_s_encode_params, __pyx_n_s_encoder); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_tuple__27 = PyTuple_Pack(4, __pyx_n_s_buf, __pyx_n_s_kwargs, __pyx_n_s_encode_params, __pyx_n_s_encoder); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 299, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__27);
   __Pyx_GIVEREF(__pyx_tuple__27);
-  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_slacker_Programming_johan, __pyx_n_s_encode, 301, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_slacker_Programming_johan, __pyx_n_s_encode, 299, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(0, 299, __pyx_L1_error)
 
-  /* "heatshrink/core.pyx":337
+  /* "heatshrink/core.pyx":335
  * 
  * 
  * def decode(buf, **kwargs):             # <<<<<<<<<<<<<<
  *     """
  *     Decode iterable `buf` in to a byte string.
  */
-  __pyx_tuple__29 = PyTuple_Pack(4, __pyx_n_s_buf, __pyx_n_s_kwargs, __pyx_n_s_decode_params, __pyx_n_s_encoder); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(0, 337, __pyx_L1_error)
+  __pyx_tuple__29 = PyTuple_Pack(4, __pyx_n_s_buf, __pyx_n_s_kwargs, __pyx_n_s_decode_params, __pyx_n_s_encoder); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__29);
   __Pyx_GIVEREF(__pyx_tuple__29);
-  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_slacker_Programming_johan, __pyx_n_s_decode, 337, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(0, 337, __pyx_L1_error)
+  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_slacker_Programming_johan, __pyx_n_s_decode, 335, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -7795,44 +7795,44 @@ PyMODINIT_FUNC PyInit_core(void)
   if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_fill, __pyx_t_4) < 0) __PYX_ERR(0, 227, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "heatshrink/core.pyx":260
+  /* "heatshrink/core.pyx":259
  *             return out_buf.tostring()
  * 
  *     def finish(self):             # <<<<<<<<<<<<<<
  *         """Close encoder and return any remaining data.
  * 
  */
-  __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_10heatshrink_4core_7Encoder_10finish, 0, __pyx_n_s_Encoder_finish, NULL, __pyx_n_s_heatshrink_core, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_10heatshrink_4core_7Encoder_10finish, 0, __pyx_n_s_Encoder_finish, NULL, __pyx_n_s_heatshrink_core, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_finish, __pyx_t_4) < 0) __PYX_ERR(0, 260, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_finish, __pyx_t_4) < 0) __PYX_ERR(0, 259, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "heatshrink/core.pyx":290
+  /* "heatshrink/core.pyx":288
  * 
  *     @property
  *     def finished(self):             # <<<<<<<<<<<<<<
  *         """Returns true if the encoder has been closed."""
  *         return self._finished
  */
-  __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_10heatshrink_4core_7Encoder_12finished, 0, __pyx_n_s_Encoder_finished, NULL, __pyx_n_s_heatshrink_core, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_10heatshrink_4core_7Encoder_12finished, 0, __pyx_n_s_Encoder_finished, NULL, __pyx_n_s_heatshrink_core, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "heatshrink/core.pyx":289
+  /* "heatshrink/core.pyx":287
  *             return out_buf.tostring()
  * 
  *     @property             # <<<<<<<<<<<<<<
  *     def finished(self):
  *         """Returns true if the encoder has been closed."""
  */
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 289, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_property, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 289, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_property, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_finished_2, __pyx_t_4) < 0) __PYX_ERR(0, 290, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_finished_2, __pyx_t_4) < 0) __PYX_ERR(0, 288, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "heatshrink/core.pyx":192
@@ -7850,28 +7850,28 @@ PyMODINIT_FUNC PyInit_core(void)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "heatshrink/core.pyx":301
+  /* "heatshrink/core.pyx":299
  * 
  * 
  * def encode(buf, **kwargs):             # <<<<<<<<<<<<<<
  *     """
  *     Encode iterable `buf` in to a byte string.
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10heatshrink_4core_3encode, NULL, __pyx_n_s_heatshrink_core); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10heatshrink_4core_3encode, NULL, __pyx_n_s_heatshrink_core); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 299, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_encode, __pyx_t_1) < 0) __PYX_ERR(0, 301, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_encode, __pyx_t_1) < 0) __PYX_ERR(0, 299, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "heatshrink/core.pyx":337
+  /* "heatshrink/core.pyx":335
  * 
  * 
  * def decode(buf, **kwargs):             # <<<<<<<<<<<<<<
  *     """
  *     Decode iterable `buf` in to a byte string.
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10heatshrink_4core_5decode, NULL, __pyx_n_s_heatshrink_core); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 337, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10heatshrink_4core_5decode, NULL, __pyx_n_s_heatshrink_core); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_decode, __pyx_t_1) < 0) __PYX_ERR(0, 337, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_decode, __pyx_t_1) < 0) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "heatshrink/core.pyx":1
