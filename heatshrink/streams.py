@@ -15,7 +15,8 @@ class DecompressReader(io.RawIOBase):
     def __init__(self, fp, reader_factory, **reader_args):
         self._fp = fp
         self._eof = False
-        self._pos = 0  # Current offset in decompressed stream
+        self._fp_offset = 0  # Offset in raw file
+        self._decomp_offset = 0  # Offset in decompressed data stream
 
         # Set to size of decompressed stream once it is known
         self._size = -1
@@ -69,22 +70,22 @@ class DecompressReader(io.RawIOBase):
 
         if data is None:  # data may be an empty string
             self._eof = True
-            self._size = self._pos
+            self._size = self._fp_offset
             # Finalize internal decoder.
             # FIXME: Don't allow any further operations after this
             data = self._decoder.finish()
-        # "Virtual" position in decoded data
-        self._decoded_pos = len(data)
-        # Actual raw file position
-        self._pos += len(raw_chunk)
+
+        self._fp_offset += len(raw_chunk)
+        self._decomp_offset = len(data)
+
         return data
 
     # Rewind the file to the beginning of the data stream.
     def _rewind(self):
         self._fp.seek(0)
         self._eof = False
-        self._pos = 0
-        self._decoded_pos = 0
+        self._fp_offset = 0
+        self._decomp_offset = 0
         # Restart the decoder from the beginning
         self._decoder = self._new_decoder()
 
@@ -93,7 +94,7 @@ class DecompressReader(io.RawIOBase):
         if whence == io.SEEK_SET:
             pass
         elif whence == io.SEEK_CUR:
-            offset += self._pos
+            offset += self._fp_offset
         elif whence == io.SEEK_END:
             if self._size < 0:
                 # Finish reading the file
@@ -104,10 +105,10 @@ class DecompressReader(io.RawIOBase):
             raise ValueError('Invalid value for whence: {}'.format(whence))
 
         # Make it so that offset is the number of bytes to skip forward.
-        if offset < self._pos:
+        if offset < self._fp_offset:
             self._rewind()
         else:
-            offset -= self._pos
+            offset -= self._fp_offset
 
         # Read and discard data until we reach the desired position
         while offset > 0:
@@ -116,10 +117,10 @@ class DecompressReader(io.RawIOBase):
                 break
             offset -= len(data)
 
-        return self._pos
+        return self._fp_offset  # FIXME: return decomp_offset
 
     def tell(self):
-        return self._decoded_pos
+        return self._decomp_offset
 
 
 _MODE_CLOSED = 0
