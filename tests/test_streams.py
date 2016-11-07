@@ -188,6 +188,9 @@ class EncodedFileTest(unittest.TestCase):
                 )
                 offset += READ_SIZE
 
+    def test_read1(self):
+        raise AssertionError('TODO')
+
     def test_readinto(self):
         with EncodedFile(TEST_FILENAME, mode='wb') as fp:
             fp.write('abcde')
@@ -224,4 +227,14 @@ class EncodedFileTest(unittest.TestCase):
     def test_remaining_data_flushed_on_close(self):
         fp = EncodedFile(TEST_FILENAME, mode='wb')
         fp.write(LARGE_PARAGRAPH)
+
+        with open(TEST_FILENAME) as read_fp:
+            self.assertEqual(len(read_fp.read()), 0)
+
         fp.close()
+
+        with open(TEST_FILENAME) as read_fp:
+            self.assertTrue(len(read_fp.read()) > 0)
+
+    def test_writelines(self):
+        raise AssertionError('TODO')
