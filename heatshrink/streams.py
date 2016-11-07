@@ -64,7 +64,14 @@ class DecompressReader(io.RawIOBase):
         # Readline currently doesn't work because
         # reading one character at a time doesn't
         # really work too well.
-        raise NotImplementedError()
+        cls = self.__class__
+        msg = "'{}' does not support readline"
+        raise io.UnsupportedOperation(msg.format(cls.__name__))
+
+    def readlines(self, size=-1):
+        cls = self.__class__
+        msg = "'{}' does not support readlines"
+        raise io.UnsupportedOperation(msg.format(cls.__name__))
 
     # Rewind the file to the beginning of the data stream.
     def _rewind(self):
@@ -189,6 +196,11 @@ class EncodedFile(io.BufferedIOBase):
             raise io.UnsupportedOperation(msg)
 
     def close(self):
+        """Flush and close the file.
+
+        May be called more than once without error. Once the file is
+        closed, any other operation on it will raise a ValueError.
+        """
         with self._lock:
             # Flush and finish the decoder.
             if self._mode == _MODE_WRITE:
@@ -203,13 +215,24 @@ class EncodedFile(io.BufferedIOBase):
 
     @property
     def closed(self):
+        """True if this file is closed."""
         return self._mode == _MODE_CLOSED
 
     def fileno(self):
+        """Return the file descriptor for tthe underlying file."""
+        self._check_not_closed()
         return self._fp.fileno()
 
-    def peek(self, size=-1):
-        return self._buffer.peek(size)
+    def peek(self, n=0):
+        """Return buffered data without advancing the file position.
+
+        Always returns at least one byte of data, unless at EOF.
+        The exact number of bytes returned is unspecified.
+        """
+        with self._lock:
+            self._check_can_read()
+
+            raise io.UnsupportedOperation
 
     def read(self, size=-1):
         """Read up to size uncompressed bytes from the file.
@@ -228,9 +251,8 @@ class EncodedFile(io.BufferedIOBase):
 
         Returns b'' if the file is at EOF.
         """
-        self._check_can_read()
-
         with self._lock:
+            self._check_can_read()
             if size < 0:
                 size = io.DEFAULT_BUFFER_SIZE
             return self._buffer.read1(size)
@@ -240,11 +262,11 @@ class EncodedFile(io.BufferedIOBase):
 
         Returns the number of bytes read (0 for EOF).
         """
-        self._check_can_read()
-
         with self._lock:
+            self._check_can_read()
             return self._buffer.readinto(b)
 
+    # TODO: YAGNI
     def readline(self, size=-1):
         """Read a line of uncompressed bytes from the file.
 
@@ -252,11 +274,11 @@ class EncodedFile(io.BufferedIOBase):
         non-negative, no more than size bytes will be read (in which
         case the line may be incomplete). Returns b'' if already at EOF.
         """
-        self._check_can_read()
-
         with self._lock:
+            self._check_can_read()
             return self._buffer.readline(size)
 
+    # TODO: YAGNI
     def readlines(self, size=-1):
         """Read a list of lines of uncompressed bytes from the file.
 
@@ -264,9 +286,13 @@ class EncodedFile(io.BufferedIOBase):
         further lines will be read once the total size of the lines read
         so far equals or exceeds size.
         """
-        self._check_can_read()
+        if not isinstance(size, int):
+            if not hasattr(size, '__index__'):
+                raise TypeError('Integer argument expected')
+            size = size.__index__
 
         with self._lock:
+            self._check_can_read()
             return self._buffer.readlines(size)
 
     def write(self, data):
@@ -276,14 +302,14 @@ class EncodedFile(io.BufferedIOBase):
         always len(data). Note that due to buffering, the file on disk
         may not reflect the data written until close() is called.
         """
-        self._check_can_write()
-
         with self._lock:
+            self._check_can_write()
             compressed = self._encoder.fill(data)
             self._fp.write(compressed)
             self._pos += len(data)
             return len(data)
 
+    # TODO: YAGNI
     def writelines(self, seq):
         """Write a sequence of byte strings to the file.
 
@@ -292,10 +318,29 @@ class EncodedFile(io.BufferedIOBase):
 
         Line separators are not added between the written byte strings.
         """
-        self._check_can_write()
-
         with self._lock:
+            self._check_can_write()
+
             return super(EncodedFile, self).writelines(seq)
+
+    def seek(self, offset, whence=io.SEEK_SET):
+        """Change the file position.
+
+        The new position is specified by offset, relative to the
+        position indicated by whence. Values for whence are:
+
+            0: start of stream (default); offset must not be negative
+            1: current stream position
+            2: end of stream; offset must not be positive
+
+        Returns the new file position.
+
+        Note that seeking is emulated, so depending on the parameters,
+        this operation may be extremely slow.
+        """
+        with self._lock:
+            self._check_can_seek()
+            return self._buffer.seek(offset, whence)
 
     def tell(self):
         """Return the current file position."""
@@ -305,18 +350,24 @@ class EncodedFile(io.BufferedIOBase):
             return self._pos
 
 
-def open(file, mode='rb', **kwargs):
-    """
-    Open file and return the correspoding EncodedFile object.
+def open(filename, mode='rb', **kwargs):
+    """Open LZSS compressed file in binary mode.
 
-    file is either a string or unicode representing a file path
-    or a file-like object.
+    The filename argument can be an actual filename (a str, bytes or
+    path-like object), or an existing file object to read from or write
+    to.
+
+    The mode argument can be "rb", "wb". "r" and "w" are converted to
+    "rb" and "rb" respectively.
+
+    This function is equivalent to the EncodedFile constructor:
+    EncodedFile(filename, mode, **compress_options).
     """
-    if isinstance(file, (unicode, str)):
-        binary_file = EncodedFile(file, mode, **kwargs)
+    if isinstance(filename, (unicode, str)):
+        binary_file = EncodedFile(filename, mode, **kwargs)
     # Implements the file protocol
-    elif hasattr(file, 'read') or hasattr(file, 'write'):
-        binary_file = EncodedFile(file=file, mode=mode, **kwargs)
+    elif hasattr(filename, 'read') or hasattr(file, 'write'):
+        binary_file = EncodedFile(file=filename, mode=mode, **kwargs)
     else:
         raise TypeError('file must be an str, unicode or file-like object')
     return binary_file

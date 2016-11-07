@@ -165,30 +165,8 @@ class EncodedFileTest(unittest.TestCase):
                 )
                 offset += READ_SIZE
 
-    # FIXME: YAGNI?
     def test_readinto(self):
         pass
-
-    @unittest.skip('Not implemented')
-    def test_readline(self):
-        lines = ['Line one', 'Line two', 'All the lines']
-
-        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
-            fp.write('\n'.join(lines))
-
-        with EncodedFile(self.TEST_FILENAME) as fp:
-            for line in lines:
-                self.assertEqual(fp.readline(), line)
-
-    @unittest.skip('Not implemented')
-    def test_readlines(self):
-        lines = ['Line one', 'Line two', 'All the lines']
-
-        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
-            fp.write('\n'.join(lines))
-
-        with EncodedFile(self.TEST_FILENAME) as fp:
-            self.assertEqual(fp.readlines(), lines)
 
     #################
     # Writing
@@ -206,14 +184,6 @@ class EncodedFileTest(unittest.TestCase):
                     break
 
                 fp.write(chunk)
-
-        with EncodedFile(self.TEST_FILENAME) as fp:
-            self.assertEqual(fp.read(), LARGE_PARAGRAPH)
-
-    def test_writelines(self):
-        with EncodedFile(self.TEST_FILENAME, mode='wb') as fp:
-            lines = LARGE_PARAGRAPH.splitlines()
-            fp.writelines(lines)
 
         with EncodedFile(self.TEST_FILENAME) as fp:
             self.assertEqual(fp.read(), LARGE_PARAGRAPH)
