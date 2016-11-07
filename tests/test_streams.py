@@ -1,3 +1,4 @@
+import array
 import io
 import os
 import unittest
@@ -188,7 +189,17 @@ class EncodedFileTest(unittest.TestCase):
                 offset += READ_SIZE
 
     def test_readinto(self):
-        pass
+        with EncodedFile(TEST_FILENAME, mode='wb') as fp:
+            fp.write('abcde')
+
+        with EncodedFile(TEST_FILENAME) as fp:
+            a = array.array('b', b'x' * 10)  # Fill with junk
+            n = fp.readinto(a)
+            try:
+                # Python 3
+                self.assertEqual('abcde', a.tobytes()[:n])
+            except AttributeError:
+                self.assertEqual('abcde', a.tostring()[:n])
 
     #################
     # Writing
