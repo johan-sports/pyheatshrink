@@ -107,9 +107,16 @@ class EncodedFileTest(unittest.TestCase):
             self.assertTrue(not fp.readable())
             self.assertRaises(IOError, fp.read)
 
-    @unittest.skip('Not implemented')
     def test_seeking_forwards(self):
-        pass
+        contents = random_string(250)
+
+        with EncodedFile(TEST_FILENAME, mode='wb') as fp:
+            fp.write(contents)
+
+        with EncodedFile(TEST_FILENAME) as fp:
+            self.assertEqual(fp.read(100), contents[:100])
+            fp.seek(50, io.SEEK_CUR)  # Move 50 forwards
+            self.assertEqual(fp.read(100), contents[-100:])
 
     def test_seeking_backwards(self):
         with EncodedFile(TEST_FILENAME, mode='wb') as fp:
