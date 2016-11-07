@@ -161,6 +161,9 @@ class EncodedFile(io.BufferedIOBase):
             # File seek position
             self._pos = 0
 
+        # The file name. Defaults to None
+        self.name = getattr(self._fp, 'name', None)
+
     def seekable(self):
         """Return whether the file supports seeking."""
         return self.readable() and self._buffer.seekable()
