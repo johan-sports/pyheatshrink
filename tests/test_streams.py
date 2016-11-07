@@ -128,6 +128,15 @@ class EncodedFileTest(unittest.TestCase):
             fp.seek(0)
             self.assertEqual(fp.read(100), contents)
 
+    def test_seeking_from_end(self):
+        with EncodedFile(TEST_FILENAME, mode='wb') as fp:
+            fp.write(LARGE_PARAGRAPH)
+
+        with EncodedFile(TEST_FILENAME) as fp:
+            self.assertEqual(fp.read(100), LARGE_PARAGRAPH[:100])
+            fp.seek(-100, io.SEEK_END)
+            self.assertEqual(fp.read(100), LARGE_PARAGRAPH[-100:])
+
     def test_tell(self):
         with EncodedFile(TEST_FILENAME, mode='wb') as fp:
             bytes_written = fp.write('abcde')

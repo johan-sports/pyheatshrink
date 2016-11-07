@@ -73,7 +73,9 @@ class DecompressReader(io.RawIOBase):
             # Finalize internal decoder.
             # FIXME: Don't allow any further operations after this
             data = self._decoder.finish()
-        # FIXME: Determine how the file pointer should move
+        # "Virtual" position in decoded data
+        self._decoded_pos = len(data)
+        # Actual raw file position
         self._pos += len(raw_chunk)
         return data
 
@@ -82,6 +84,7 @@ class DecompressReader(io.RawIOBase):
         self._fp.seek(0)
         self._eof = False
         self._pos = 0
+        self._decoded_pos = 0
         # Restart the decoder from the beginning
         self._decoder = self._new_decoder()
 
@@ -116,7 +119,7 @@ class DecompressReader(io.RawIOBase):
         return self._pos
 
     def tell(self):
-        return self._pos
+        return self._decoded_pos
 
 
 _MODE_CLOSED = 0
