@@ -239,8 +239,7 @@ class EncodedFile(io.BufferedIOBase):
         """
         with self._lock:
             self._check_can_read()
-
-            raise io.UnsupportedOperation
+            return self._buffer.peek(n)
 
     def read(self, size=-1):
         """Read up to size uncompressed bytes from the file.

@@ -152,9 +152,15 @@ class EncodedFileTest(unittest.TestCase):
             fp.read(3)
             self.assertEqual(fp.tell(), 3)
 
-    @unittest.skip('Not implemented')
     def test_peek(self):
-        pass
+        with EncodedFile(TEST_FILENAME, mode='wb') as fp:
+            fp.write(LARGE_PARAGRAPH)
+
+        with EncodedFile(TEST_FILENAME) as fp:
+            pdata = fp.peek()
+            self.assertNotEqual(len(pdata), 0)
+            self.assertTrue(LARGE_PARAGRAPH.startswith(pdata))
+            self.assertEqual(fp.read(), LARGE_PARAGRAPH)
 
     #################
     # Reading
@@ -187,6 +193,14 @@ class EncodedFileTest(unittest.TestCase):
                     LARGE_PARAGRAPH[offset:offset+READ_SIZE]
                 )
                 offset += READ_SIZE
+
+    def test_read_one_char(self):
+        with EncodedFile(TEST_FILENAME, mode='wb') as fp:
+            fp.write(LARGE_PARAGRAPH)
+
+        with EncodedFile(TEST_FILENAME) as fp:
+            for c in LARGE_PARAGRAPH:
+                self.assertEqual(fp.read(1), c)
 
     def test_read1(self):
         raise AssertionError('TODO')
