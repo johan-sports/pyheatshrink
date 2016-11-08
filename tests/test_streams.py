@@ -27,7 +27,7 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
     def test_bad_args(self):
         self.assertRaises(TypeError, EncodedFile, None)
         self.assertRaises(ValueError, EncodedFile, None, mode='eb')
-        fp = self.assertNotRaises(EncodedFile, invalid_param=True)
+        fp = self.assertNotRaises(EncodedFile, TEST_FILENAME, invalid_param=True)
         fp.close()
 
     def test_different_compress_params(self):

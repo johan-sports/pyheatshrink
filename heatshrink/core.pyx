@@ -47,9 +47,10 @@ cdef class Writer:
     """Thin wrapper around heatshrink_encoder"""
     cdef _heatshrink.heatshrink_encoder *_hse
 
-    def __cinit__(self,
-                  window_sz2=DEFAULT_WINDOW_SZ2,
-                  lookahead_sz2=DEFAULT_LOOKAHEAD_SZ2):
+    def __cinit__(self, **kwargs):
+        window_sz2 = kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2)
+        lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
+
         _validate_bounds(window_sz2, name='window_sz2',
                         min=MIN_WINDOW_SZ2, max=MAX_WINDOW_SZ2)
         _validate_bounds(lookahead_sz2, name='lookahead_sz2',
@@ -122,10 +123,12 @@ cdef class Reader:
     """Thin wrapper around heatshrink_decoder"""
     cdef _heatshrink.heatshrink_decoder *_hsd
 
-    def __cinit__(self,
-                  input_buffer_size=DEFAULT_INPUT_BUFFER_SIZE,
-                  window_sz2=DEFAULT_WINDOW_SZ2,
-                  lookahead_sz2=DEFAULT_LOOKAHEAD_SZ2):
+    def __cinit__(self, **kwargs):
+        input_buffer_size = kwargs.get('input_buffer_size',
+                                       DEFAULT_INPUT_BUFFER_SIZE)
+        window_sz2 = kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2)
+        lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
+
         _validate_bounds(input_buffer_size, name='input_buffer_size', min=0)
         _validate_bounds(window_sz2, name='window_sz2',
                         min=MIN_WINDOW_SZ2, max=MAX_WINDOW_SZ2)
@@ -290,7 +293,7 @@ class Encoder(object):
         return self._finished
 
 
-cdef encode_impl(encoder, buf):
+cdef _encode_impl(encoder, buf):
     """Encode iterable `buf` into an array of bytes."""
     encoder = Encoder(encoder)
     return encoder.fill(buf) + encoder.finish()
@@ -321,15 +324,7 @@ def encode(buf, **kwargs):
         RuntimeError: Thrown if internal polling or sinking of the
             encoder/decoder fails.
     """
-    encode_params = {
-        'window_sz2': DEFAULT_WINDOW_SZ2,
-        'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,
-    }
-    encode_params.update(kwargs)
-
-    encoder = Writer(encode_params['window_sz2'],
-                      encode_params['lookahead_sz2'])
-    return encode_impl(encoder, buf)
+    return _encode_impl(Writer(**kwargs), buf)
 
 
 def decode(buf, **kwargs):
@@ -360,15 +355,5 @@ def decode(buf, **kwargs):
         RuntimeError: Thrown if internal polling or sinking of the
             encoder/decoder fails.
     """
-    decode_params = {
-        'input_buffer_size': DEFAULT_INPUT_BUFFER_SIZE,
-        'window_sz2': DEFAULT_WINDOW_SZ2,
-        'lookahead_sz2': DEFAULT_LOOKAHEAD_SZ2,
-    }
-    decode_params.update(kwargs)
-
-    encoder = Reader(decode_params['input_buffer_size'],
-                      decode_params['window_sz2'],
-                      decode_params['lookahead_sz2'])
-    return encode_impl(encoder, buf)
+    return _encode_impl(Reader(**kwargs), buf)
 
