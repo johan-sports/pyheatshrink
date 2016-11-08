@@ -7,14 +7,12 @@ import unittest
 from heatshrink.streams import EncodedFile
 
 from .constants import TEXT, COMPRESSED
-from .utils import random_string
+from .utils import TestUtilsMixin, random_string
 
 TEST_FILENAME = 'test_{}_tmp'.format(os.getpid())
 
 
-# TODO: Add test to see if compression parameters are
-# TODO: passed to Reader/Writer
-class EncodedFileTest(unittest.TestCase):
+class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
     def setUp(self):
         self.fp = EncodedFile(TEST_FILENAME, 'wb')
 
@@ -29,18 +27,29 @@ class EncodedFileTest(unittest.TestCase):
     def test_bad_args(self):
         self.assertRaises(TypeError, EncodedFile, None)
         self.assertRaises(ValueError, EncodedFile, None, mode='eb')
-        EncodedFile(TEST_FILENAME, mode='wb', invalid_param=True).close()
+        fp = self.assertNotRaises(EncodedFile, invalid_param=True)
+        fp.close()
 
     def test_different_compress_params(self):
-        contents = b'abcde'
-        with EncodedFile(TEST_FILENAME, 'wb',
-                         window_sz2=8,
-                         lookahead_sz2=5) as fp:
-            fp.write(contents)
+        with io.BytesIO() as dst:
+            compress_params = {
+                'window_sz2': 8,
+                'lookahead_sz2': 3,
+            }
+            fp_8 = EncodedFile(dst, 'wb', **compress_params)
+            fp_8.write(TEXT)
+            compressed_8 = dst.getvalue()
 
-        with EncodedFile(TEST_FILENAME) as fp:
-            # Decompressed data should just be junk
-            self.assertNotEqual(fp.read(), contents)
+        with io.BytesIO() as dst:
+            compress_params = {
+                'window_sz2': 11,
+                'lookahead_sz2': 6,
+            }
+            fp_11 = EncodedFile(dst, 'wb', **compress_params)
+            fp_11.write(TEXT)
+            compressed_11 = dst.getvalue()
+
+        self.assertNotEqual(compressed_8, compressed_11)
 
     def test_invalid_modes(self):
         data = io.BytesIO()

@@ -5,26 +5,10 @@ import heatshrink
 from heatshrink.core import Encoder, Reader, Writer
 
 from .constants import TEXT
-from .utils import random_string
+from .utils import TestUtilsMixin, random_string
 
 
-class TestUtils(object):
-    """Mixin that provides extra testing utilities."""
-
-    def assertNotRaises(self, func, *args, **kwargs):
-        """Ensure that the an exception isn't raised.
-
-        An AssertionError is raised if calling func with
-        the given argument triggers any exception.
-        """
-        try:
-            func(*args, **kwargs)
-        except Exception as e:
-            msg = 'Expected no exception, but got {.__name__}'
-            raise AssertionError(msg.format(e.__class__))
-
-
-class InternalEncodersTest(TestUtils, unittest.TestCase):
+class InternalEncodersTest(TestUtilsMixin, unittest.TestCase):
     """Tests for the Writer and Reader classes."""
 
     def test_checks_window_sz2_type(self):
@@ -53,7 +37,7 @@ class InternalEncodersTest(TestUtils, unittest.TestCase):
             self.assertNotRaises(cls, lookahead_sz2=10)
 
 
-class EncoderTest(TestUtils, unittest.TestCase):
+class EncoderTest(TestUtilsMixin, unittest.TestCase):
     """Test encoder state machine."""
 
     def setUp(self):
@@ -99,7 +83,7 @@ class EncoderTest(TestUtils, unittest.TestCase):
         self.assertTrue(len(encoded) > 0)
 
 
-class EncodeFunctionTest(TestUtils, unittest.TestCase):
+class EncodeFunctionTest(TestUtilsMixin, unittest.TestCase):
     """Tests for the core.encode function."""
 
     def setUp(self):
@@ -128,7 +112,7 @@ class EncodeFunctionTest(TestUtils, unittest.TestCase):
                             heatshrink.encode(string, lookahead_sz2=8))
 
 
-class DecodeFunctionTest(TestUtils, unittest.TestCase):
+class DecodeFunctionTest(TestUtilsMixin, unittest.TestCase):
     """Tests for the core.decode function."""
 
     def test_returns_string(self):
@@ -143,7 +127,7 @@ class DecodeFunctionTest(TestUtils, unittest.TestCase):
         self.assertEqual(decoded, 'abcde')
 
 
-class EncoderToDecoderTest(TestUtils, unittest.TestCase):
+class EncoderToDecoderTest(TestUtilsMixin, unittest.TestCase):
     """
     Tests assertion that data passed through the encoder
     and then the decoder with the same parameters will be
