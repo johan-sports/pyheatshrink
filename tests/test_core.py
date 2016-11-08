@@ -4,7 +4,7 @@ import unittest
 import heatshrink
 from heatshrink.core import Encoder, Reader, Writer
 
-from .constants import LARGE_PARAGRAPH
+from .constants import TEXT
 from .utils import random_string
 
 
@@ -155,8 +155,8 @@ class EncoderToDecoderTest(TestUtils, unittest.TestCase):
         self.assertEqual(heatshrink.decode(encoded), 'a string')
 
     def test_with_a_paragraph(self):
-        encoded = heatshrink.encode(LARGE_PARAGRAPH)
-        self.assertEqual(heatshrink.decode(encoded), LARGE_PARAGRAPH)
+        encoded = heatshrink.encode(TEXT)
+        self.assertEqual(heatshrink.decode(encoded), TEXT)
 
     def test_with_large_strings(self):
         test_sizes = [1000, 10000, 100000]

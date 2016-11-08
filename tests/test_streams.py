@@ -6,7 +6,7 @@ import unittest
 
 from heatshrink.streams import EncodedFile
 
-from .constants import LARGE_PARAGRAPH
+from .constants import TEXT, COMPRESSED
 from .utils import random_string
 
 TEST_FILENAME = 'test_{}_tmp'.format(os.getpid())
@@ -29,6 +29,18 @@ class EncodedFileTest(unittest.TestCase):
     def test_bad_args(self):
         self.assertRaises(TypeError, EncodedFile, None)
         self.assertRaises(ValueError, EncodedFile, None, mode='eb')
+        EncodedFile(TEST_FILENAME, mode='wb', invalid_param=True).close()
+
+    def test_different_compress_params(self):
+        contents = b'abcde'
+        with EncodedFile(TEST_FILENAME, 'wb',
+                         window_sz2=8,
+                         lookahead_sz2=5) as fp:
+            fp.write(contents)
+
+        with EncodedFile(TEST_FILENAME) as fp:
+            # Decompressed data should just be junk
+            self.assertNotEqual(fp.read(), contents)
 
     def test_invalid_modes(self):
         data = io.BytesIO()
@@ -68,7 +80,7 @@ class EncodedFileTest(unittest.TestCase):
         plain_file = open(TEST_FILENAME, 'wb')
         encoded_file = EncodedFile(plain_file, mode='wb')
 
-        encoded_file.write(LARGE_PARAGRAPH)
+        encoded_file.write(TEXT)
         # Flush data
         encoded_file.close()
         self.assertTrue(encoded_file.closed)
@@ -116,33 +128,24 @@ class EncodedFileTest(unittest.TestCase):
         self.assertRaises(IOError, self.fp.read)
 
     def test_seeking_forwards(self):
-        contents = random_string(250)
-        self.fp.write(contents)
-        self.fp.close()
+        contents = TEXT
 
-        self.fp = EncodedFile(TEST_FILENAME)
-        self.assertEqual(self.fp.read(100), contents[:100])
-        self.fp.seek(50, io.SEEK_CUR)  # Move 50 forwards
-        self.assertEqual(self.fp.read(100), contents[-100:])
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            self.assertEqual(fp.read(100), contents[:100])
+            fp.seek(50, io.SEEK_CUR)  # Move 50 forwards
+            self.assertEqual(fp.read(100), contents[150:250])
 
     def test_seeking_backwards(self):
-        self.fp.write(b'abcde')
-        self.fp.close()
-
-        self.fp = EncodedFile(TEST_FILENAME)
-        contents = self.fp.read(100)
-        # Reset and re-read
-        self.fp.seek(0)
-        self.assertEqual(self.fp.read(100), contents)
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            contents = fp.read(100)
+            fp.seek(0)
+            self.assertEqual(fp.read(100), contents)
 
     def test_seeking_from_end(self):
-        self.fp.write(LARGE_PARAGRAPH)
-        self.fp.close()
-
-        self.fp = EncodedFile(TEST_FILENAME)
-        self.assertEqual(self.fp.read(100), LARGE_PARAGRAPH[:100])
-        self.fp.seek(-100, io.SEEK_END)
-        self.assertEqual(self.fp.read(100), LARGE_PARAGRAPH[-100:])
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            self.assertEqual(fp.read(100), TEXT[:100])
+            fp.seek(-100, io.SEEK_END)
+            self.assertEqual(fp.read(100), TEXT[-100:])
 
     def test_tell(self):
         bytes_written = self.fp.write(b'abcde')
@@ -154,53 +157,52 @@ class EncodedFileTest(unittest.TestCase):
         self.assertEqual(self.fp.tell(), 3)
 
     def test_peek(self):
-        self.fp.write(LARGE_PARAGRAPH)
-        self.fp.close()
-
-        self.fp = EncodedFile(TEST_FILENAME)
-        pdata = self.fp.peek()
-        self.assertNotEqual(len(pdata), 0)
-        self.assertTrue(LARGE_PARAGRAPH.startswith(pdata))
-        self.assertEqual(self.fp.read(), LARGE_PARAGRAPH)
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            pdata = fp.peek()
+            self.assertNotEqual(len(pdata), 0)
+            self.assertTrue(TEXT.startswith(pdata))
+            self.assertEqual(fp.read(), TEXT)
 
     #################
     # Reading
     #################
     def test_read_whole_file(self):
-        self.fp.write(LARGE_PARAGRAPH)
-        self.fp.close()
-
-        self.fp = EncodedFile(TEST_FILENAME)
-        read_str = self.fp.read()
-        self.assertEqual(LARGE_PARAGRAPH, read_str)
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            self.assertEqual(fp.read(), TEXT)
 
     def test_read_buffered(self):
-        self.fp.write(LARGE_PARAGRAPH)
-        self.fp.close()
-
         READ_SIZE = 128
         offset = 0
 
-        self.fp = EncodedFile(TEST_FILENAME)
-        read_buf = functools.partial(self.fp.read, READ_SIZE)
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            read_buf = functools.partial(fp.read, READ_SIZE)
 
-        for i, contents in enumerate(iter(read_buf, '')):
-            offset = READ_SIZE * i
-            self.assertEqual(
-                contents,
-                LARGE_PARAGRAPH[offset: offset + READ_SIZE]
-            )
+            for i, contents in enumerate(iter(read_buf, '')):
+                offset = READ_SIZE * i
+                self.assertEqual(
+                    contents,
+                    TEXT[offset: offset + READ_SIZE]
+                )
 
     def test_read_one_char(self):
-        self.fp.write(LARGE_PARAGRAPH)
-        self.fp.close()
-
-        self.fp = EncodedFile(TEST_FILENAME)
-        for c in LARGE_PARAGRAPH:
-            self.assertEqual(self.fp.read(1), c)
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            for c in TEXT:
+                self.assertEqual(fp.read(1), c)
 
     def test_read1(self):
-        raise AssertionError('TODO')
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            blocks = []
+            while True:
+                result = fp.read1()
+                if not result:
+                    break
+            blocks.append(result)
+            self.assertEqual(b''.join(blocks), TEXT)
+            self.assertEqual(fp.read1(), b'')
+
+    def test_read1_0(self):
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            self.assertEqual(fp.read1(0), b'')
 
     def test_readinto(self):
         self.fp.write(b'abcde')
@@ -216,40 +218,32 @@ class EncodedFileTest(unittest.TestCase):
             self.assertEqual(b'abcde', a.tostring()[:n])
 
     def test_readline(self):
-        self.fp.write(LARGE_PARAGRAPH)
-        self.fp.close()
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            lines = TEXT.splitlines()
 
-        self.fp = EncodedFile(TEST_FILENAME)
-        lines = LARGE_PARAGRAPH.splitlines()
-
-        for index, line in enumerate(iter(self.fp.readline, '')):
-            self.assertEqual(line, lines[index] + '\n')
+            # Could also use zip
+            for i, line in enumerate(iter(fp.readline, '')):
+                self.assertEqual(line, lines[i] + '\n')
 
     def test_readline_iterator(self):
-        self.fp.write(LARGE_PARAGRAPH)
-        self.fp.close()
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            lines = TEXT.splitlines()
 
-        self.fp = EncodedFile(TEST_FILENAME)
-        lines = LARGE_PARAGRAPH.splitlines()
-
-        for i, line in enumerate(self.fp):
-            self.assertEqual(line, lines[i] + '\n')
+            for file_line, original_line in zip(fp, lines):
+                self.assertEqual(file_line, original_line + '\n')
 
     def test_readlines(self):
-        self.fp.write(LARGE_PARAGRAPH)
-        self.fp.close()
-
-        self.fp = EncodedFile(TEST_FILENAME)
-        lines = self.fp.readlines()
-        self.assertEqual(''.join(lines), LARGE_PARAGRAPH)
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            lines = fp.readlines()
+            self.assertEqual(''.join(lines), TEXT)
 
     #################
     # Writing
     #################
     def test_write(self):
         BUFFER_SIZE = 16
-        # StringIO makes it easy to buffer
-        text_buf = io.BytesIO(LARGE_PARAGRAPH.encode('utf8'))
+        # BytesIO makes it easy to buffer
+        text_buf = io.BytesIO(TEXT.encode('utf8'))
 
         while True:
             chunk = text_buf.read(BUFFER_SIZE)
@@ -261,10 +255,10 @@ class EncodedFileTest(unittest.TestCase):
         self.fp.close()
 
         self.fp = EncodedFile(TEST_FILENAME)
-        self.assertEqual(self.fp.read(), LARGE_PARAGRAPH)
+        self.assertEqual(self.fp.read(), TEXT)
 
     def test_remaining_data_flushed_on_close(self):
-        self.fp.write(LARGE_PARAGRAPH)
+        self.fp.write(TEXT)
 
         with open(TEST_FILENAME) as read_fp:
             self.assertEqual(len(read_fp.read()), 0)
