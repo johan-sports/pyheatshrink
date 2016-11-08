@@ -10,6 +10,11 @@ COMPRESSED_FILE_PATH = os.path.join(DATA_DIR, 'compressed_file.txt')
 
 
 def timed(f):
+    """Wraps function f and prints timing information.
+
+    Timing is from when the function from function beginning
+    to end in seconds.
+    """
     def wrap(*args):
         initial = time.time()
         ret = f(*args)
@@ -20,6 +25,7 @@ def timed(f):
 
 
 def run_benchmark(filename, f):
+    """Load a file and benchmark against function f."""
     with open(filename, 'rb') as fp:
         contents = fp.read()
 

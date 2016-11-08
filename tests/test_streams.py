@@ -260,13 +260,20 @@ class EncodedFileTest(unittest.TestCase):
     def test_remaining_data_flushed_on_close(self):
         self.fp.write(TEXT)
 
-        with open(TEST_FILENAME) as read_fp:
-            self.assertEqual(len(read_fp.read()), 0)
+        with open(self.fp.name) as fp:
+            self.assertEqual(len(fp.read()), 0)
 
         self.fp.close()
 
-        with open(TEST_FILENAME) as read_fp:
-            self.assertTrue(len(read_fp.read()) > 0)
+        with open(self.fp.name) as fp:
+            self.assertTrue(len(fp.read()) > 0)
 
     def test_writelines(self):
-        raise AssertionError('TODO')
+        with io.BytesIO(TEXT) as fp:
+            lines = fp.readlines()
+
+        self.fp.writelines(lines)
+        self.fp.close()
+
+        with open(self.fp.name) as fp:
+            self.assertEqual(fp.read(), COMPRESSED)
