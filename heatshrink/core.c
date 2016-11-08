@@ -1404,7 +1404,7 @@ static PyObject *__pyx_n_s_val;
 static PyObject *__pyx_n_s_validate_bounds;
 static PyObject *__pyx_n_s_window_sz2;
 static PyObject *__pyx_pf_10heatshrink_4core__validate_bounds(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_val, PyObject *__pyx_v_name, PyObject *__pyx_v_min, PyObject *__pyx_v_max); /* proto */
-static int __pyx_pf_10heatshrink_4core_6Writer___cinit__(struct __pyx_obj_10heatshrink_4core_Writer *__pyx_v_self, PyObject *__pyx_v_options); /* proto */
+static int __pyx_pf_10heatshrink_4core_6Writer___cinit__(struct __pyx_obj_10heatshrink_4core_Writer *__pyx_v_self, PyObject *__pyx_v_kwargs); /* proto */
 static void __pyx_pf_10heatshrink_4core_6Writer_2__dealloc__(struct __pyx_obj_10heatshrink_4core_Writer *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_10heatshrink_4core_6Writer_15max_output_size___get__(struct __pyx_obj_10heatshrink_4core_Writer *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_10heatshrink_4core_6Writer_4sink(struct __pyx_obj_10heatshrink_4core_Writer *__pyx_v_self, arrayobject *__pyx_v_in_buf, size_t __pyx_v_offset); /* proto */
@@ -1412,7 +1412,7 @@ static PyObject *__pyx_pf_10heatshrink_4core_6Writer_6poll(struct __pyx_obj_10he
 static PyObject *__pyx_pf_10heatshrink_4core_6Writer_8is_poll_empty(CYTHON_UNUSED struct __pyx_obj_10heatshrink_4core_Writer *__pyx_v_self, HSE_poll_res __pyx_v_res); /* proto */
 static PyObject *__pyx_pf_10heatshrink_4core_6Writer_10finish(struct __pyx_obj_10heatshrink_4core_Writer *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_10heatshrink_4core_6Writer_12is_finished(CYTHON_UNUSED struct __pyx_obj_10heatshrink_4core_Writer *__pyx_v_self, HSE_finish_res __pyx_v_res); /* proto */
-static int __pyx_pf_10heatshrink_4core_6Reader___cinit__(struct __pyx_obj_10heatshrink_4core_Reader *__pyx_v_self, PyObject *__pyx_v_options); /* proto */
+static int __pyx_pf_10heatshrink_4core_6Reader___cinit__(struct __pyx_obj_10heatshrink_4core_Reader *__pyx_v_self, PyObject *__pyx_v_kwargs); /* proto */
 static void __pyx_pf_10heatshrink_4core_6Reader_2__dealloc__(struct __pyx_obj_10heatshrink_4core_Reader *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_10heatshrink_4core_6Reader_15max_output_size___get__(struct __pyx_obj_10heatshrink_4core_Reader *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_10heatshrink_4core_6Reader_4sink(struct __pyx_obj_10heatshrink_4core_Reader *__pyx_v_self, arrayobject *__pyx_v_in_buf, size_t __pyx_v_offset); /* proto */
@@ -1925,32 +1925,32 @@ static PyObject *__pyx_pf_10heatshrink_4core__validate_bounds(CYTHON_UNUSED PyOb
 /* "heatshrink/core.pyx":50
  *     cdef _heatshrink.heatshrink_encoder *_hse
  * 
- *     def __cinit__(self, **options):             # <<<<<<<<<<<<<<
- *         window_sz2 = options.get('window_sz2', DEFAULT_WINDOW_SZ2)
- *         lookahead_sz2 = options.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
+ *     def __cinit__(self, **kwargs):             # <<<<<<<<<<<<<<
+ *         window_sz2 = kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2)
+ *         lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
  */
 
 /* Python wrapper */
 static int __pyx_pw_10heatshrink_4core_6Writer_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static int __pyx_pw_10heatshrink_4core_6Writer_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_options = 0;
+  PyObject *__pyx_v_kwargs = 0;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
   if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
     __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
   if (__pyx_kwds && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 1))) return -1;
-  __pyx_v_options = (__pyx_kwds) ? PyDict_Copy(__pyx_kwds) : PyDict_New(); if (unlikely(!__pyx_v_options)) return -1;
-  __Pyx_GOTREF(__pyx_v_options);
-  __pyx_r = __pyx_pf_10heatshrink_4core_6Writer___cinit__(((struct __pyx_obj_10heatshrink_4core_Writer *)__pyx_v_self), __pyx_v_options);
+  __pyx_v_kwargs = (__pyx_kwds) ? PyDict_Copy(__pyx_kwds) : PyDict_New(); if (unlikely(!__pyx_v_kwargs)) return -1;
+  __Pyx_GOTREF(__pyx_v_kwargs);
+  __pyx_r = __pyx_pf_10heatshrink_4core_6Writer___cinit__(((struct __pyx_obj_10heatshrink_4core_Writer *)__pyx_v_self), __pyx_v_kwargs);
 
   /* function exit code */
-  __Pyx_XDECREF(__pyx_v_options);
+  __Pyx_XDECREF(__pyx_v_kwargs);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_10heatshrink_4core_6Writer___cinit__(struct __pyx_obj_10heatshrink_4core_Writer *__pyx_v_self, PyObject *__pyx_v_options) {
+static int __pyx_pf_10heatshrink_4core_6Writer___cinit__(struct __pyx_obj_10heatshrink_4core_Writer *__pyx_v_self, PyObject *__pyx_v_kwargs) {
   PyObject *__pyx_v_window_sz2 = NULL;
   PyObject *__pyx_v_lookahead_sz2 = NULL;
   int __pyx_r;
@@ -1966,36 +1966,36 @@ static int __pyx_pf_10heatshrink_4core_6Writer___cinit__(struct __pyx_obj_10heat
 
   /* "heatshrink/core.pyx":51
  * 
- *     def __cinit__(self, **options):
- *         window_sz2 = options.get('window_sz2', DEFAULT_WINDOW_SZ2)             # <<<<<<<<<<<<<<
- *         lookahead_sz2 = options.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
+ *     def __cinit__(self, **kwargs):
+ *         window_sz2 = kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2)             # <<<<<<<<<<<<<<
+ *         lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
  * 
  */
   __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_WINDOW_SZ2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyDict_GetItemDefault(__pyx_v_options, __pyx_n_s_window_sz2, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_GetItemDefault(__pyx_v_kwargs, __pyx_n_s_window_sz2, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_window_sz2 = __pyx_t_2;
   __pyx_t_2 = 0;
 
   /* "heatshrink/core.pyx":52
- *     def __cinit__(self, **options):
- *         window_sz2 = options.get('window_sz2', DEFAULT_WINDOW_SZ2)
- *         lookahead_sz2 = options.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, **kwargs):
+ *         window_sz2 = kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2)
+ *         lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)             # <<<<<<<<<<<<<<
  * 
  *         _validate_bounds(window_sz2, name='window_sz2',
  */
   __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_LOOKAHEAD_SZ2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyDict_GetItemDefault(__pyx_v_options, __pyx_n_s_lookahead_sz2, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_GetItemDefault(__pyx_v_kwargs, __pyx_n_s_lookahead_sz2, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_lookahead_sz2 = __pyx_t_1;
   __pyx_t_1 = 0;
 
   /* "heatshrink/core.pyx":54
- *         lookahead_sz2 = options.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
+ *         lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
  * 
  *         _validate_bounds(window_sz2, name='window_sz2',             # <<<<<<<<<<<<<<
  *                         min=MIN_WINDOW_SZ2, max=MAX_WINDOW_SZ2)
@@ -2029,7 +2029,7 @@ static int __pyx_pf_10heatshrink_4core_6Writer___cinit__(struct __pyx_obj_10heat
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "heatshrink/core.pyx":54
- *         lookahead_sz2 = options.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
+ *         lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
  * 
  *         _validate_bounds(window_sz2, name='window_sz2',             # <<<<<<<<<<<<<<
  *                         min=MIN_WINDOW_SZ2, max=MAX_WINDOW_SZ2)
@@ -2133,9 +2133,9 @@ static int __pyx_pf_10heatshrink_4core_6Writer___cinit__(struct __pyx_obj_10heat
   /* "heatshrink/core.pyx":50
  *     cdef _heatshrink.heatshrink_encoder *_hse
  * 
- *     def __cinit__(self, **options):             # <<<<<<<<<<<<<<
- *         window_sz2 = options.get('window_sz2', DEFAULT_WINDOW_SZ2)
- *         lookahead_sz2 = options.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
+ *     def __cinit__(self, **kwargs):             # <<<<<<<<<<<<<<
+ *         window_sz2 = kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2)
+ *         lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
  */
 
   /* function exit code */
@@ -2748,32 +2748,32 @@ static PyObject *__pyx_pf_10heatshrink_4core_6Writer_12is_finished(CYTHON_UNUSED
 /* "heatshrink/core.pyx":126
  *     cdef _heatshrink.heatshrink_decoder *_hsd
  * 
- *     def __cinit__(self, **options):             # <<<<<<<<<<<<<<
- *         input_buffer_size = options.get('input_buffer_size',
- *                                         DEFAULT_INPUT_BUFFER_SIZE)
+ *     def __cinit__(self, **kwargs):             # <<<<<<<<<<<<<<
+ *         input_buffer_size = kwargs.get('input_buffer_size',
+ *                                        DEFAULT_INPUT_BUFFER_SIZE)
  */
 
 /* Python wrapper */
 static int __pyx_pw_10heatshrink_4core_6Reader_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
 static int __pyx_pw_10heatshrink_4core_6Reader_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_options = 0;
+  PyObject *__pyx_v_kwargs = 0;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
   if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
     __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
   if (__pyx_kwds && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 1))) return -1;
-  __pyx_v_options = (__pyx_kwds) ? PyDict_Copy(__pyx_kwds) : PyDict_New(); if (unlikely(!__pyx_v_options)) return -1;
-  __Pyx_GOTREF(__pyx_v_options);
-  __pyx_r = __pyx_pf_10heatshrink_4core_6Reader___cinit__(((struct __pyx_obj_10heatshrink_4core_Reader *)__pyx_v_self), __pyx_v_options);
+  __pyx_v_kwargs = (__pyx_kwds) ? PyDict_Copy(__pyx_kwds) : PyDict_New(); if (unlikely(!__pyx_v_kwargs)) return -1;
+  __Pyx_GOTREF(__pyx_v_kwargs);
+  __pyx_r = __pyx_pf_10heatshrink_4core_6Reader___cinit__(((struct __pyx_obj_10heatshrink_4core_Reader *)__pyx_v_self), __pyx_v_kwargs);
 
   /* function exit code */
-  __Pyx_XDECREF(__pyx_v_options);
+  __Pyx_XDECREF(__pyx_v_kwargs);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_10heatshrink_4core_6Reader___cinit__(struct __pyx_obj_10heatshrink_4core_Reader *__pyx_v_self, PyObject *__pyx_v_options) {
+static int __pyx_pf_10heatshrink_4core_6Reader___cinit__(struct __pyx_obj_10heatshrink_4core_Reader *__pyx_v_self, PyObject *__pyx_v_kwargs) {
   PyObject *__pyx_v_input_buffer_size = NULL;
   PyObject *__pyx_v_window_sz2 = NULL;
   PyObject *__pyx_v_lookahead_sz2 = NULL;
@@ -2790,60 +2790,60 @@ static int __pyx_pf_10heatshrink_4core_6Reader___cinit__(struct __pyx_obj_10heat
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
   /* "heatshrink/core.pyx":128
- *     def __cinit__(self, **options):
- *         input_buffer_size = options.get('input_buffer_size',
- *                                         DEFAULT_INPUT_BUFFER_SIZE)             # <<<<<<<<<<<<<<
- *         window_sz2 = options.get('window_sz2', DEFAULT_WINDOW_SZ2)
- *         lookahead_sz2 = options.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
+ *     def __cinit__(self, **kwargs):
+ *         input_buffer_size = kwargs.get('input_buffer_size',
+ *                                        DEFAULT_INPUT_BUFFER_SIZE)             # <<<<<<<<<<<<<<
+ *         window_sz2 = kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2)
+ *         lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
  */
   __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_INPUT_BUFFER_SIZE); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
   /* "heatshrink/core.pyx":127
  * 
- *     def __cinit__(self, **options):
- *         input_buffer_size = options.get('input_buffer_size',             # <<<<<<<<<<<<<<
- *                                         DEFAULT_INPUT_BUFFER_SIZE)
- *         window_sz2 = options.get('window_sz2', DEFAULT_WINDOW_SZ2)
+ *     def __cinit__(self, **kwargs):
+ *         input_buffer_size = kwargs.get('input_buffer_size',             # <<<<<<<<<<<<<<
+ *                                        DEFAULT_INPUT_BUFFER_SIZE)
+ *         window_sz2 = kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2)
  */
-  __pyx_t_2 = __Pyx_PyDict_GetItemDefault(__pyx_v_options, __pyx_n_s_input_buffer_size, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_GetItemDefault(__pyx_v_kwargs, __pyx_n_s_input_buffer_size, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_input_buffer_size = __pyx_t_2;
   __pyx_t_2 = 0;
 
   /* "heatshrink/core.pyx":129
- *         input_buffer_size = options.get('input_buffer_size',
- *                                         DEFAULT_INPUT_BUFFER_SIZE)
- *         window_sz2 = options.get('window_sz2', DEFAULT_WINDOW_SZ2)             # <<<<<<<<<<<<<<
- *         lookahead_sz2 = options.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
+ *         input_buffer_size = kwargs.get('input_buffer_size',
+ *                                        DEFAULT_INPUT_BUFFER_SIZE)
+ *         window_sz2 = kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2)             # <<<<<<<<<<<<<<
+ *         lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
  * 
  */
   __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_WINDOW_SZ2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyDict_GetItemDefault(__pyx_v_options, __pyx_n_s_window_sz2, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_GetItemDefault(__pyx_v_kwargs, __pyx_n_s_window_sz2, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_window_sz2 = __pyx_t_1;
   __pyx_t_1 = 0;
 
   /* "heatshrink/core.pyx":130
- *                                         DEFAULT_INPUT_BUFFER_SIZE)
- *         window_sz2 = options.get('window_sz2', DEFAULT_WINDOW_SZ2)
- *         lookahead_sz2 = options.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)             # <<<<<<<<<<<<<<
+ *                                        DEFAULT_INPUT_BUFFER_SIZE)
+ *         window_sz2 = kwargs.get('window_sz2', DEFAULT_WINDOW_SZ2)
+ *         lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)             # <<<<<<<<<<<<<<
  * 
  *         _validate_bounds(input_buffer_size, name='input_buffer_size', min=0)
  */
   __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_DEFAULT_LOOKAHEAD_SZ2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyDict_GetItemDefault(__pyx_v_options, __pyx_n_s_lookahead_sz2, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 130, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_GetItemDefault(__pyx_v_kwargs, __pyx_n_s_lookahead_sz2, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 130, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_lookahead_sz2 = __pyx_t_2;
   __pyx_t_2 = 0;
 
   /* "heatshrink/core.pyx":132
- *         lookahead_sz2 = options.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
+ *         lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
  * 
  *         _validate_bounds(input_buffer_size, name='input_buffer_size', min=0)             # <<<<<<<<<<<<<<
  *         _validate_bounds(window_sz2, name='window_sz2',
@@ -3015,9 +3015,9 @@ static int __pyx_pf_10heatshrink_4core_6Reader___cinit__(struct __pyx_obj_10heat
   /* "heatshrink/core.pyx":126
  *     cdef _heatshrink.heatshrink_decoder *_hsd
  * 
- *     def __cinit__(self, **options):             # <<<<<<<<<<<<<<
- *         input_buffer_size = options.get('input_buffer_size',
- *                                         DEFAULT_INPUT_BUFFER_SIZE)
+ *     def __cinit__(self, **kwargs):             # <<<<<<<<<<<<<<
+ *         input_buffer_size = kwargs.get('input_buffer_size',
+ *                                        DEFAULT_INPUT_BUFFER_SIZE)
  */
 
   /* function exit code */

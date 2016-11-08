@@ -46,15 +46,11 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
                 'lookahead_sz2': lookahead_sz2
             }
             with io.BytesIO() as dst:
-                # HACK: Stop EncodedFile from closing the stream.
-                dst_close = dst.close
-                dst.close = lambda: None
 
                 with EncodedFile(dst, 'wb', **kwargs) as fp:
                     fp.write(TEXT)
 
                 encoded.append(dst.getvalue())
-                dst_close()
 
         # Ensure that all have different values
         self.assertEqual(len(encoded), len(set(encoded)))
@@ -101,8 +97,8 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
         # Flush data
         encoded_file.close()
         self.assertTrue(encoded_file.closed)
-        # Should close the plain file too, as it "owns" it.
-        self.assertTrue(plain_file.closed)
+        # Shouldn't close the file, as it doesn't own it
+        self.assertFalse(plain_file.closed)
 
         with open(TEST_FILENAME, 'rb') as fp:
             self.assertTrue(len(fp.read()) > 0)
@@ -165,13 +161,16 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
             self.assertEqual(fp.read(100), TEXT[-100:])
 
     def test_tell(self):
-        bytes_written = self.fp.write(b'abcde')
-        self.assertEqual(self.fp.tell(), bytes_written)
-        self.fp.close()
+        with io.BytesIO() as dst:
+            with EncodedFile(dst, mode='wb') as fp:
+                bytes_written = fp.write(b'abcde')
+                self.assertEqual(fp.tell(), bytes_written)
 
-        self.fp = EncodedFile(TEST_FILENAME)
-        self.fp.read(3)
-        self.assertEqual(self.fp.tell(), 3)
+            dst.seek(0)  # Reset
+
+            with EncodedFile(dst) as fp:
+                fp.read(3)
+                self.assertEqual(fp.tell(), 3)
 
     def test_peek(self):
         with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
@@ -217,17 +216,20 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
             self.assertEqual(fp.read1(0), b'')
 
     def test_readinto(self):
-        self.fp.write(b'abcde')
-        self.fp.close()
+        with io.BytesIO() as dst:
+            with EncodedFile(dst, mode='wb') as fp:
+                fp.write(b'abcde')
 
-        self.fp = EncodedFile(TEST_FILENAME)
-        a = array.array('b', b'x' * 10)  # Fill with junk
-        n = self.fp.readinto(a)
-        try:
-            # Python 3
-            self.assertEqual(b'abcde', a.tobytes()[:n])
-        except AttributeError:
-            self.assertEqual(b'abcde', a.tostring()[:n])
+            dst.seek(0)  # Reset
+
+            with EncodedFile(dst) as fp:
+                a = array.array('b', b'x' * 10)  # Fill with junk
+                n = fp.readinto(a)
+                try:
+                    # Python 3
+                    self.assertEqual(b'abcde', a.tobytes()[:n])
+                except AttributeError:
+                    self.assertEqual(b'abcde', a.tostring()[:n])
 
     def test_readline(self):
         with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
@@ -252,40 +254,39 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
     #################
     # Writing
     #################
-    def test_write(self):
+    def test_write_buffered(self):
         BUFFER_SIZE = 16
         # BytesIO makes it easy to buffer
         text_buf = io.BytesIO(TEXT.encode('utf8'))
 
-        while True:
-            chunk = text_buf.read(BUFFER_SIZE)
+        with io.BytesIO() as dst:
+            with EncodedFile(dst, mode='wb') as fp:
+                while True:
+                    chunk = text_buf.read(BUFFER_SIZE)
 
-            if not chunk:
-                break
+                    if not chunk:
+                        break
 
-            self.fp.write(chunk)
-        self.fp.close()
+                    fp.write(chunk)
 
-        self.fp = EncodedFile(TEST_FILENAME)
-        self.assertEqual(self.fp.read(), TEXT)
+            self.assertEqual(dst.getvalue(), COMPRESSED)
 
     def test_remaining_data_flushed_on_close(self):
-        self.fp.write(TEXT)
-
-        with open(self.fp.name) as fp:
-            self.assertEqual(len(fp.read()), 0)
-
-        self.fp.close()
-
-        with open(self.fp.name) as fp:
-            self.assertTrue(len(fp.read()) > 0)
+        with io.BytesIO() as dst:
+            fp = EncodedFile(dst, mode='wb')
+            fp.write(TEXT)
+            # Not flusshed
+            self.assertEqual(len(dst.getvalue()), 0)
+            # Flush
+            fp.close()
+            self.assertTrue(len(dst.getvalue()) > 0)
 
     def test_writelines(self):
         with io.BytesIO(TEXT) as fp:
             lines = fp.readlines()
 
-        self.fp.writelines(lines)
-        self.fp.close()
+        with io.BytesIO() as dst:
+            with EncodedFile(dst, mode='wb') as fp:
+                fp.writelines(lines)
 
-        with open(self.fp.name) as fp:
-            self.assertEqual(fp.read(), COMPRESSED)
+            self.assertEqual(dst.getvalue(), COMPRESSED)

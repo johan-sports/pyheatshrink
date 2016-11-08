@@ -132,6 +132,8 @@ class EncodedFile(io.BufferedIOBase):
     def __init__(self, filename, mode='rb', **compress_options):
         self._lock = RLock()
         self._fp = None
+        # Should the file be closed by us?
+        self._close_fp = False
         self._mode = _MODE_CLOSED
 
         if mode in ('', 'r', 'rb'):
@@ -145,6 +147,8 @@ class EncodedFile(io.BufferedIOBase):
 
         if isinstance(filename, (str, bytes, unicode)):
             self._fp = builtin_open(filename, mode)
+            # We opened the file, we need to close it
+            self._close_fp = True
         elif hasattr(filename, 'read') or hasattr(filename, 'write'):
             # Implements the file protocol
             self._fp = filename
@@ -215,11 +219,14 @@ class EncodedFile(io.BufferedIOBase):
                 self._fp.write(self._encoder.finish())
                 self._encoder = None
 
-            # Actually close the internal file pointer.
-            if not self.closed:
-                self._mode = _MODE_CLOSED
-                self._fp.close()
+            try:
+                # Actually close the internal file pointer.
+                if self._close_fp:
+                    self._fp.close()
+            finally:
                 self._fp = None
+                self._close_fp = False
+                self._mode = _MODE_CLOSED
 
     @property
     def closed(self):
