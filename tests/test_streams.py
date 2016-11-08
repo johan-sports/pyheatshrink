@@ -91,14 +91,14 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
 
     def test_with_file_object(self):
         plain_file = open(TEST_FILENAME, 'wb')
-        encoded_file = EncodedFile(plain_file, mode='wb')
 
-        encoded_file.write(TEXT)
-        # Flush data
-        encoded_file.close()
+        with EncodedFile(plain_file, mode='wb') as encoded_file:
+            encoded_file.write(TEXT)
+
         self.assertTrue(encoded_file.closed)
         # Shouldn't close the file, as it doesn't own it
         self.assertFalse(plain_file.closed)
+        plain_file.close()
 
         with open(TEST_FILENAME, 'rb') as fp:
             self.assertTrue(len(fp.read()) > 0)
