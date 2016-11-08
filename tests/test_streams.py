@@ -31,25 +31,33 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
         fp.close()
 
     def test_different_compress_params(self):
-        with io.BytesIO() as dst:
-            compress_params = {
-                'window_sz2': 8,
-                'lookahead_sz2': 3,
-            }
-            fp_8 = EncodedFile(dst, 'wb', **compress_params)
-            fp_8.write(TEXT)
-            compressed_8 = dst.getvalue()
+        # List of a tuple containing (window_sz2, lookahead_sz2)
+        encode_params = [
+            (8, 3),
+            (11, 6),
+            (4, 3),
+            (15, 9),
+        ]
 
-        with io.BytesIO() as dst:
-            compress_params = {
-                'window_sz2': 11,
-                'lookahead_sz2': 6,
+        encoded = []
+        for (window_sz2, lookahead_sz2) in encode_params:
+            kwargs = {
+                'window_sz2': window_sz2,
+                'lookahead_sz2': lookahead_sz2
             }
-            fp_11 = EncodedFile(dst, 'wb', **compress_params)
-            fp_11.write(TEXT)
-            compressed_11 = dst.getvalue()
+            with io.BytesIO() as dst:
+                # HACK: Stop EncodedFile from closing the stream.
+                dst_close = dst.close
+                dst.close = lambda: None
 
-        self.assertNotEqual(compressed_8, compressed_11)
+                with EncodedFile(dst, 'wb', **kwargs) as fp:
+                    fp.write(TEXT)
+
+                encoded.append(dst.getvalue())
+                dst_close()
+
+        # Ensure that all have different values
+        self.assertEqual(len(encoded), len(set(encoded)))
 
     def test_invalid_modes(self):
         data = io.BytesIO()
