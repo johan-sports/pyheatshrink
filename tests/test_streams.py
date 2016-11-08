@@ -191,12 +191,7 @@ class EncodedFileTest(unittest.TestCase):
 
     def test_read1(self):
         with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
-            blocks = []
-            while True:
-                result = fp.read1()
-                if not result:
-                    break
-            blocks.append(result)
+            blocks = [buf for buf in iter(fp.read1, '')]
             self.assertEqual(b''.join(blocks), TEXT)
             self.assertEqual(fp.read1(), b'')
 
