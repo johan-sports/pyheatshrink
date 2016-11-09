@@ -33,7 +33,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='Heatshrink',
-      version='0.2.4',
+      version='0.3.0',
       # Author details
       author='Antonis Kalou @ JOHAN Sports',
       author_email='antonis@johan-sports.com',
@@ -57,8 +57,7 @@ setup(name='Heatshrink',
         # Pick your license as you wish (should match "license" above)
         'License :: OSI Approved :: ISC License (ISCL)',
 
-        # Specify the Python versions you support here. In particular, ensure
-        # that you indicate whether you support Python 2, Python 3 or both.
+        # Supported python versions
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
