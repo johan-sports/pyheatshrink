@@ -4,23 +4,12 @@ import io
 import os
 import unittest
 
-from heatshrink.core import Reader
-from heatshrink.streams import EncodedFile, _DecompressReader
+from heatshrink.streams import EncodedFile
 
 from .constants import TEXT, COMPRESSED
 from .utils import TestUtilsMixin, random_string
 
 TEST_FILENAME = 'test_{}_tmp'.format(os.getpid())
-
-
-class _DecompressReaderTest(unittest.TestCase):
-    def test_read_bytes(self):
-        with io.BytesIO(COMPRESSED) as data:
-            raw = _DecompressReader(data, Reader)
-
-            contents = raw.read(100)
-            self.assertEqual(len(contents), 100)
-            self.assertEqual(contents, TEXT[:100])
 
 
 class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
