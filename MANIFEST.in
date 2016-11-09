@@ -1,10 +1,9 @@
+include README.rst
 include LICENSE
-include requirements.txt
-include tests.py
-# FIXME: May include the _heatshrink folder
-include heatshrink/*
+include tests/**
 
 # Headers. For some reason, setuptools doesn't support this.
+include heatshrink/_heatshrink/LICENSE
 include heatshrink/_heatshrink/heatshrink_common.h
 include heatshrink/_heatshrink/heatshrink_config.h
 include heatshrink/_heatshrink/heatshrink_encoder.h
