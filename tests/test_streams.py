@@ -30,6 +30,9 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
         fp = self.assertNotRaises(EncodedFile, TEST_FILENAME, invalid_param=True)
         fp.close()
 
+    def test_open_missing_file(self):
+        self.assertRaises(IOError, EncodedFile, 'does_not_exist.txt')
+
     def test_different_compress_params(self):
         # List of a tuple containing (window_sz2, lookahead_sz2)
         encode_params = [
