@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.3.0]
+## [0.3.0] - 2016-11-09
 ### Added
 - Buffered file/stream interface.
 
@@ -41,7 +41,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Performance of encoding/decoding large files
 - Compilation for python 3 (still not fully working)
 
-[Unreleased]: https://github.com/johan-sports/pyheatshrink/compare/0.2.4...HEAD
+[Unreleased]: https://github.com/johan-sports/pyheatshrink/compare/0.3.0...HEAD
+[0.3.0]: https://github.com/johan-sports/pyheatshrink/compare/0.2.4...0.3.0
 [0.2.4]: https://github.com/johan-sports/pyheatshrink/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/johan-sports/pyheatshrink/compare/0.2.2...0.2.3
 [0.2.2]: https://github.com/johan-sports/pyheatshrink/compare/0.2.1...0.2.2
