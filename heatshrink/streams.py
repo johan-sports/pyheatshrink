@@ -17,11 +17,11 @@ class _DecompressReader(io.RawIOBase):
     def __init__(self, fp, reader_factory, **reader_args):
         self._fp = fp
         self._eof = False
-        # Offset in decompressed data stream
-        self._decomp_pos = 0
+        # Position in file (decompressed)
+        self._pos = 0
         # Decompressed data
-        self._decomp_buf = b''
-        self._decomp_buf_offset = 0
+        self._buf = b''
+        self._buf_offset = 0
 
         # Set to size of decompressed stream once it is known
         self._size = -1
@@ -64,8 +64,8 @@ class _DecompressReader(io.RawIOBase):
         raw_chunk = self._fp.read(_READ_BUFFER_SIZE)
         if not raw_chunk:
             raise EOFError
-        self._decomp_buf = self._decoder.fill(raw_chunk)
-        self._decomp_buf_offset = 0
+        self._buf = self._decoder.fill(raw_chunk)
+        self._buf_offset = 0
 
     def read(self, size=-1):
         if size < 0:
@@ -74,24 +74,24 @@ class _DecompressReader(io.RawIOBase):
         if not size or self._eof:
             return b''
 
-        if self._decomp_buf_offset >= len(self._decomp_buf):
+        if self._buf_offset >= len(self._buf):
             try:
                 self._refill()
             except EOFError:
                 self._eof = True
-                self._size = self._decomp_pos
+                self._size = self._pos
                 # Finalize internal decoder.
                 # TODO: Move to _refill()
-                self._decomp_buf = self._decoder.finish()
-                self._decomp_buf_offset = 0
+                self._buf = self._decoder.finish()
+                self._buf_offset = 0
 
         # TODO: Clean up
-        data = self._decomp_buf[
-            self._decomp_buf_offset:
-            self._decomp_buf_offset + size
+        data = self._buf[
+            self._buf_offset:
+            self._buf_offset + size
         ]
-        self._decomp_buf_offset += size
-        self._decomp_pos += len(data)
+        self._buf_offset += size
+        self._pos += len(data)
 
         return data
 
@@ -99,9 +99,9 @@ class _DecompressReader(io.RawIOBase):
     def _rewind(self):
         self._fp.seek(0)
         self._eof = False
-        self._decomp_pos = 0
-        self._decomp_buf = b''
-        self._decomp_buf_offset = 0
+        self._pos = 0
+        self._buf = b''
+        self._buf_offset = 0
         # Restart the decoder from the beginning
         self._decoder = self._new_decoder()
 
@@ -110,7 +110,7 @@ class _DecompressReader(io.RawIOBase):
         if whence == io.SEEK_SET:
             pass
         elif whence == io.SEEK_CUR:
-            offset += self._decomp_pos
+            offset += self._pos
         elif whence == io.SEEK_END:
             if self._size < 0:
                 # Finish reading the file
@@ -121,10 +121,10 @@ class _DecompressReader(io.RawIOBase):
             raise ValueError('Invalid value for whence: {}'.format(whence))
 
         # Make it so that offset is the number of bytes to skip forward.
-        if offset < self._decomp_pos:
+        if offset < self._pos:
             self._rewind()
         else:
-            offset -= self._decomp_pos
+            offset -= self._pos
 
         # Read and discard data until we reach the desired position
         while offset > 0:
@@ -133,10 +133,10 @@ class _DecompressReader(io.RawIOBase):
                 break
             offset -= len(data)
 
-        return self._decomp_pos
+        return self._pos
 
     def tell(self):
-        return self._decomp_pos
+        return self._pos
 
 
 _MODE_CLOSED = 0
