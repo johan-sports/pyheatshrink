@@ -52,9 +52,9 @@ cdef class Writer:
         lookahead_sz2 = kwargs.get('lookahead_sz2', DEFAULT_LOOKAHEAD_SZ2)
 
         _validate_bounds(window_sz2, name='window_sz2',
-                        min=MIN_WINDOW_SZ2, max=MAX_WINDOW_SZ2)
+                         min=MIN_WINDOW_SZ2, max=MAX_WINDOW_SZ2)
         _validate_bounds(lookahead_sz2, name='lookahead_sz2',
-                        min=MIN_LOOKAHEAD_SZ2, max=window_sz2)
+                         min=MIN_LOOKAHEAD_SZ2, max=window_sz2)
 
         self._hse = _heatshrink.heatshrink_encoder_alloc(window_sz2, lookahead_sz2)
         if self._hse is NULL:
@@ -91,8 +91,6 @@ cdef class Writer:
 
         Assumes that the passed in array is large enough to
         contain all data from the state machine.
-
-        FIXME: Protect against segfaults
         """
         cdef:
             size_t poll_size
@@ -131,9 +129,9 @@ cdef class Reader:
 
         _validate_bounds(input_buffer_size, name='input_buffer_size', min=0)
         _validate_bounds(window_sz2, name='window_sz2',
-                        min=MIN_WINDOW_SZ2, max=MAX_WINDOW_SZ2)
+                         min=MIN_WINDOW_SZ2, max=MAX_WINDOW_SZ2)
         _validate_bounds(lookahead_sz2, name='lookahead_sz2',
-                        min=MIN_LOOKAHEAD_SZ2, max=window_sz2)
+                         min=MIN_LOOKAHEAD_SZ2, max=window_sz2)
 
         self._hsd = _heatshrink.heatshrink_decoder_alloc(
             input_buffer_size, window_sz2, lookahead_sz2)
