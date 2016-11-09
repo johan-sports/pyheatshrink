@@ -14,12 +14,12 @@ else:
 # just use the plain C file.
 EXT = '.pyx' if USE_CYTHON else '.c'
 
-heatshrink_module = Extension('heatshrink',
-                              include_dirs=['.'],
+heatshrink_module = Extension('heatshrink.core',
+                              include_dirs=['.', './heatshrink/_heatshrink'],
                               extra_compile_args=['-std=c99'],
-                              sources=['src/heatshrink' + EXT,
-                                       'heatshrink/heatshrink_encoder.c',
-                                       'heatshrink/heatshrink_decoder.c'])
+                              sources=['heatshrink/core' + EXT,
+                                       'heatshrink/_heatshrink/heatshrink_encoder.c',
+                                       'heatshrink/_heatshrink/heatshrink_decoder.c'])
 
 if USE_CYTHON:
     extensions = cythonize([heatshrink_module])
@@ -33,7 +33,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='Heatshrink',
-      version='0.2.4',
+      version='0.3.0',
       # Author details
       author='Antonis Kalou @ JOHAN Sports',
       author_email='antonis@johan-sports.com',
@@ -57,8 +57,7 @@ setup(name='Heatshrink',
         # Pick your license as you wish (should match "license" above)
         'License :: OSI Approved :: ISC License (ISCL)',
 
-        # Specify the Python versions you support here. In particular, ensure
-        # that you indicate whether you support Python 2, Python 3 or both.
+        # Supported python versions
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
@@ -68,6 +67,7 @@ setup(name='Heatshrink',
         'Programming Language :: Python :: 3.5',
       ],
 
-      keywords='compression bindings heatshrink LZSS',
-      test_suite="tests",
+      keywords='compression binding heatshrink LZSS',
+      test_suite='tests',
+      packages=['heatshrink'],
       ext_modules=extensions)

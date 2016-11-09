@@ -1,3 +1,4 @@
+============
 PyHeatshrink
 ============
 
@@ -13,22 +14,57 @@ library <https://github.com/atomicobject/heatshrink>`__.
 | * Debian 8
 | * FreeBSD 10
 
+************
 Installation
-------------
+************
 
 From PyPI:
+
 ::
 
    $ easy_install heatshrink
    $ pip install heatshrink
 
 Manual installation:
+
 ::
 
     $ python setup.py install
 
+*****
 Usage
------
+*****
+
+Files/Streams
+=============
+
+The file interface attempts to imitate the behaviour of the built-in `file` object
+and other file-like objects (E.g. :code:`bz2.BZ2File`), thus you can expect all methods
+implemented in :code:`file` to also be available.
+
+You can open a heatshrink file by using the :code:`open` function:
+
+::
+
+    >>> import heatshrink
+    >>> with heatshrink.open('data.bin', mode='wb') as fp:
+    ...     fp.write("Is there anybody in there?")
+
+You can also use :code:`EncodedFile` directly:
+
+::
+
+    >>> from heatshrink import EncodedFile
+    >>> with EncodedFile('data.bin') as fp:
+    ...     # Read a buffer
+    ...     print('Buffered: %r' % fp.read(256))
+    ...     # Iterate through lines
+    ...     for line in fp:
+    ...         print('Read line: %r' % line)
+   
+
+Byte strings
+============
 
 The encoder accepts any iterable and returns a byte string
 containing encoded (compressed) data. 
@@ -54,6 +90,9 @@ returns a byte representation of the decoded data.
     >>> decoded
     'a string'
 
+Parameters
+==========
+
 Both the encoder and decoder allow providing :code:`window_sz2` and :code:`lookahead_sz2` keywords:
 
 :code:`window_sz2` - The window size determines how far back in the input can be searched for repeated patterns. A window_sz2 of 8 will only use 256 bytes (2^8), while a window_sz2 of 10 will use 1024 bytes (2^10). The latter uses more memory, but may also compress more effectively by detecting more repetition.
@@ -66,10 +105,11 @@ Both the encoder and decoder allow providing :code:`window_sz2` and :code:`looka
 Check out the `heatshrink configuration page <https://github.com/atomicobject/heatshrink#configuration>`__ for more details.
 
 
-For more use cases, please refer to `tests.py <https://github.com/johan-sports/pyheatshrink/blob/master/tests.py>`__.
+For more use cases, please refer to the `tests folder <https://github.com/johan-sports/pyheatshrink/blob/master/tests>`__.
 
+**********
 Benchmarks
-----------
+**********
 
 The benchmarks check compression/decompression against a ~6MB file:
 
@@ -77,8 +117,9 @@ The benchmarks check compression/decompression against a ~6MB file:
 
    $ python bench/benchmarks.py
 
+*******
 Testing
--------
+*******
 
 Running tests is as simple as doing:
 
@@ -86,7 +127,8 @@ Running tests is as simple as doing:
 
     $ python setup.py test
 
+*******
 License
--------
+*******
 
 ISC license

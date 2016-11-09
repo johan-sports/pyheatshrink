@@ -1,10 +1,10 @@
+include README.rst
 include LICENSE
-include requirements.txt
-include tests.py
-include src/*
+include tests/**
 
 # Headers. For some reason, setuptools doesn't support this.
-include heatshrink/heatshrink_common.h
-include heatshrink/heatshrink_config.h
-include heatshrink/heatshrink_encoder.h
-include heatshrink/heatshrink_decoder.h
+include heatshrink/_heatshrink/LICENSE
+include heatshrink/_heatshrink/heatshrink_common.h
+include heatshrink/_heatshrink/heatshrink_config.h
+include heatshrink/_heatshrink/heatshrink_encoder.h
+include heatshrink/_heatshrink/heatshrink_decoder.h
