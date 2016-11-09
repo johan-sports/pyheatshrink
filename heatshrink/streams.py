@@ -4,8 +4,10 @@ from __builtin__ import open as builtin_open
 
 import core
 
+_READ_BUFFER_SIZE = io.DEFAULT_BUFFER_SIZE
 
-class DecompressReader(io.RawIOBase):
+
+class _DecompressReader(io.RawIOBase):
     """Adapts the decompressor API to a RawIOBase reader API.
 
     This class is similar to the one found in the internal python
@@ -15,8 +17,11 @@ class DecompressReader(io.RawIOBase):
     def __init__(self, fp, reader_factory, **reader_args):
         self._fp = fp
         self._eof = False
-        self._fp_offset = 0  # Offset in raw file
-        self._decomp_offset = 0  # Offset in decompressed data stream
+        # Offset in decompressed data stream
+        self._decomp_pos = 0
+        # Decompressed data
+        self._decomp_buf = b''
+        self._decomp_buf_offset = 0
 
         # Set to size of decompressed stream once it is known
         self._size = -1
@@ -34,7 +39,7 @@ class DecompressReader(io.RawIOBase):
     def close(self):
         self._decoder = None
         # Don't close self._fp directly because we don't own it.
-        return super(DecompressReader, self).close()
+        return super(_DecompressReader, self).close()
 
     def readable(self):
         return True
@@ -55,6 +60,13 @@ class DecompressReader(io.RawIOBase):
         b[:len(buf)] = buf
         return len(buf)
 
+    def _refill(self):
+        raw_chunk = self._fp.read(_READ_BUFFER_SIZE)
+        if not raw_chunk:
+            raise EOFError
+        self._decomp_buf = self._decoder.fill(raw_chunk)
+        self._decomp_buf_offset = 0
+
     def read(self, size=-1):
         if size < 0:
             return self.readall()
@@ -62,21 +74,24 @@ class DecompressReader(io.RawIOBase):
         if not size or self._eof:
             return b''
 
-        raw_chunk = self._fp.read(size)
-        if raw_chunk:
-            data = self._decoder.fill(raw_chunk)
-        else:
-            data = None
+        if self._decomp_buf_offset >= len(self._decomp_buf):
+            try:
+                self._refill()
+            except EOFError:
+                self._eof = True
+                self._size = self._decomp_pos
+                # Finalize internal decoder.
+                # TODO: Move to _refill()
+                self._decomp_buf = self._decoder.finish()
+                self._decomp_buf_offset = 0
 
-        if data is None:  # data may be an empty string
-            self._eof = True
-            self._size = self._fp_offset
-            # Finalize internal decoder.
-            # FIXME: Don't allow any further operations after this
-            data = self._decoder.finish()
-
-        self._fp_offset += len(raw_chunk)
-        self._decomp_offset = len(data)
+        # TODO: Clean up
+        data = self._decomp_buf[
+            self._decomp_buf_offset:
+            self._decomp_buf_offset + size
+        ]
+        self._decomp_buf_offset += size
+        self._decomp_pos += len(data)
 
         return data
 
@@ -84,8 +99,9 @@ class DecompressReader(io.RawIOBase):
     def _rewind(self):
         self._fp.seek(0)
         self._eof = False
-        self._fp_offset = 0
-        self._decomp_offset = 0
+        self._decomp_pos = 0
+        self._decomp_buf = b''
+        self._decomp_buf_offset = 0
         # Restart the decoder from the beginning
         self._decoder = self._new_decoder()
 
@@ -94,7 +110,7 @@ class DecompressReader(io.RawIOBase):
         if whence == io.SEEK_SET:
             pass
         elif whence == io.SEEK_CUR:
-            offset += self._fp_offset
+            offset += self._decomp_pos
         elif whence == io.SEEK_END:
             if self._size < 0:
                 # Finish reading the file
@@ -105,10 +121,10 @@ class DecompressReader(io.RawIOBase):
             raise ValueError('Invalid value for whence: {}'.format(whence))
 
         # Make it so that offset is the number of bytes to skip forward.
-        if offset < self._fp_offset:
+        if offset < self._decomp_pos:
             self._rewind()
         else:
-            offset -= self._fp_offset
+            offset -= self._decomp_pos
 
         # Read and discard data until we reach the desired position
         while offset > 0:
@@ -117,10 +133,10 @@ class DecompressReader(io.RawIOBase):
                 break
             offset -= len(data)
 
-        return self._fp_offset  # FIXME: return decomp_offset
+        return self._decomp_pos
 
     def tell(self):
-        return self._decomp_offset
+        return self._decomp_pos
 
 
 _MODE_CLOSED = 0
@@ -157,7 +173,7 @@ class EncodedFile(io.BufferedIOBase):
             raise TypeError(msg)
 
         if self._mode == _MODE_READ:
-            raw = DecompressReader(self._fp, core.Reader, **compress_options)
+            raw = _DecompressReader(self._fp, core.Reader, **compress_options)
             self._buffer = io.BufferedReader(raw)
         else:
             writer = core.Writer(**compress_options)
@@ -291,7 +307,6 @@ class EncodedFile(io.BufferedIOBase):
             self._check_can_read()
             return self._buffer.readline(size)
 
-    # TODO: YAGNI
     def readlines(self, size=-1):
         """Read a list of lines of uncompressed bytes from the file.
 
@@ -322,7 +337,6 @@ class EncodedFile(io.BufferedIOBase):
             self._pos += len(data)
             return len(data)
 
-    # TODO: YAGNI
     def writelines(self, seq):
         """Write a sequence of byte strings to the file.
 

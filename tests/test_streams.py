@@ -4,12 +4,23 @@ import io
 import os
 import unittest
 
-from heatshrink.streams import EncodedFile
+from heatshrink.core import Reader
+from heatshrink.streams import EncodedFile, _DecompressReader
 
 from .constants import TEXT, COMPRESSED
 from .utils import TestUtilsMixin, random_string
 
 TEST_FILENAME = 'test_{}_tmp'.format(os.getpid())
+
+
+class _DecompressReaderTest(unittest.TestCase):
+    def test_read_bytes(self):
+        with io.BytesIO(COMPRESSED) as data:
+            raw = _DecompressReader(data, Reader)
+
+            contents = raw.read(100)
+            self.assertEqual(len(contents), 100)
+            self.assertEqual(contents, TEXT[:100])
 
 
 class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
@@ -65,7 +76,6 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
     def test_round_trip(self):
         write_str = b'Testing\nAnd Stuff'
 
-        # TODO: Consider using EncodedFile with StringIO
         self.fp.write(write_str)
         self.fp.close()
 
@@ -83,6 +93,25 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
 
             with EncodedFile(TEST_FILENAME) as fp:
                 read_str = fp.read()
+
+            if read_str != contents:
+                msg = ('Decoded and original file contents '
+                       'do not match for size: {}')
+                self.fail(msg.format(size))
+
+    def test_buffered_large_files(self):
+        test_sizes = [1000, 10000, 100000]
+
+        for size in test_sizes:
+            contents = random_string(size)
+
+            with EncodedFile(TEST_FILENAME, mode='wb') as fp:
+                fp.write(contents)
+
+            with EncodedFile(TEST_FILENAME) as fp:
+                # Read small buffer sizes
+                read_func = functools.partial(fp.read, 512)
+                read_str = ''.join([s for s in iter(read_func, '')])
 
             if read_str != contents:
                 msg = ('Decoded and original file contents '
@@ -140,6 +169,9 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
         self.assertFalse(self.fp.readable())
         self.assertRaises(IOError, self.fp.read)
 
+    #################
+    # Seeking
+    #################
     def test_seeking_forwards(self):
         contents = TEXT
 
@@ -157,7 +189,8 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
     def test_seeking_from_end(self):
         with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
             self.assertEqual(fp.read(100), TEXT[:100])
-            fp.seek(-100, io.SEEK_END)
+            seeked_pos = fp.seek(-100, io.SEEK_END)
+            self.assertEqual(seeked_pos, len(TEXT) - 100)
             self.assertEqual(fp.read(100), TEXT[-100:])
 
     def test_tell(self):
