@@ -61,11 +61,24 @@ class _DecompressReader(io.RawIOBase):
         return len(buf)
 
     def _refill(self):
-        raw_chunk = self._fp.read(_READ_BUFFER_SIZE)
-        if not raw_chunk:
+        """Refill internal decompress buffer with file data.
+
+        Throws a EOFError when all data has been read and
+        the decoder has been finalized.
+        """
+        # Concecutive calls should be ignored
+        if self._decoder.finished:
             raise EOFError
-        self._buf = self._decoder.fill(raw_chunk)
+
         self._buf_offset = 0
+
+        raw_chunk = self._fp.read(_READ_BUFFER_SIZE)
+        if raw_chunk:
+            self._buf = self._decoder.fill(raw_chunk)
+        else:
+            # Finalize internal decoder.
+            self._buf = self._decoder.finish()
+            raise EOFError
 
     def read(self, size=-1):
         if size < 0:
@@ -80,10 +93,6 @@ class _DecompressReader(io.RawIOBase):
             except EOFError:
                 self._eof = True
                 self._size = self._pos
-                # Finalize internal decoder.
-                # TODO: Move to _refill()
-                self._buf = self._decoder.finish()
-                self._buf_offset = 0
 
         # TODO: Clean up
         data = self._buf[
@@ -95,8 +104,8 @@ class _DecompressReader(io.RawIOBase):
 
         return data
 
-    # Rewind the file to the beginning of the data stream.
     def _rewind(self):
+        """Rewind the file to the beginning of the data stream."""
         self._fp.seek(0)
         self._eof = False
         self._pos = 0
