@@ -33,11 +33,11 @@ Manual installation:
 Usage
 *****
 
-File encoding/decoding
-======================
+Files/Streams
+=============
 
-One-shot encoding/decoding
-==========================
+Byte strings
+============
 
 The encoder accepts any iterable and returns a byte string
 containing encoded (compressed) data. 
@@ -63,8 +63,8 @@ returns a byte representation of the decoded data.
     >>> decoded
     'a string'
 
-Encode parameters
-=================
+Parameters
+==========
 
 Both the encoder and decoder allow providing :code:`window_sz2` and :code:`lookahead_sz2` keywords:
 
