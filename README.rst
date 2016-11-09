@@ -37,10 +37,10 @@ Files/Streams
 =============
 
 The file interface attempts to immitate the behaviour of the builtin `file` object
-and other file-like objects (E.g. `bz2.BZ2File`), thus you can expect all methods
-implemented in `file` to also be available.
+and other file-like objects (E.g. :code:`bz2.BZ2File`), thus you can expect all methods
+implemented in :code:`file` to also be available.
 
-You can open a heatshrink file by using the `open` function:
+You can open a heatshrink file by using the :code:`open` function:
 
 ::
 
@@ -48,7 +48,7 @@ You can open a heatshrink file by using the `open` function:
     >>> with heatshrink.open('data.bin', mode='wb') as fp:
     ...     fp.write("Is there anybody in there?")
 
-You can also use `EncodedFile` directly:
+You can also use :code:`EncodedFile` directly:
 
 ::
 
