@@ -9,6 +9,13 @@ PLAIN_FILE_PATH = os.path.join(DATA_DIR, 'plain_file.txt')
 COMPRESSED_FILE_PATH = os.path.join(DATA_DIR, 'compressed_file.txt')
 
 
+def print_block(msg, size=50):
+    sep = '=' * size
+    print(sep)
+    print(msg)
+    print(sep)
+
+
 def timed(f):
     """Wraps function f and prints timing information.
 
@@ -19,47 +26,40 @@ def timed(f):
         initial = time.time()
         ret = f(*args)
         elapsed = time.time() - initial
-        print('==> {}s elapsed'.format(elapsed))
+        print('==> {} seconds elapsed'.format(elapsed))
         return ret
     return wrap
 
 
-def run_benchmark(filename, f):
-    """Load a file and benchmark against function f."""
-    with open(filename, 'rb') as fp:
-        contents = fp.read()
-
-    timed_f = timed(f)
-
-    print('*** Reading 10,000 bytes ***')
-    timed_f(contents[:10000])
-
-    print('*** Reading 1,000,000 bytes ***')
-    timed_f(contents[:1000000])
-
-    print('*** Reading whole file ({} bytes) ***'.format(len(contents)))
-    result = timed_f(contents)
-
-    return result
-
-
-def print_block(msg, size=50):
-    sep = '=' * size
-    print(sep)
-    print(msg)
-    print(sep)
-
-
-def main():
+def run_benchmarks():
     print_block('Encode benchmarks')
-    encoded = run_benchmark(PLAIN_FILE_PATH, heatshrink.encode)
-    # Store encoded data for use py the decoder
-    with open(COMPRESSED_FILE_PATH, 'wb') as fp:
-        fp.write(encoded)
+    with open(PLAIN_FILE_PATH) as plain_file:
+        with heatshrink.open(COMPRESSED_FILE_PATH, 'wb') as compressed_file:
+            timed_write = timed(compressed_file.write)
+
+            print('*** Writing 10,000 bytes ***')
+            timed_write(plain_file.read(10000))
+            print('*** Writing 100,000 bytes ***')
+            timed_write(plain_file.read(100000))
+            print('*** Writing 1,000,000 bytes ***')
+            timed_write(plain_file.read(1000000))
+            print('*** Writing rest of the file ***')
+            timed_write(plain_file.read())
+            print('==> Wrote {} bytes'.format(plain_file.tell()))
 
     print_block('Decode benchmarks')
-    run_benchmark(COMPRESSED_FILE_PATH, heatshrink.decode)
+    with heatshrink.open(COMPRESSED_FILE_PATH) as compressed_file:
+        timed_read = timed(compressed_file.read)
+        print('*** Reading 10,000 bytes ***')
+        timed_read(10000)
+        print('*** Reading 100,000 bytes ***')
+        timed_read(100000)
+        print('*** Reading 1,000,000 bytes ***')
+        timed_read(1000000)
+        print('*** Reading rest of the file ***')
+        timed_read()
+        print('<== Read {} bytes'.format(compressed_file.tell()))
 
 
 if __name__ == '__main__':
-    main()
+    run_benchmarks()
