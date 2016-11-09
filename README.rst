@@ -36,6 +36,31 @@ Usage
 Files/Streams
 =============
 
+The file interface attempts to immitate the behaviour of the builtin `file` object
+and other file-like objects (E.g. `bz2.BZ2File`), thus you can expect all methods
+implemented in `file` to also be available.
+
+You can open a heatshrink file by using the `open` function:
+
+::
+
+    >>> import heatshrink
+    >>> with heatshrink.open('data.bin', mode='wb') as fp:
+    ...     fp.write("Is there anybody in there?")
+
+You can also use `EncodedFile` directly:
+
+::
+
+    >>> from heatshrink import EncodedFile
+    >>> with EncodedFile('data.bin') as fp:
+    ...     # Read a buffer
+    ...     print('Buffered: %r' % fp.read(256))
+    ...     # Iterate through lines
+    ...     for line in fp:
+    ...         print('Read line: %r' % line)
+   
+
 Byte strings
 ============
 
