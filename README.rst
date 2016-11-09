@@ -19,12 +19,14 @@ Installation
 ************
 
 From PyPI:
+
 ::
 
    $ easy_install heatshrink
    $ pip install heatshrink
 
 Manual installation:
+
 ::
 
     $ python setup.py install
@@ -36,7 +38,7 @@ Usage
 Files/Streams
 =============
 
-The file interface attempts to imitate the behaviour of the builtin `file` object
+The file interface attempts to imitate the behaviour of the built-in `file` object
 and other file-like objects (E.g. :code:`bz2.BZ2File`), thus you can expect all methods
 implemented in :code:`file` to also be available.
 

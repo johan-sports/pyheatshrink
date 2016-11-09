@@ -155,6 +155,15 @@ _MODE_WRITE = 2
 
 class EncodedFile(io.BufferedIOBase):
     def __init__(self, filename, mode='rb', **compress_options):
+        """Open a heatshrink LZSS encoded file.
+
+        If filename is a str, bytes or unicode object, it gives the
+        name of the file to be opened. Otherwise, it should be a file-like
+        object, which will be used to read or write the compressed data.
+
+        mode can be 'rb for reading (default) or 'wb' for (over)writing.
+        'r' and 'w' will be converted to to 'rb' and 'wb' respectively.
+        """
         self._lock = RLock()
         self._fp = None
         # Should the file be closed by us?
