@@ -2,8 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [0.3.0]
+### Added
+- Buffered file/stream interface.
 
+### Fixed
+- High memory usage during encoding/decoding large files. 
+  The file interface can now be used to buffer data instead.
+  
 ## [0.2.4] - 2016-10-24
 ### Fixed
 - Install no longer requires Cython
