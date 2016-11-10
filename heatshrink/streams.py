@@ -7,6 +7,17 @@ import core
 _READ_BUFFER_SIZE = io.DEFAULT_BUFFER_SIZE
 
 
+def _file_position(fp):
+    """Attempt to get the position for fp.
+
+    If no file position is given, 0 is returned
+    """
+    try:
+        return fp.tell()
+    except AttributeError:
+        return 0
+
+
 class _DecompressReader(io.RawIOBase):
     """Adapts the decompressor API to a RawIOBase reader API.
 
@@ -18,7 +29,7 @@ class _DecompressReader(io.RawIOBase):
         self._fp = fp
         self._eof = False
         # Position in file (decompressed)
-        self._pos = 0
+        self._pos = _file_position(self._fp)
         # Decompressed data
         self._buf = b''
         self._buf_offset = 0
@@ -197,7 +208,7 @@ class EncodedFile(io.BufferedIOBase):
             writer = core.Writer(**compress_options)
             self._encoder = core.Encoder(writer)
             # File seek position
-            self._pos = 0
+            self._pos = _file_position(self._fp)
 
         # The file name. Defaults to None
         self.name = getattr(self._fp, 'name', None)
