@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.1] - 2016-11-10
+### Fixed
+- Files passed in to EncodedFile that have already been read (tell() is not 0),
+  are not read correctly.
+
 ## [0.3.0] - 2016-11-09
 ### Added
 - Buffered file/stream interface.
