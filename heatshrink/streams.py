@@ -1,4 +1,6 @@
+import errno
 import io
+import os
 from threading import RLock
 from __builtin__ import open as builtin_open
 
@@ -129,6 +131,11 @@ class _DecompressReader(io.RawIOBase):
         else:
             raise ValueError('Invalid value for whence: {}'.format(whence))
 
+        if offset < 0:
+            msg = '[Error {code}] {msg}'
+            raise IOError(msg.format(code=errno.EINVAL,
+                                     msg=os.strerror(errno.EINVAL)))
+
         # Make it so that offset is the number of bytes to skip forward.
         if offset < self._pos:
             self._rewind()
@@ -171,10 +178,10 @@ class EncodedFile(io.BufferedIOBase):
         self._mode = _MODE_CLOSED
 
         if mode in ('', 'r', 'rb'):
-            mode = 'rb'
+            self._mode_str = 'rb'
             self._mode = _MODE_READ
         elif mode in ('w', 'wb'):
-            mode = 'wb'
+            self._mode_str = 'wb'
             self._mode = _MODE_WRITE
         else:
             raise ValueError("Invalid mode: '{!r}'".format(mode))
@@ -201,6 +208,10 @@ class EncodedFile(io.BufferedIOBase):
 
         # The file name. Defaults to None
         self.name = getattr(self._fp, 'name', None)
+
+    @property
+    def mode(self):
+        return self._mode_str
 
     def seekable(self):
         """Return whether the file supports seeking."""
