@@ -33,6 +33,11 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
     def test_open_missing_file(self):
         self.assertRaises(IOError, EncodedFile, 'does_not_exist.txt')
 
+    def test_mode_attribute_is_readonly(self):
+        self.assertEqual(self.fp.mode, 'wb')
+        with self.assertRaises(AttributeError):
+            self.fp.mode = 'rb'
+
     def test_different_compress_params(self):
         # List of a tuple containing (window_sz2, lookahead_sz2)
         encode_params = [
@@ -169,7 +174,7 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
 
         with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
             self.assertEqual(fp.read(100), contents[:100])
-            fp.seek(50, io.SEEK_CUR)  # Move 50 forwards
+            fp.seek(150)  # Move 50 forwards
             self.assertEqual(fp.read(100), contents[150:250])
 
     def test_seeking_backwards(self):
@@ -178,12 +183,39 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
             fp.seek(0)
             self.assertEqual(fp.read(100), contents)
 
+    def test_seeking_forward_from_current(self):
+        contents = TEXT
+
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            self.assertEqual(fp.read(100), contents[:100])
+            fp.seek(50, io.SEEK_CUR)  # Move 50 forwards
+            self.assertEqual(fp.read(100), contents[150:250])
+
+    def test_seeking_backwards_from_current(self):
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            contents = fp.read()
+            fp.seek(-100, io.SEEK_CUR)
+            self.assertEqual(fp.read(), contents[-100:])
+
+    def test_seeking_beyond_beginning_from_current(self):
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            self.assertRaises(IOError, fp.seek, -100, io.SEEK_CUR)
+
     def test_seeking_from_end(self):
         with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
             self.assertEqual(fp.read(100), TEXT[:100])
             seeked_pos = fp.seek(-100, io.SEEK_END)
             self.assertEqual(seeked_pos, len(TEXT) - 100)
             self.assertEqual(fp.read(100), TEXT[-100:])
+
+    def test_seeking_from_end_beyond_beginning(self):
+        with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
+            # Go to end to get size
+            size = fp.seek(0, io.SEEK_END)
+            # Go to beginning
+            self.assertNotRaises(fp.seek, -size, io.SEEK_END)
+            # One before beginning
+            self.assertRaises(IOError, fp.seek, -size - 1, io.SEEK_END)
 
     def test_tell(self):
         with io.BytesIO() as dst:
