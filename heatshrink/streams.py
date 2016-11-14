@@ -187,7 +187,7 @@ class EncodedFile(io.BufferedIOBase):
             raise ValueError("Invalid mode: '{!r}'".format(mode))
 
         if isinstance(filename, (str, bytes, unicode)):
-            self._fp = builtin_open(filename, mode)
+            self._fp = builtin_open(filename, self._mode_str)
             # We opened the file, we need to close it
             self._close_fp = True
         elif hasattr(filename, 'read') or hasattr(filename, 'write'):
