@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.1] - 2016-11-14
+### Added
+- File `mode` is now a property.
+
+### Changed
+- seek throws `IOError` if attempting to move before the file beginning.
+
 ## [0.3.0] - 2016-11-09
 ### Added
 - Buffered file/stream interface.
@@ -42,6 +49,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Compilation for python 3 (still not fully working)
 
 [Unreleased]: https://github.com/johan-sports/pyheatshrink/compare/0.3.1...HEAD
+[0.3.1]: https://github.com/johan-sports/pyheatshrink/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/johan-sports/pyheatshrink/compare/0.2.4...0.3.0
 [0.2.4]: https://github.com/johan-sports/pyheatshrink/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/johan-sports/pyheatshrink/compare/0.2.2...0.2.3
