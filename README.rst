@@ -14,6 +14,9 @@ library <https://github.com/atomicobject/heatshrink>`__.
 | * Debian 8
 | * FreeBSD 10
 
+.. image:: https://travis-ci.org/johan-sports/pyheatshrink.svg?branch=master
+    :target: https://travis-ci.org/johan-sports/pyheatshrink
+
 ************
 Installation
 ************
