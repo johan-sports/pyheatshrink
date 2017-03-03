@@ -2,6 +2,9 @@
 PyHeatshrink
 ============
 
+.. image:: https://travis-ci.org/johan-sports/pyheatshrink.svg?branch=master
+    :target: https://travis-ci.org/johan-sports/pyheatshrink
+
 Python binding to the `heatshrink LZSS compression
 library <https://github.com/atomicobject/heatshrink>`__.
 
@@ -13,9 +16,6 @@ library <https://github.com/atomicobject/heatshrink>`__.
 | * OS X > 10.10
 | * Debian 8
 | * FreeBSD 10
-
-.. image:: https://travis-ci.org/johan-sports/pyheatshrink.svg?branch=master
-    :target: https://travis-ci.org/johan-sports/pyheatshrink
 
 ************
 Installation
