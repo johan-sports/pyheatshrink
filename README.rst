@@ -9,7 +9,7 @@ Python binding to the `heatshrink LZSS compression
 library <https://github.com/atomicobject/heatshrink>`__.
 
 | **Supported versions:**
-| Python >= 2.6 -- Full
+| Python >= 2.7 -- Full
 | Python 3 -- Experimental
 | 
 | **Tested platforms:**
