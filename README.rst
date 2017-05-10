@@ -2,6 +2,9 @@
 PyHeatshrink
 ============
 
+.. image:: https://img.shields.io/pypi/v/heatshrink.svg
+    :target: https://pypi.python.org/pypi/heatshrink
+
 .. image:: https://travis-ci.org/johan-sports/pyheatshrink.svg?branch=master
     :target: https://travis-ci.org/johan-sports/pyheatshrink
 
