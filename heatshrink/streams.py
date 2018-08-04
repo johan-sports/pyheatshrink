@@ -1,10 +1,15 @@
+from __future__ import absolute_import
 import errno
 import io
 import os
 from threading import RLock
-from __builtin__ import open as builtin_open
+try:
+    from builtins import open as builtin_open
+    unicode = str
+except ImportError:
+    from __builtin__ import open as builtin_open
 
-import core
+import heatshrink.core as core
 
 _READ_BUFFER_SIZE = io.DEFAULT_BUFFER_SIZE
 
