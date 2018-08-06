@@ -1,3 +1,4 @@
+import sys
 import array
 import functools
 import io
@@ -10,6 +11,14 @@ from .constants import TEXT, COMPRESSED
 from .utils import TestUtilsMixin, random_string
 
 TEST_FILENAME = 'test_{}_tmp'.format(os.getpid())
+
+PY3 = sys.version_info[0] == 3
+if PY3:
+    def bchr(s):
+        return bytes([s])
+else:
+    def bchr(s):
+        return s
 
 
 class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
@@ -84,6 +93,7 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
 
         for size in test_sizes:
             contents = random_string(size)
+            contents = contents.encode('ascii')
 
             with EncodedFile(TEST_FILENAME, mode='wb') as fp:
                 fp.write(contents)
@@ -101,6 +111,7 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
 
         for size in test_sizes:
             contents = random_string(size)
+            contents = contents.encode('ascii')
 
             with EncodedFile(TEST_FILENAME, mode='wb') as fp:
                 fp.write(contents)
@@ -108,7 +119,7 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
             with EncodedFile(TEST_FILENAME) as fp:
                 # Read small buffer sizes
                 read_func = functools.partial(fp.read, 512)
-                read_str = ''.join([s for s in iter(read_func, '')])
+                read_str = b''.join([s for s in iter(read_func, b'')])
 
             if read_str != contents:
                 msg = ('Decoded and original file contents '
@@ -250,7 +261,7 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
         with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
             read_buf = functools.partial(fp.read, READ_SIZE)
 
-            for i, contents in enumerate(iter(read_buf, '')):
+            for i, contents in enumerate(iter(read_buf, b'')):
                 offset = READ_SIZE * i
                 self.assertEqual(
                     contents,
@@ -260,11 +271,11 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
     def test_read_one_char(self):
         with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
             for c in TEXT:
-                self.assertEqual(fp.read(1), c)
+                self.assertEqual(fp.read(1), bchr(c))
 
     def test_read1(self):
         with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
-            blocks = [buf for buf in iter(fp.read1, '')]
+            blocks = [buf for buf in iter(fp.read1, b'')]
             self.assertEqual(b''.join(blocks), TEXT)
             self.assertEqual(fp.read1(), b'')
 
@@ -293,20 +304,20 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
             lines = TEXT.splitlines()
 
             # Could also use zip
-            for i, line in enumerate(iter(fp.readline, '')):
-                self.assertEqual(line, lines[i] + '\n')
+            for i, line in enumerate(iter(fp.readline, b'')):
+                self.assertEqual(line, lines[i] + b'\n')
 
     def test_readline_iterator(self):
         with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
             lines = TEXT.splitlines()
 
             for file_line, original_line in zip(fp, lines):
-                self.assertEqual(file_line, original_line + '\n')
+                self.assertEqual(file_line, original_line + b'\n')
 
     def test_readlines(self):
         with EncodedFile(io.BytesIO(COMPRESSED)) as fp:
             lines = fp.readlines()
-            self.assertEqual(''.join(lines), TEXT)
+            self.assertEqual(b''.join(lines), TEXT)
 
     #################
     # Writing
@@ -314,7 +325,7 @@ class EncodedFileTest(TestUtilsMixin, unittest.TestCase):
     def test_write_buffered(self):
         BUFFER_SIZE = 16
         # BytesIO makes it easy to buffer
-        text_buf = io.BytesIO(TEXT.encode('utf8'))
+        text_buf = io.BytesIO(TEXT)
 
         with io.BytesIO() as dst:
             with EncodedFile(dst, mode='wb') as fp:
