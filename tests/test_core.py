@@ -67,16 +67,16 @@ class EncoderTest(TestUtilsMixin, unittest.TestCase):
 
     def test_operation_after_finish_fails(self):
         for encoder in self.encoders:
-            encoder.fill('abcde')
+            encoder.fill(b'abcde')
             encoder.finish()
-            self.assertRaises(ValueError, encoder.fill, 'abcde')
+            self.assertRaises(ValueError, encoder.fill, b'abcde')
             self.assertRaises(ValueError, encoder.finish)
 
     def test_fill_doesnt_flush_small_values(self):
         encoder = Encoder(self.writer)
         # Pass a small value, this wont cause the encoder
         # to actually do anything
-        encoded = encoder.fill('abcde')
+        encoded = encoder.fill(b'abcde')
         self.assertTrue(len(encoded) == 0)
         # This should clear the encoder completely
         encoded = encoder.finish()
@@ -116,15 +116,15 @@ class DecodeFunctionTest(TestUtilsMixin, unittest.TestCase):
     """Tests for the core.decode function."""
 
     def test_returns_string(self):
-        self.assertIsInstance(heatshrink.decode('abcde'), str)
+        self.assertIsInstance(heatshrink.decode(b'abcde'), bytes)
 
     def test_decode_with_window_sz2(self):
         decoded = heatshrink.decode(b'\xb0\xd8\xacvK(', window_sz2=11)
-        self.assertEqual(decoded, 'abcde')
+        self.assertEqual(decoded, b'abcde')
 
     def test_decode_with_lookahead_sz2(self):
-        decoded = heatshrink.decode('\xb0\xd8\xacvK(', lookahead_sz2=3)
-        self.assertEqual(decoded, 'abcde')
+        decoded = heatshrink.decode(b'\xb0\xd8\xacvK(', lookahead_sz2=3)
+        self.assertEqual(decoded, b'abcde')
 
 
 class EncoderToDecoderTest(TestUtilsMixin, unittest.TestCase):
@@ -136,7 +136,7 @@ class EncoderToDecoderTest(TestUtilsMixin, unittest.TestCase):
 
     def test_round_trip(self):
         encoded = heatshrink.encode(b'a string')
-        self.assertEqual(heatshrink.decode(encoded), 'a string')
+        self.assertEqual(heatshrink.decode(encoded), b'a string')
 
     def test_with_a_paragraph(self):
         encoded = heatshrink.encode(TEXT)
@@ -147,6 +147,7 @@ class EncoderToDecoderTest(TestUtilsMixin, unittest.TestCase):
 
         for size in test_sizes:
             contents = random_string(size)
+            contents = contents.encode('ascii')
 
             decoded = heatshrink.decode(heatshrink.encode(contents))
             # Check whole file, but don't use assertEqual as it will

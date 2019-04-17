@@ -1,4 +1,4 @@
-TEXT = """
+TEXT = b"""
 Overhead the albatross hangs motionless upon the air
 And deep beneath the rolling waves in labyrinths of coral caves
 The echo of a distant tide
